@@ -1,0 +1,6 @@
+::sysinit:/etc/init.d/rcS S boot
+::shutdown:/etc/init.d/rcS K shutdown
+::sysinit:/bin/mount -t proc none /proc
+::sysinit:/bin/mount -o remount,rw /
+ttyS0::respawn:/bin/ash --login
+tty0::respawn:/bin/ash --login
