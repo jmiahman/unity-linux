@@ -1,5 +1,9 @@
 This is the buildsystem for the Unity Linux distribution.
 
+We are still heavily based on OpenWrt (thank you) but as 
+time goes by this work will be modified more and more for
+our own purpose.
+
 Please use "make menuconfig" to configure your appreciated
 configuration for the toolchain and chroot.
 
