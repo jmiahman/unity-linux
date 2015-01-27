@@ -26,20 +26,13 @@ PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
-#TARGET_CFLAGS += $(FPIC)
-
-#libbeecrypt.so.7
-#libcrypto.so.1.0.0
-#libdb-4.7.so
-#libssl.so.1.0.0
-#libz.so.1
-
 define Package/rpm
   SECTION:=base
   CATEGORY:=Base system
   TITLE:=A powerful command line driven package management system
   URL:=http://rpm5.org/
-  DEPENDS:=+zlib +libopenssl +libpthread +libcrypto +libbeecrypt +libpopt +libdb47
+  DEPENDS:=+zlib +libopenssl +libpthread +libcrypto +libbeecrypt +libpopt +libdb47 +lua +liblua
+  PKG_BUILD_DEPENDES:=libintl-full
 endef
 
 define Build/Configure
@@ -53,6 +46,7 @@ define Build/Configure
         --without-selinux \
         --without-python \
         --without-perl \
+        --with-lua=external \
         --with-openssl=external \
         --with-db=external \
         --with-popt=$(STAGING_DIR) \

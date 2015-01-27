@@ -70,6 +70,7 @@ define Build/Configure
 			--with-bugurl=$(BUGURL) \
 			--with-pkgversion="$(PKGVERSION)" \
 			--enable-shared \
+                        --enable-static \
 			--disable-__cxa_atexit \
 			--enable-target-optspace \
 			--with-gnu-ld \
