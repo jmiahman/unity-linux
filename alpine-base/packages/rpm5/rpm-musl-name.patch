@@ -1,0 +1,16 @@
+--- system.h
++++ system.h.fixed
+@@ -417,11 +417,7 @@
+ #endif
+ #define	setprogname(pn)
+ #else
+-#define	__progname	program_name
+-#define	setprogname(pn)	\
+-  { if ((__progname = strrchr(pn, '/')) != NULL) __progname++; \
+-    else __progname = pn;		\
+-  }
++#define	setprogname(pn)
+ #endif
+ /*@unchecked@*/
+ extern const char *__progname;
+
