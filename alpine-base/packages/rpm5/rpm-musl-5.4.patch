@@ -1,0 +1,173 @@
+--- rpm-5.4.15_new/lib/poptALL.c
++++ rpm-5.4.15/lib/poptALL.c
+@@ -688,6 +688,7 @@
+ 	if ((__progname = strrchr(argv[0], '/')) != NULL) __progname++;
+ 	else __progname = argv[0];
+     }
++
+ /*@=globs =mods@*/
+ 
+     /* Insure that stdin/stdout/stderr are open, lest stderr end up in rpmdb. */
+--- rpm-5.4.15_new/misc/setproctitle.c
++++ rpm-5.4.15/misc/setproctitle.c
+@@ -126,7 +126,7 @@
+ {
+ 
+ /* XXX limit the fiddle up to linux for now. */
+-#if defined(__linux__)
++#if defined(__linux__) && !defined(__musl__)
+ 	char   *begin_of_buffer = 0, *end_of_buffer = 0;
+ 	int     i;
+ 
+--- rpm-5.4.15_new/rpmio/fts.c
++++ rpm-5.4.15/rpmio/fts.c
+@@ -48,6 +48,11 @@
+ #if defined(__UCLIBC__)
+ #   define __fxstat64(_stat_ver, _fd, _sbp)    fstat((_fd), (_sbp))
+ #endif
++#if defined(__musl__) || defined(musl) || defined(__musl)
++#   define stat64		stat
++#   define _STAT_VER		0
++#   define __fxstat64(_stat_ver, _fd, _sbp)    fstat((_fd), (_sbp))
++#endif
+ #if defined(hpux) || defined(__hpux)
+ # define        _INCLUDE_POSIX_SOURCE
+ #   define __errno_location() 	(&errno)
+--- rpm-5.4.15_new/rpmio/rpmdir.h
++++ rpm-5.4.15/rpmio/rpmdir.h
+@@ -21,7 +21,7 @@
+ typedef struct __dirstream *	AVDIR;
+ typedef struct __dirstream *	DAVDIR;
+ #else
+-# if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || defined(__OpenBSD__)
++# if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || defined(__OpenBSD__) || defined(__musl__)
+ typedef struct __dirstream *	AVDIR;
+ typedef struct __dirstream *	DAVDIR;
+ #else	/* __FreeBSD__ */
+--- rpm-5.4.15_new/rpmio/rpmmalloc.c
++++ rpm-5.4.15/rpmio/rpmmalloc.c
+@@ -285,7 +285,7 @@
+ }
+ /*@=internalglobs@*/
+ 
+-#if !(HAVE_MCHECK_H && defined(__GNUC__)) && !defined(__LCLINT__)
++#if !(defined(__GNUC__)) && !defined(__LCLINT__)
+ 
+ /*@out@*/ /*@only@*/ void * xmalloc (size_t size)
+ {
+@@ -328,4 +328,4 @@
+     return newstr;
+ }
+ 
+-#endif	/* !(HAVE_MCHECK_H && defined(__GNUC__)) */
++#endif	/* !(defined(__GNUC__)) */
+--- rpm-5.4.15_new/rpmio/rpmsq.c
++++ rpm-5.4.15/rpmio/rpmsq.c
+@@ -118,7 +118,7 @@
+ #endif
+ 
+ #include <signal.h>
+-#if !defined(__QNX__)
++#if !defined(__QNX__) && !defined(__musl__)
+ #  include <sys/signal.h>
+ #endif
+ #include <sys/wait.h>
+--- rpm-5.4.15_new/rpmio/yarn.c
++++ rpm-5.4.15/rpmio/yarn.c
+@@ -443,6 +443,8 @@
+     struct capsule * capsule;
+ #if defined(WITH_PTHREADS)
+     pthread_attr_t attr;
++#else
++	int attr;
+ #endif
+ 
+     /* construct the requested call and argument for the yarnIgnition() routine
+--- rpm-5.4.15_new/rpmqv.c
++++ rpm-5.4.15/rpmqv.c
+@@ -505,6 +505,12 @@
+ #endif
+ #endif  
+ 
++    /* XXX glibc churn sanity */
++    if (__progname == NULL) {
++        if ((__progname = strrchr(argv[0], '/')) != NULL) __progname++;
++        else __progname = argv[0];
++    }
++
+     /* Set the major mode based on argv[0] */
+     /*@-nullpass@*/
+ #ifdef	IAM_RPMBT
+--- rpm-5.4.15_new/system.h
++++ rpm-5.4.15/system.h
+@@ -481,13 +481,13 @@
+ #endif /* defined(__LCLINT__) */
+ 
+ /* Memory allocation via macro defs to get meaningful locations from mtrace() */
++#endif	/* HAVE_MCHECK_H */
+ #if defined(__GNUC__)
+ #define	xmalloc(_size) 		(malloc(_size) ? : vmefail(_size))
+ #define	xcalloc(_nmemb, _size)	(calloc((_nmemb), (_size)) ? : vmefail(_size))
+ #define	xrealloc(_ptr, _size)	(realloc((_ptr), (_size)) ? : vmefail(_size))
+ #define	xstrdup(_str)	(strcpy((char *)(malloc(strlen(_str)+1) ? : vmefail(strlen(_str)+1)), (_str)))
+ #endif	/* defined(__GNUC__) */
+-#endif	/* HAVE_MCHECK_H */
+ 
+ #if defined(HAVE_NETDB_H)
+ #include <netdb.h>
+@@ -785,3 +785,4 @@
+ #undef	SUPPORT_AR_PAYLOADS
+ 
+ #endif	/* H_SYSTEM */
++const char *program_name;
+--- rpm-5.4.15_new/tools/dbconvert.c
++++ rpm-5.4.15/tools/dbconvert.c
+@@ -11,6 +11,9 @@
+ #define htole32(x) OSSwapHostToLittleInt32(x)
+ #endif /* __APPLE__ */
+ #if BYTE_ORDER == LITTLE_ENDIAN
++#include <byteswap.h>
++#define htobe32(x) __bswap_32 (x)
++#define htole32(x) (x)
+ #define bswap32(x) htobe32(x)
+ #elif BYTE_ORDER == BIG_ENDIAN
+ #define bswap32(x) htole32(x)
+--- rpm-5.4.15_new/tools/rpmfind.c
++++ rpm-5.4.15/tools/rpmfind.c
+@@ -1108,7 +1108,7 @@
+ 	(void)fprintf(stderr, "\n");
+ 	(void)fflush(stderr);
+     }
+-#if defined(__APPLE__) || defined(__sun)
++#if defined(__APPLE__) || defined(__sun) || defined(__musl__)
+     return ((resp[0] == 'Y' || resp[0] == 'y') ? 1 : 0);
+ #else
+     return (rpmatch(resp) == 1);
+@@ -1177,7 +1177,7 @@
+ #if defined(__sun)
+     value = strtoll(str, &endchar, 10);
+ #else
+-    value = strtoq(str, &endchar, 10);
++    value = strtoll(str, &endchar, 10);
+ #endif
+     if (value == 0 && endchar == str)
+ 	errx(1, "%s: %s: illegal numeric value", option, vp);
+@@ -1217,7 +1217,7 @@
+ #if defined(__sun)
+     value = strtoll(str, &unit, 10);
+ #else
+-    value = strtoq(str, &unit, 10);
++    value = strtoll(str, &unit, 10);
+ #endif
+     if (value == 0 && unit == str) {
+ 	errx(1, "%s: %s: illegal time value", option, vp);
+@@ -1255,7 +1255,7 @@
+ #if defined(__sun)
+ 	value = strtoll(str, &unit, 10);
+ #else
+-	value = strtoq(str, &unit, 10);
++	value = strtoll(str, &unit, 10);
+ #endif
+ 	if (value == 0 && unit == str) {
+ 	    errx(1, "%s: %s: illegal time value", option, vp);
+ 	    
