@@ -1,5 +1,5 @@
 Name:           busybox
-Version:        1.23.2
+Version:        1.20.2
 Release:        1%{?dist}
 Summary:        Size optimized toolbox of many common UNIX utilities
 
@@ -37,24 +37,38 @@ particularly those involving broken shared libraries.
 %prep
 %setup -q
 
+#%patch0  -p1 -b .%{name}-1.11.1-bb
+#%patch1  -p1 -b .busybox-uname-is-not-gnu
+#%patch2  -p1 -b .bb-app-location
+#%patch3  -p1 -b .loginutils-sha512
+#%patch4  -p1 -b .udhcpc-discover-retries
+#%patch5  -p1 -b .0001-ifupdown-pass-interface-device-name-for-ipv6-route-c
+#%patch6  -p1 -b .0001-ifupdown-use-x-hostname-NAME-with-udhcpc
+#%patch8  -p1 -b .0001-linedit-deluser-use-POSIX-getpwent-instead-of-getpwe
+#%patch9  -p1 -b .0001-diff-add-support-for-no-dereference
+#%patch10 -p1 -b .1000-fbsplash-use-virtual-y-size-in-mmap-size-calculation
+#%patch11 -p1 -b .1001-fbsplash-support-console-switching
+#%patch12 -p1 -b .1002-fbsplash-support-image-and-bar-alignment-and-positio
+#%patch13 -p1 -b .glibc
+
+%__cp %{SOURCE2} loginutils/
+%define _dyndir %{buildroot}/build-dynamic
+mkdir -p %{_dyndir}
 
 %build
-
-	%__gcc %{SOURCE1} -o %{BUILDROOT}/bbsuid
+	%__cc %{SOURCE1} -o %{_dyndir}/bbsuid
 	%__cp %{SOURCE3} .config
-	[ "$CLIBC" = musl ] && sed -i \
-		-e "s/CONFIG_EXTRA_COMPAT=y/CONFIG_EXTRA_COMPAT=n/" \
-		.config
-	make -C %{BUILDROOT} O="$PWD" silentoldconfig
+	%__sed -i "s/CONFIG_EXTRA_COMPAT=y/CONFIG_EXTRA_COMPAT=n/" .config
+	make O=%{_dyndir} silentoldconfig
 	make
 
-#%configure
-#make %{?_smp_mflags}
+##%configure
+##make %{?_smp_mflags}
 
 
-%install
-rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+#%install
+#rm -rf $RPM_BUILD_ROOT
+#make install DESTDIR=$RPM_BUILD_ROOT
 
 
 %clean
