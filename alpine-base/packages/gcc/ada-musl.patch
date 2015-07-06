@@ -1,0 +1,137 @@
+diff -rup gcc-5.1.0/gcc.orig/ada/adaint.c gcc-5.1.0/gcc/ada/adaint.c
+--- gcc-5.1.0/gcc.orig/ada/adaint.c	2015-02-20 11:48:57.000000000 +0000
++++ gcc-5.1.0/gcc/ada/adaint.c	2015-06-02 10:47:51.672767476 +0000
+@@ -70,6 +70,11 @@
+ #include <sys/param.h>
+ #include <sys/pstat.h>
+ #endif
++ 
++#if defined (linux)
++#define _GNU_SOURCE 1
++#include <sched.h>
++#endif
+ 
+ #ifdef __PikeOS__
+ #define __BSD_VISIBLE 1
+@@ -3057,8 +3062,6 @@ __gnat_lwp_self (void)
+    return (void *) syscall (__NR_gettid);
+ }
+ 
+-#include <sched.h>
+-
+ /* glibc versions earlier than 2.7 do not define the routines to handle
+    dynamically allocated CPU sets. For these targets, we use the static
+    versions. */
+@@ -3067,7 +3070,7 @@ __gnat_lwp_self (void)
+ 
+ /* Dynamic cpu sets */
+ 
+-cpu_set_t *
++void *
+ __gnat_cpu_alloc (size_t count)
+ {
+   return CPU_ALLOC (count);
+@@ -3080,33 +3083,33 @@ __gnat_cpu_alloc_size (size_t count)
+ }
+ 
+ void
+-__gnat_cpu_free (cpu_set_t *set)
++__gnat_cpu_free (void *set)
+ {
+-  CPU_FREE (set);
++  CPU_FREE ((cpu_set_t *) set);
+ }
+ 
+ void
+-__gnat_cpu_zero (size_t count, cpu_set_t *set)
++__gnat_cpu_zero (size_t count, void *set)
+ {
+-  CPU_ZERO_S (count, set);
++  CPU_ZERO_S (count, (cpu_set_t *) set);
+ }
+ 
+ void
+-__gnat_cpu_set (int cpu, size_t count, cpu_set_t *set)
++__gnat_cpu_set (int cpu, size_t count, void *set)
+ {
+   /* Ada handles CPU numbers starting from 1, while C identifies the first
+      CPU by a 0, so we need to adjust. */
+-  CPU_SET_S (cpu - 1, count, set);
++  CPU_SET_S (cpu - 1, count, (cpu_set_t *) set);
+ }
+ 
+ #else /* !CPU_ALLOC */
+ 
+ /* Static cpu sets */
+ 
+-cpu_set_t *
++void *
+ __gnat_cpu_alloc (size_t count ATTRIBUTE_UNUSED)
+ {
+-  return (cpu_set_t *) xmalloc (sizeof (cpu_set_t));
++  return xmalloc (sizeof (cpu_set_t));
+ }
+ 
+ size_t
+@@ -3116,23 +3119,23 @@ __gnat_cpu_alloc_size (size_t count ATTR
+ }
+ 
+ void
+-__gnat_cpu_free (cpu_set_t *set)
++__gnat_cpu_free (void *set)
+ {
+   free (set);
+ }
+ 
+ void
+-__gnat_cpu_zero (size_t count ATTRIBUTE_UNUSED, cpu_set_t *set)
++__gnat_cpu_zero (size_t count ATTRIBUTE_UNUSED, void *set)
+ {
+-  CPU_ZERO (set);
++  CPU_ZERO ((cpu_set_t *) set);
+ }
+ 
+ void
+-__gnat_cpu_set (int cpu, size_t count ATTRIBUTE_UNUSED, cpu_set_t *set)
++__gnat_cpu_set (int cpu, size_t count ATTRIBUTE_UNUSED, void *set)
+ {
+   /* Ada handles CPU numbers starting from 1, while C identifies the first
+      CPU by a 0, so we need to adjust. */
+-  CPU_SET (cpu - 1, set);
++  CPU_SET (cpu - 1, (cpu_set_t *) set);
+ }
+ #endif /* !CPU_ALLOC */
+ #endif /* linux */
+diff -rup gcc-5.1.0/gcc.orig/ada/adaint.h gcc-5.1.0/gcc/ada/adaint.h
+--- gcc-5.1.0/gcc.orig/ada/adaint.h	2015-01-27 17:20:27.000000000 +0000
++++ gcc-5.1.0/gcc/ada/adaint.h	2015-06-02 10:47:23.188910894 +0000
+@@ -287,13 +287,11 @@ extern void   *__gnat_lwp_self			   (voi
+ 
+ /* Routines for interface to required CPU set primitives */
+ 
+-#include <sched.h>
+-
+-extern cpu_set_t *__gnat_cpu_alloc                 (size_t);
++extern void * __gnat_cpu_alloc                 (size_t);
+ extern size_t __gnat_cpu_alloc_size                (size_t);
+-extern void   __gnat_cpu_free                  (cpu_set_t *);
+-extern void   __gnat_cpu_zero                      (size_t, cpu_set_t *);
+-extern void   __gnat_cpu_set                       (int, size_t, cpu_set_t *);
++extern void   __gnat_cpu_free                  (void *);
++extern void   __gnat_cpu_zero                      (size_t, void *);
++extern void   __gnat_cpu_set                       (int, size_t, void *);
+ #endif
+ 
+ #if defined (_WIN32)
+diff -rup gcc-5.1.0/gcc.orig/ada/gcc-interface/Makefile.in gcc-5.1.0/gcc/ada/gcc-interface/Makefile.in
+--- gcc-5.1.0/gcc.orig/ada/gcc-interface/Makefile.in	2015-04-09 20:29:28.000000000 +0000
++++ gcc-5.1.0/gcc/ada/gcc-interface/Makefile.in	2015-06-02 10:47:23.188910894 +0000
+@@ -1910,7 +1910,7 @@ ifeq ($(strip $(filter-out powerpc% linu
+ endif
+ 
+ # ARM linux, GNU eabi
+-ifeq ($(strip $(filter-out arm% linux-gnueabi%,$(target_cpu) $(target_os))),)
++ifeq ($(strip $(filter-out arm% linux-gnueabi% linux-muslgnueabi%,$(target_cpu) $(target_os))),)
+   LIBGNAT_TARGET_PAIRS = \
+   a-intnam.ads<a-intnam-linux.ads \
+   s-inmaop.adb<s-inmaop-posix.adb \
