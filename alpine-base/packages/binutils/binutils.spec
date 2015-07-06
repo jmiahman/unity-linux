@@ -1,0 +1,93 @@
+Name:           binutils
+Version:        2.25 
+Release:        1%{?dist}
+Summary:        Tools necessary to build programs 
+
+Group:          Development/Tools 
+License:        GPLv3+
+URL:            http://sources.redhat.com/binutils
+Source0:        http://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
+Patch0:		binutils-ld-fix-static-linking.patch
+Patch1: 	hash-style-gnu.patch
+
+#BuildRequires:  
+#Requires:       
+
+%description
+Binutils is a collection of binary utilities, including ar (for
+creating, modifying and extracting from archives), as (a family of GNU
+assemblers), gprof (for displaying call graph profile data), ld (the
+GNU linker), nm (for listing symbols from object files), objcopy (for
+copying and translating object files), objdump (for displaying
+information from object files), ranlib (for generating an index for
+the contents of an archive), readelf (for displaying detailed
+information about binary files), size (for listing the section sizes
+of an object or archive file), strings (for listing printable strings
+from files), strip (for discarding symbols), and addr2line (for
+converting addresses to file and line).
+
+%package devel
+Summary: BFD and opcodes static and dynamic libraries and header files
+Group: System Environment/Libraries
+
+%description devel
+This package contains BFD and opcodes static and dynamic libraries.
+
+%prep
+%setup -q
+%patch0 -p1 -b .fix-static-linking
+%patch1 -p1 -b .hash-style-gnu
+
+
+%build
+./configure \
+	--build=%{_build} \
+	--host=%{_host} \
+	--target=%{_target} \
+	--with-build-sysroot=%{buildroot} \
+	--with-sysroot=%{buildroot} \
+	--prefix=/usr \
+	--mandir=/usr/share/man \
+	--infodir=/usr/share/info \
+	--disable-multilib \
+	--enable-shared \
+	--enable-ld=default \
+	--enable-gold=yes \
+	--enable-64-bit-bfd \
+	--enable-plugins \
+	--enable-install-libiberty \
+	--disable-werror \
+	--disable-nls \
+make
+
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
+%files
+%defattr(-,root,root,-)
+%doc README
+%{_bindir}/*
+%{_bindir}/ld*
+%{_mandir}/man1/*
+%{_libdir}/lib*.so
+%exclude %{_libdir}/libbfd.so
+%exclude %{_libdir}/libopcodes.so
+%{_infodir}/*info*
+
+%files devel
+%defattr(-,root,root,-)
+%{_prefix}/include/*
+%{_libdir}/lib*.a
+%{_libdir}/libbfd.so
+%{_libdir}/libopcodes.so
+%{_infodir}/bfd*info*
+
+
+%changelog
