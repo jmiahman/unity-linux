@@ -1,7 +1,7 @@
 Summary: Development files for musl libc
 Name:	 musl
 Version: 1.1.10
-Release: 1
+Release: 2
 Source0: http://www.musl-libc.org/releases/%{name}-%{version}.tar.gz
 Source1: __stack_chk_fail_local.c
 Source2: libssp_nonshared.a
@@ -39,11 +39,6 @@ make ARCH=%{_arch} prefix=/usr DESTDIR=%{buildroot} install-headers
 %__cc -c %{SOURCE1} -o __stack_chk_fail_local.o
 %__ar r libssp_nonshared.a __stack_chk_fail_local.o
 
-
-%__cc %{SOURCE4} -o %{buildroot}/getconf
-%__cc %{SOURCE5} -o %{buildroot}/getent
-%__cc %{SOURCE6} -o %{buildroot}/iconv
-
 LDFLAGS="$LDFLAGS -Wl,-soname,libc.musl-%{_arch}.so.1" \
 ./configure \
         --host=%{_arch}-alpine-linux-musl \
@@ -68,15 +63,7 @@ rm -rf $RPM_BUILD_ROOT
 %__mkdir -p %{buildroot}/usr/bin
 %__mkdir -p %{buildroot}/lib/
 
-#%__mv -f %{buildroot}/usr/lib/libc.so %{buildroot}/lib/"$LDSO"
 %__mv -f %{buildroot}/usr/lib/libc.so %{buildroot}/lib/ld-musl-%{_arch}.so.1
-
-#%__ln_s -f "$LDSO"  %{buildroot}/lib/libc.musl-%{_arch}.so.1
-#%__ln_s -f /lib/"$LDSO" %{buildroot}/usr/lib/libc.so
-#%__mkdir -p %{buildroot}/usr/bin
-#%__ln_s -f /lib/"$LDSO" %{buildroot}/usr/bin/ldd
-
-
 %__ln_s -f ld-musl-%{_arch}.so.1 %{buildroot}/lib/libc.musl-%{_arch}.so.1
 %__ln_s -f /lib/ld-musl-%{_arch}.so.1 %{buildroot}/lib/libc.so
 %__mkdir -p %{buildroot}/usr/bin
@@ -90,13 +77,39 @@ rm -rf $RPM_BUILD_ROOT
 
 %__sed -i 's!/usr/lib/musl!/usr!' %{buildroot}/usr/bin/musl-gcc
 
+%__cc %{SOURCE4} -o getconf
+%__cc %{SOURCE5} -o getent
+%__cc %{SOURCE6} -o iconv
+
+#Utils (Different Package Maybe?)
+	mkdir -p %{buildroot}/usr/bin 
+	mkdir -p %{buildroot}/sbin
+	install -D \
+		getent \
+		getconf \
+		iconv \
+		%{buildroot}/usr/bin/
+
+	install -D -m755 %{SOURCE3} %{buildroot}/sbin/ldconfig
+
+#Compat (Different Package Maybe?)
+
+%define _ld ld-linux-x86-64.so.2
+	mkdir -p %{buildroot}/lib
+	ln -sf /lib/libc.musl-%{_arch}.so.1 %{buildroot}/lib/%{_ld}
+
+	for i in libc.so.6 libm.so.6 libpthread.so.0 librt.so.1 libutil.so.1; do
+		ln -sf /lib/libc.musl-%{_arch}.so.1 %{buildroot}/lib/$i
+	done
+
+
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %doc INSTALL README WHATSNEW 
-/lib/libc.musl-%{_arch}.so.1
-/lib/ld-musl-%{_arch}.so.1
+/lib/*-%{_arch}.so*
 
 %files devel
 %{_libdir}/*.o
@@ -104,7 +117,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/musl-gcc.specs
 %{_includedir}/*
 %{_bindir}/*
+/sbin/*
+/lib/*.so
 
 %changelog
 * Tue Jun 23 2015 JMiahMan <JMiahMan@gmail.com> - 1.1.10-1
 - Test Build
+
+* Mon Jul 06 2015 JMiahMan <JMiahMan@gmail.com> - 1.1.10-2
+- Build in Utils for now and 
+- fix libc.so not being included in devel
