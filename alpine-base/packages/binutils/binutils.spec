@@ -41,11 +41,11 @@ This package contains BFD and opcodes static and dynamic libraries.
 
 %build
 ./configure \
-	--build=%{_build} \
-	--host=%{_host} \
-	--target=%{_target} \
+	--build=x86_64-alpine-linux-musl \
+	--host=x86_64-alpine-linux-musl \
+	--target=x86_64-alpine-linux-musl \
 	--with-build-sysroot=%{buildroot} \
-	--with-sysroot=%{buildroot} \
+	--with-sysroot=/ \
 	--prefix=/usr \
 	--mandir=/usr/share/man \
 	--infodir=/usr/share/info \
@@ -57,8 +57,9 @@ This package contains BFD and opcodes static and dynamic libraries.
 	--enable-plugins \
 	--enable-install-libiberty \
 	--disable-werror \
-	--disable-nls \
-make
+	--disable-nls
+
+%make
 
 
 %install
@@ -74,20 +75,14 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc README
 %{_bindir}/*
-%{_bindir}/ld*
-%{_mandir}/man1/*
-%{_libdir}/lib*.so
-%exclude %{_libdir}/libbfd.so
-%exclude %{_libdir}/libopcodes.so
-%{_infodir}/*info*
+/usr/x86_64-alpine-linux-musl/bin/*
+/usr/x86_64-alpine-linux-musl/lib/ldscripts/*
+%{_libdir}/*%{version}.so
 
 %files devel
 %defattr(-,root,root,-)
-%{_prefix}/include/*
-%{_libdir}/lib*.a
-%{_libdir}/libbfd.so
-%{_libdir}/libopcodes.so
-%{_infodir}/bfd*info*
-
+%{exclude} %{_libdir}/*%{version}.so
+/usr/include/*.h
+/usr/include/libiberty/*.h
 
 %changelog

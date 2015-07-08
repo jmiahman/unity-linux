@@ -1,0 +1,55 @@
+# Contributor: William Pitcock <nenolod@dereferenced.org>
+# Maintainer: William Pitcock <nenolod@dereferenced.org>
+pkgname=pkgconf
+pkgver=0.9.11
+pkgrel=0
+pkgdesc="development framework configuration tools"
+url="https://github.com/pkgconf/pkgconf"
+arch="all"
+license="ISC"
+depends=""
+depends_dev=""
+makedepends="$depends_dev"
+install=""
+replaces="pkgconfig"
+source="http://rabbit.dereferenced.org/~nenolod/distfiles/pkgconf-$pkgver.tar.bz2"
+subpackages="$pkgname-doc"
+
+_builddir="$srcdir"/pkgconf-$pkgver
+prepare() {
+	local i
+	cd "$_builddir"
+	for i in $source; do
+		case $i in
+		*.patch) msg $i; patch -p1 -i "$srcdir"/$i || return 1;;
+		esac
+	done
+}
+
+build() {
+	cd "$_builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		|| return 1
+	make || return 1
+	if [ "$CHOST" = "$CBUILD" ]; then
+		make check || return 1
+	fi
+}
+
+package() {
+	cd "$_builddir"
+	mkdir -p "$pkgdir"/usr/bin
+	make DESTDIR="$pkgdir" install || return 1
+	ln -s pkgconf "$pkgdir"/usr/bin/pkg-config
+}
+
+md5sums="e560dc63a5e65b45b7304680494cb642  pkgconf-0.9.11.tar.bz2"
+sha256sums="3bdae1b2672133943dc0dda694ed57074f8b03c3fea10efb215d76d3cabe2c3b  pkgconf-0.9.11.tar.bz2"
+sha512sums="21313ef29afcaa7c49a8cb512ecd3a821693945c22fb1a670ada74f41bca320e1b9ffb64e79adc2c33cb86822b74ddc850fadb16ddcde7eb805b81a50096992f  pkgconf-0.9.11.tar.bz2"
