@@ -6,15 +6,14 @@
 Summary: C compiler from the GNU Compiler Collection.
 Name: gcc
 Version: 4.7.0
-Release: owl1
-Epoch: 1
+Release: 1
 License: GPLv3+
 Group: Development/Languages
 URL: http://gcc.gnu.org
 Source0: gcc-%version.tar.gz
 # ftp://ftp.gnu.org/gnu/gcc/gcc-%version/gcc-core-%version.tar.bz2
 # Signature: ftp://ftp.gnu.org/gnu/gcc/gcc-%version/gcc-core-%version.tar.bz2.sig
-Patch0: gcc-4.7.0-owl-defaults-Wl.diff
+Patch0:
 
 BuildRequires: binutils, gettext, bison, flex, texinfo
 
