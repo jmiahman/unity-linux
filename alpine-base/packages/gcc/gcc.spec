@@ -1,19 +1,62 @@
 %define BUILD_GXX 1
 %undefine _with_test
 
-%define gcc_branch 4.7
+%define gcc_branch 5.1
 
-Summary: C compiler from the GNU Compiler Collection.
-Name: gcc
-Version: 4.7.0
-Release: 1
-License: GPLv3+
-Group: Development/Languages
-URL: http://gcc.gnu.org
-Source0: gcc-%version.tar.gz
-# ftp://ftp.gnu.org/gnu/gcc/gcc-%version/gcc-core-%version.tar.bz2
-# Signature: ftp://ftp.gnu.org/gnu/gcc/gcc-%version/gcc-core-%version.tar.bz2.sig
-Patch0:
+Summary:	C compiler from the GNU Compiler Collection.
+Name:		gcc
+Version:	5.1.0
+Release:	1%{?dist}
+License:	GPLv3+
+Group:		Development/Languages
+URL:		http://gcc.gnu.org
+Source0:	https://ftp.gnu.org/gnu/gcc/gcc-5.1.0/%{name}-%{version}.tar.bz2
+
+Patch0:		005_all_gcc-spec-env.patch
+Patch1:		010_all_default-fortify-source.patch
+Patch2:		011_all_default-warn-format-security.patch
+Patch3:		012_all_default-warn-trampolines.patch
+Patch4:		020_all_msgfmt-libstdc++-link.patch
+Patch5:		050_all_libiberty-asprintf.patch
+Patch6:		051_all_libiberty-pic.patch
+Patch7:		053_all_libitm-no-fortify-source.patch
+Patch8:		067_all_gcc-poison-system-directories.patch
+Patch9:		074_all_gcc5_isl-dl.patch
+Patch10:	086_all_gcc5-pie-copy-relocs-pr65780.patch
+Patch11:	090_all_pr55930-dependency-tracking.patch
+Patch12:	101_all_gcc49_configure.patch
+Patch13:	102_all_gcc48_config.in.patch
+Patch14:	103_all_gcc49_Makefile.in.patch
+Patch15:	105_all_gcc48_gcc.c.patch
+Patch16:	116_all_gcc47_nopie_option.patch
+Patch17:	120_all_gcc49_config_crtbeginp.patch
+Patch18:	124_all_gcc49_invoke.texi.patch
+Patch19:	134_all_gcc48_config_i386.patch
+Patch20:	135_all_gcc48_config_arm.patch
+Patch21:	140_all_gcc49_config_esp.patch
+Patch22:	141_all_gcc49_config_esp_alpine.patch
+Patch23:	201-libitm.patch
+Patch24:	202-musl-config-v3.patch
+Patch25:	204-arm.patch
+Patch26:	209-x86-v3.patch
+Patch27:	210-fixincludes.patch
+Patch28:	211-unwind.patch
+Patch29:	212-gthr.patch
+Patch30:	213-posix_memalign.patch
+Patch31:	214-stdint.patch
+Patch32:	ada-fixes.patch
+Patch33:	ada-musl.patch
+Patch34:	ada-no-pie.patch
+Patch35:	ada-shared.patch
+Patch36:	boehm-gc-musl.patch
+Patch37:	fix-cxxflags-passing.patch
+Patch38:	fix-gcj-iconv-musl.patch
+Patch39:	fix-gcj-musl.patch
+Patch40:	gcc-4.8-build-args.patch
+Patch41:	gcc-4.8-musl-libssp.patch
+Patch42:	gcc-4.9-musl-fortify.patch
+Patch43:	gcc-pure64.patch
+Patch44:	libgcc-always-build-gcceh.a.patch
 
 BuildRequires: binutils, gettext, bison, flex, texinfo
 
@@ -189,14 +232,7 @@ cd obj-%_target_platform
 
 TARGET_OPT_FLAGS='%optflags'
 TARGET_OPT_LIBFLAGS='%optflags'
-#TARGET_OPT_LIBFLAGS='%{?optflags_lib:%optflags_lib}%{!?optflags_lib:%optflags}'
 
-# Let's compile the thing
-# STAGE1_CFLAGS is used for stage1 compiler
-# BOOT_FLAGS is used for stage2..n compiler
-# ..._FOR_TARGET is used for final compiler
-
-#%__make bootstrap-lean \
 %__make 
 	STAGE1_CFLAGS="-O -fomit-frame-pointer" \
 	BOOT_CFLAGS="-O -fomit-frame-pointer" \
@@ -205,12 +241,10 @@ TARGET_OPT_LIBFLAGS='%optflags'
 	CXXFLAGS_FOR_TARGET="${TARGET_OPT_FLAGS//-fno-rtti/}" \
 	LIBCXXFLAGS_FOR_TARGET="${TARGET_OPT_LIBFLAGS//-fno-rtti/}"
 
-# Copy various doc files here and there.
 
 cd ..
 mkdir -p rpm-doc/gcc
 install -pm 644 -p gcc/ChangeLog rpm-doc/gcc/
-#install -pm 644 -p BUGS COPYING* FAQ MAINTAINERS README* gcc/SERVICE rpm-doc/gcc/
 install -pm 644 -p COPYING* MAINTAINERS README* rpm-doc/gcc/
 
 %if %BUILD_GXX
@@ -251,16 +285,6 @@ rm %buildroot%_infodir/gccinstall.info*
 rm %buildroot%_libdir/libiberty.a
 rm -f %buildroot%_libdir/*.la
 
-%find_lang cpplib
-%find_lang gcc
-
-# autogen is needed for this
-#
-# %check
-# cd obj-%_target_platform
-# %__make -k check
-# cd -
-
 %post
 /sbin/install-info --info-dir=%_infodir %_infodir/gcc.info
 /sbin/install-info --info-dir=%_infodir %_infodir/gccint.info
@@ -294,7 +318,7 @@ fi
 %postun -n libstdc++ -p /sbin/ldconfig
 %endif
 
-%files -f gcc.lang
+%files 
 %defattr(-,root,root)
 %_bindir/cc
 %_bindir/gcc
