@@ -10,7 +10,7 @@ Release:	1%{?dist}
 License:	GPLv3+
 Group:		Development/Languages
 URL:		http://gcc.gnu.org
-Source0:	https://ftp.gnu.org/gnu/gcc/gcc-5.1.0/%{name}-%{version}.tar.bz2
+Source0:	http://mirrors.axint.net/repos/gnu.org/%{name}/%{name}-%{version}/%{name}-%{version}.tar.bz2
 
 Patch0:		005_all_gcc-spec-env.patch
 Patch1:		010_all_default-fortify-source.patch
@@ -44,21 +44,22 @@ Patch28:	211-unwind.patch
 Patch29:	212-gthr.patch
 Patch30:	213-posix_memalign.patch
 Patch31:	214-stdint.patch
-Patch32:	ada-fixes.patch
-Patch33:	ada-musl.patch
-Patch34:	ada-no-pie.patch
-Patch35:	ada-shared.patch
-Patch36:	boehm-gc-musl.patch
-Patch37:	fix-cxxflags-passing.patch
-Patch38:	fix-gcj-iconv-musl.patch
-Patch39:	fix-gcj-musl.patch
-Patch40:	gcc-4.8-build-args.patch
-Patch41:	gcc-4.8-musl-libssp.patch
-Patch42:	gcc-4.9-musl-fortify.patch
-Patch43:	gcc-pure64.patch
-Patch44:	libgcc-always-build-gcceh.a.patch
+Patch32:        libgcc-always-build-gcceh.a.patch
+Patch33:        gcc-4.8-musl-libssp.patch
+Patch34:        gcc-4.9-musl-fortify.patch
+Patch35:        boehm-gc-musl.patch
+Patch36:        gcc-pure64.patch
+Patch37:        fix-gcj-musl.patch
+Patch38:        fix-gcj-iconv-musl.patch
+Patch39:        gcc-4.8-build-args.patch
+Patch40:        fix-cxxflags-passing.patch
+Patch41:        ada-fixes.patch
+Patch42:        ada-musl.patch
+Patch43:        ada-no-pie.patch
+Patch44:        ada-shared.patch
 
-BuildRequires: binutils, gettext, bison, flex, texinfo
+
+#BuildRequires: binutils, gettext, bison, flex, texinfo
 
 %description
 The gcc package contains C compiler from the GNU Compiler Collection,
@@ -159,6 +160,50 @@ and -lmudflapth.
 %setup -q
 %{?_with_test:%setup -q -T -D -b 6}
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+#%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+%patch18 -p1
+#%patch19 -p1
+%patch20 -p1
+%patch21 -p1
+%patch22 -p1
+%patch23 -p1
+%patch24 -p1
+%patch25 -p1
+%patch26 -p1
+%patch27 -p1
+%patch28 -p1
+%patch29 -p1
+%patch30 -p1
+%patch31 -p1
+%patch32 -p1
+#%patch33 -p1
+%patch34 -p1
+%patch35 -p1
+%patch36 -p1
+%patch37 -p1
+%patch38 -p1
+#%patch39 -p1
+%patch40 -p1
+%patch41 -p1
+%patch42 -p1
+%patch43 -p1
+%patch44 -p1
 
 # Use %%optflags_lib for this entire package until we figure out how to
 # properly have just gcc's libraries built with a separate set of flags.
@@ -167,7 +212,7 @@ and -lmudflapth.
 %build
 # Rebuild configure(s) and Makefile(s) if templates are newer...
 for f in */acinclude.m4; do
-	pushd "${f%%/*}"
+	cd "${f%%/*}"
 # Run aclocal & autoconf only if files aclocal.m4 and configure.in exist
 # and acinclude.m4 is newer than aclocal.m4.
 	if [ -f aclocal.m4 -a -f configure.in -a acinclude.m4 -nt aclocal.m4 ]
@@ -175,13 +220,13 @@ for f in */acinclude.m4; do
 		aclocal
 		autoconf
 	fi
-	popd
+	cd ..
 done
-for f in */Makefile.am; do
-	pushd "${f%%/*}"
-	[ Makefile.am -nt Makefile.in ] && automake
-	popd
-done
+#for f in */Makefile.am; do
+#	cd "${f%%/*}"
+#	[ Makefile.am -nt Makefile.in ] && automake
+#	cd ..
+#done
 
 # We will build this software outside source tree as recommended by INSTALL/*
 rm -rf obj-%_target_platform
@@ -207,8 +252,8 @@ cd obj-%_target_platform
         --enable-long-long \
         --enable-__cxa_atexit \
         --disable-multilib \
-        --host=%_target_platform \
-        --build=%_target_platform \
+        --host=x86_64-alpine-linux-musl \
+        --build=x86_64-alpine-linux-musl \
 	--disable-bootstrap \
 %if %BUILD_GXX
         --with-gxx-include-dir=%_includedir/c++/%version \
@@ -216,7 +261,7 @@ cd obj-%_target_platform
 %if %BUILD_GXX
         --disable-libstdcxx-pch \
 %endif # BUILD_GXX
-        --target=%_target_platform \
+        --target=x86_64-alpine-linux-musl \
 	--enable-languages=c,c++
 	
 #	--prefix=/usr \
@@ -229,6 +274,32 @@ cd obj-%_target_platform
 #	--disable-multilib \
 #	--disable-bootstrap \
 #	--with-system-zlib
+
+
+#Alpine
+#	"$_gccdir"/configure --prefix=/usr \
+#		--mandir=/usr/share/man \
+#		--infodir=/usr/share/info \
+#		--build=${CBUILD} \
+#		--host=${CHOST} \
+#		--target=${CTARGET} \
+#		--with-pkgversion="Alpine ${pkgver}" \
+#		--enable-checking=release \
+#		--disable-fixed-point \
+#		--disable-libstdcxx-pch \
+#		--disable-multilib \
+#		--disable-nls \
+#		--disable-werror \
+#		$_symvers \
+#		--enable-__cxa_atexit \
+#		--enable-esp \
+#		--enable-cloog-backend \
+#		--enable-languages=$_languages \
+#		$_arch_configure \
+#		$_libc_configure \
+#		$_cross_configure \
+#		$_bootstrap_configure \
+#		--with-system-zlib \
 
 TARGET_OPT_FLAGS='%optflags'
 TARGET_OPT_LIBFLAGS='%optflags'
