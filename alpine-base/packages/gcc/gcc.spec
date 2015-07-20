@@ -1,7 +1,11 @@
-%define BUILD_GXX 1
+%define BUILD_GXX 0
 %undefine _with_test
 
 %define gcc_branch 5.1
+%define with_musl 1
+%define gcc_stage 3
+
+%define _languages 'c,c++'
 
 Summary:	C compiler from the GNU Compiler Collection.
 Name:		gcc
@@ -137,28 +141,27 @@ This package contains GCC OpenMP headers and library.
 ####################################################################
 # mudflap library
 
-%package -n libmudflap%gcc_branch
-Summary: GCC mudflap shared support libraries.
-Group: System/Libraries
+#%package -n libmudflap%gcc_branch
+#Summary: GCC mudflap shared support libraries.
+#Group: System/Libraries
 
-%description -n libmudflap%gcc_branch
-This package contains GCC shared support libraries which are needed for
-mudflap support.
+#%description -n libmudflap%gcc_branch
+#This package contains GCC shared support libraries which are needed for
+#mudflap support.
 
-%package -n libmudflap%gcc_branch-devel
-Summary: GCC mudflap support files.
-Group: Development/Libraries
+#%package -n libmudflap%gcc_branch-devel
+#Summary: GCC mudflap support files.
+#Group: Development/Libraries
 
-%description -n libmudflap%gcc_branch-devel
-This package contains headers and libraries for building mudflap-instrumented
-programs.
-To instrument a non-threaded program, add -fmudflap option to GCC and
-when linking add -lmudflap, for threaded programs also add -fmudflapth
-and -lmudflapth.
+#%description -n libmudflap%gcc_branch-devel
+#This package contains headers and libraries for building mudflap-instrumented
+#programs.
+#To instrument a non-threaded program, add -fmudflap option to GCC and
+#when linking add -lmudflap, for threaded programs also add -fmudflapth
+#and -lmudflapth.
 
 %prep
 %setup -q
-%{?_with_test:%setup -q -T -D -b 6}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -205,10 +208,6 @@ and -lmudflapth.
 %patch43 -p1
 %patch44 -p1
 
-# Use %%optflags_lib for this entire package until we figure out how to
-# properly have just gcc's libraries built with a separate set of flags.
-%{expand:%%define optflags %{?optflags_lib:%optflags_lib}%{!?optflags_lib:%optflags}}
-
 %build
 # Rebuild configure(s) and Makefile(s) if templates are newer...
 for f in */acinclude.m4; do
@@ -222,96 +221,59 @@ for f in */acinclude.m4; do
 	fi
 	cd ..
 done
-#for f in */Makefile.am; do
-#	cd "${f%%/*}"
-#	[ Makefile.am -nt Makefile.in ] && automake
-#	cd ..
-#done
 
 # We will build this software outside source tree as recommended by INSTALL/*
 rm -rf obj-%_target_platform
 mkdir obj-%_target_platform
 cd obj-%_target_platform
 
-
-
-../configure \
-	--prefix=%_prefix \
-	--exec-prefix=%_exec_prefix \
-        --bindir=%_bindir \
-        --libdir=%_libdir \
-        --libexecdir=%_libdir \
-        --with-slib=/%_lib \
-        --infodir=%_infodir \
-        --mandir=%_mandir \
-	--enable-shared \
-        --enable-threads=posix \
-	--disable-option-checking \
-        --enable-nls \
-        --enable-c-mbchar \
-        --enable-long-long \
-        --enable-__cxa_atexit \
-        --disable-multilib \
-        --host=x86_64-alpine-linux-musl \
-        --build=x86_64-alpine-linux-musl \
-	--disable-bootstrap \
-%if %BUILD_GXX
-        --with-gxx-include-dir=%_includedir/c++/%version \
-%endif # BUILD_GXX
-%if %BUILD_GXX
-        --disable-libstdcxx-pch \
-%endif # BUILD_GXX
-        --target=x86_64-alpine-linux-musl \
-	--enable-languages=c,c++
-	
-#	--prefix=/usr \
-#	--libexecdir=/usr/lib \
-#	--enable-shared \
-#   	--enable-threads=posix \
-#	--enable-__cxa_atexit \
-#	--enable-clocale=gnu \
-#	--enable-languages=c,c++ \
-#	--disable-multilib \
-#	--disable-bootstrap \
-#	--with-system-zlib
-
-
 #Alpine
-#	"$_gccdir"/configure --prefix=/usr \
-#		--mandir=/usr/share/man \
-#		--infodir=/usr/share/info \
-#		--build=${CBUILD} \
-#		--host=${CHOST} \
-#		--target=${CTARGET} \
-#		--with-pkgversion="Alpine ${pkgver}" \
-#		--enable-checking=release \
-#		--disable-fixed-point \
-#		--disable-libstdcxx-pch \
-#		--disable-multilib \
-#		--disable-nls \
-#		--disable-werror \
-#		$_symvers \
-#		--enable-__cxa_atexit \
-#		--enable-esp \
-#		--enable-cloog-backend \
-#		--enable-languages=$_languages \
-#		$_arch_configure \
-#		$_libc_configure \
-#		$_cross_configure \
-#		$_bootstrap_configure \
-#		--with-system-zlib \
+	../configure --prefix=/usr \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--build=%_target_platform \
+		--host=%_target_platform \
+		--target=%_target_platform \
+		--with-pkgversion="Unity %{version}" \
+		--enable-checking=release \
+		--disable-fixed-point \
+		--disable-libstdcxx-pch \
+		--disable-multilib \
+		--disable-nls \
+		--disable-werror \
+		%{_symvers} \
+		--enable-__cxa_atexit \
+		--enable-esp \
+		--enable-cloog-backend \
+		--enable-languages=%{_languages} \
+		--with-system-zlib \
+		%if %with_musl
+		--disable-libssp \
+		--disable-libmudflap \
+		--disable-libsanitizer \
+		--disable-symvers \
+		%endif
+		%if %{gcc_stage} == 1
+		--with-newlib \
+		--without-headers \
+		--disable-shared \
+		--enable-threads=no \
+		%endif
+		%if %{gcc_stage} == 2
+		--with-newlib \
+		--disable-shared \
+		--enable-threads=no \
+		%endif
+		%if %{gcc_stage} == 3
+		--enable-shared \
+		--enable-threads \
+		--enable-tls \
+		%endif
 
-TARGET_OPT_FLAGS='%optflags'
-TARGET_OPT_LIBFLAGS='%optflags'
 
-%__make 
-	STAGE1_CFLAGS="-O -fomit-frame-pointer" \
-	BOOT_CFLAGS="-O -fomit-frame-pointer" \
-	CFLAGS_FOR_TARGET="$TARGET_OPT_FLAGS" \
-	LIBCFLAGS_FOR_TARGET="$TARGET_OPT_LIBFLAGS" \
-	CXXFLAGS_FOR_TARGET="${TARGET_OPT_FLAGS//-fno-rtti/}" \
-	LIBCXXFLAGS_FOR_TARGET="${TARGET_OPT_LIBFLAGS//-fno-rtti/}"
+export ADA_CFLAGS='-fno-stack-check'
 
+%make
 
 cd ..
 mkdir -p rpm-doc/gcc
@@ -336,8 +298,7 @@ rm -rf %buildroot
 
 # Relocate libgcc shared library from %_libdir/ to /%_lib/.
 mkdir %buildroot/%_lib
-mv %buildroot%_libdir/libgcc_s.so.1 %buildroot/%_lib/
-ln -s ../../../../../%_lib/libgcc_s.so.1 \
+ln -s ../../../../../%_libdir/libgcc_s.so.1 \
 	%buildroot%_libdir/gcc/%_target_platform/%version/libgcc_s.so
 #mesut
 #rm %buildroot%_libdir/libgcc_s.so
@@ -353,7 +314,7 @@ echo ".so g++.1" > %buildroot%_mandir/man1/c++.1
 # Remove unpackaged files
 rm %buildroot%_infodir/dir
 rm %buildroot%_infodir/gccinstall.info*
-rm %buildroot%_libdir/libiberty.a
+#rm %buildroot%_libdir/libiberty.a
 rm -f %buildroot%_libdir/*.la
 
 %post
@@ -401,8 +362,8 @@ fi
 %dir %_libdir/gcc
 %dir %_libdir/gcc/%_target_platform
 %dir %_libdir/gcc/%_target_platform/%version
-%_libdir/gcc/%_target_platform/%version/cc1
-%_libdir/gcc/%_target_platform/%version/collect2
+#%_libdir/gcc/%_target_platform/%version/cc1
+#%_libdir/gcc/%_target_platform/%version/collect2
 %_libdir/gcc/%_target_platform/%version/crt*.o
 %_libdir/gcc/%_target_platform/%version/libgcc*.a
 %_libdir/gcc/%_target_platform/%version/libgcc*.so
@@ -421,10 +382,10 @@ fi
 %_mandir/man7/gpl.7*
 %doc rpm-doc/gcc/*
 
-%_libdir/gcc/%_target_platform/%version/lto1
-%_libdir/gcc/%_target_platform/%version/lto-wrapper
-%exclude %_libdir/gcc/%_target_platform/%version/*.la
-%_libdir/gcc/%_target_platform/%version/liblto_plugin.so.0.0.0
+#%_libdir/gcc/%_target_platform/%version/lto1
+#%_libdir/gcc/%_target_platform/%version/lto-wrapper
+#%exclude %_libdir/gcc/%_target_platform/%version/*.la
+#%_libdir/gcc/%_target_platform/%version/liblto_plugin.so.0.0.0
 
 %files -n cpp
 %defattr(-,root,root)
@@ -437,9 +398,9 @@ fi
 
 %files -n libgcc
 %defattr(-,root,root)
-/%_lib/libgcc*.so.*
+/%_libdir/libgcc*.so.*
 %_libdir/libquadmath.so.*
-%_libdir/libssp.so.*
+#%_libdir/libssp.so.*
 
 %if %BUILD_GXX
 %files c++ -f cpplib.lang
@@ -472,17 +433,17 @@ fi
 %_libdir/gcc/%_target_platform/%version/plugin
 %_infodir/libquadmath.info*
 %_libdir/libquadmath.a
-%_libdir/libssp.a
-%_libdir/libssp_nonshared.a
+#%_libdir/libssp.a
+#%_libdir/libssp_nonshared.a
 
 %files -n libgomp%gcc_branch
 %defattr(-,root,root)
 %_libdir/libgomp.so.*
 
-%files -n libmudflap%gcc_branch
-%defattr(-,root,root)
-%_libdir/libmudflap.so.*
-%_libdir/libmudflapth.so.*
+#%files -n libmudflap%gcc_branch
+#%defattr(-,root,root)
+#%_libdir/libmudflap.so.*
+#%_libdir/libmudflapth.so.*
 
 %files -n libgomp%gcc_branch-devel
 %defattr(-,root,root)
@@ -496,13 +457,13 @@ fi
 %_libdir/libgomp.so
 %_libdir/libgomp.spec
 
-%files -n libmudflap%gcc_branch-devel
-%defattr(-,root,root)
-%dir %_libdir/gcc/%_target_platform/%version
-%dir %_libdir/gcc/%_target_platform/%version/include
-%_libdir/gcc/%_target_platform/%version/include/mf-runtime.h
-%dir %_libdir/gcc/%_target_platform/%version
-%_libdir/libmudflap.a
-%_libdir/libmudflapth.a
+#%files -n libmudflap%gcc_branch-devel
+#%defattr(-,root,root)
+#%dir %_libdir/gcc/%_target_platform/%version
+#%dir %_libdir/gcc/%_target_platform/%version/include
+#%_libdir/gcc/%_target_platform/%version/include/mf-runtime.h
+#%dir %_libdir/gcc/%_target_platform/%version
+#%_libdir/libmudflap.a
+#%_libdir/libmudflapth.a
 
 %changelog
