@@ -1,4 +1,4 @@
-%define BUILD_GXX 0
+%define BUILD_GXX 1
 %undefine _with_test
 
 %define gcc_branch 5.1
@@ -138,28 +138,6 @@ Group: Development/Libraries
 %description -n libgomp%gcc_branch-devel
 This package contains GCC OpenMP headers and library.
 
-####################################################################
-# mudflap library
-
-#%package -n libmudflap%gcc_branch
-#Summary: GCC mudflap shared support libraries.
-#Group: System/Libraries
-
-#%description -n libmudflap%gcc_branch
-#This package contains GCC shared support libraries which are needed for
-#mudflap support.
-
-#%package -n libmudflap%gcc_branch-devel
-#Summary: GCC mudflap support files.
-#Group: Development/Libraries
-
-#%description -n libmudflap%gcc_branch-devel
-#This package contains headers and libraries for building mudflap-instrumented
-#programs.
-#To instrument a non-threaded program, add -fmudflap option to GCC and
-#when linking add -lmudflap, for threaded programs also add -fmudflapth
-#and -lmudflapth.
-
 %prep
 %setup -q
 %patch0 -p1
@@ -282,10 +260,12 @@ install -pm 644 -p COPYING* MAINTAINERS README* rpm-doc/gcc/
 
 %if %BUILD_GXX
 mkdir -p rpm-doc/g++
-install -pm 644 -p gcc/cp/{ChangeLog,NEWS} rpm-doc/g++/
+install -pm 644 -p gcc/cp/ChangeLog rpm-doc/g++/
+install -pm 644 -p gcc/cp/NEWS rpm-doc/g++/
 
 mkdir -p rpm-doc/libstdc++
-install -pm 644 -p libstdc++-v3/{ChangeLog,README} rpm-doc/libstdc++/
+install -pm 644 -p libstdc++-v3/ChangeLog rpm-doc/libstdc++/
+install -pm 644 -p libstdc++-v3/README rpm-doc/libstdc++/
 %endif
 
 find rpm-doc -type f \( -iname '*changelog*' -not -name '*.bz2' \) -print0 |
@@ -362,8 +342,8 @@ fi
 %dir %_libdir/gcc
 %dir %_libdir/gcc/%_target_platform
 %dir %_libdir/gcc/%_target_platform/%version
-#%_libdir/gcc/%_target_platform/%version/cc1
-#%_libdir/gcc/%_target_platform/%version/collect2
+/usr/libexec/gcc/%_target_platform/%version/cc1
+/usr/libexec/gcc/%_target_platform/%version/collect2
 %_libdir/gcc/%_target_platform/%version/crt*.o
 %_libdir/gcc/%_target_platform/%version/libgcc*.a
 %_libdir/gcc/%_target_platform/%version/libgcc*.so
@@ -382,10 +362,10 @@ fi
 %_mandir/man7/gpl.7*
 %doc rpm-doc/gcc/*
 
-#%_libdir/gcc/%_target_platform/%version/lto1
-#%_libdir/gcc/%_target_platform/%version/lto-wrapper
+/usr/libexec/gcc/%_target_platform/%version/lto1
+/usr/libexec/gcc/%_target_platform/%version/lto-wrapper
 #%exclude %_libdir/gcc/%_target_platform/%version/*.la
-#%_libdir/gcc/%_target_platform/%version/liblto_plugin.so.0.0.0
+/usr/libexec/gcc/%_target_platform/%version/liblto_plugin.so.0.0.0
 
 %files -n cpp
 %defattr(-,root,root)
@@ -400,23 +380,21 @@ fi
 %defattr(-,root,root)
 /%_libdir/libgcc*.so.*
 %_libdir/libquadmath.so.*
-#%_libdir/libssp.so.*
 
 %if %BUILD_GXX
-%files c++ -f cpplib.lang
+%files c++
 %defattr(-,root,root)
 %_bindir/?++
 %_bindir/%_target_platform-?++
 %dir %_libdir/gcc
 %dir %_libdir/gcc/%_target_platform
-%_libdir/gcc/%_target_platform/%version/cc1plus
+/usr/libexec/gcc/%_target_platform/%version/cc1plus
 %_mandir/man1/?++.1*
 %doc rpm-doc/g++/*
 
 %files -n libstdc++
 %defattr(-,root,root)
 %_libdir/libstdc++.so.6*
-%_datadir/locale/*/LC_MESSAGES/libstdc++.mo
 %doc rpm-doc/libstdc++/*
 %doc libstdc++-v3/doc/html
 %exclude %_datadir/gcc-%version/python
@@ -433,17 +411,10 @@ fi
 %_libdir/gcc/%_target_platform/%version/plugin
 %_infodir/libquadmath.info*
 %_libdir/libquadmath.a
-#%_libdir/libssp.a
-#%_libdir/libssp_nonshared.a
 
 %files -n libgomp%gcc_branch
 %defattr(-,root,root)
 %_libdir/libgomp.so.*
-
-#%files -n libmudflap%gcc_branch
-#%defattr(-,root,root)
-#%_libdir/libmudflap.so.*
-#%_libdir/libmudflapth.so.*
 
 %files -n libgomp%gcc_branch-devel
 %defattr(-,root,root)
@@ -456,14 +427,5 @@ fi
 %_libdir/libgomp.a
 %_libdir/libgomp.so
 %_libdir/libgomp.spec
-
-#%files -n libmudflap%gcc_branch-devel
-#%defattr(-,root,root)
-#%dir %_libdir/gcc/%_target_platform/%version
-#%dir %_libdir/gcc/%_target_platform/%version/include
-#%_libdir/gcc/%_target_platform/%version/include/mf-runtime.h
-#%dir %_libdir/gcc/%_target_platform/%version
-#%_libdir/libmudflap.a
-#%_libdir/libmudflapth.a
 
 %changelog

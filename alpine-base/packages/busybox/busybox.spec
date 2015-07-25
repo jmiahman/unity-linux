@@ -57,6 +57,7 @@ mkdir -p %{_dyndir}
 
 %build
 	%__cc %{SOURCE1} -o bbsuid
+	%__rm -f %{_dyndir}/.config
 	%__cp %{SOURCE3} .config
 	%__sed -i "s/CONFIG_EXTRA_COMPAT=y/CONFIG_EXTRA_COMPAT=n/" .config
 	%__cp .config %{_dyndir}
@@ -71,7 +72,7 @@ chmod 1777 %{buildroot}/tmp
 install -m755 busybox %{buildroot}/bin/busybox
 install -m4111 bbsuid %{buildroot}/bin/bbsuid
 # we need /bin/sh to be able to execute post-install
-ln -s /bin/busybox %{buildroot}/bin/sh
+ln -sf /bin/busybox %{buildroot}/bin/sh
 
 #ifupdown needs those dirs to be present
 mkdir -p \
@@ -84,6 +85,9 @@ mkdir -p \
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%post
+/bin/busybox --install -s
 
 
 %files
