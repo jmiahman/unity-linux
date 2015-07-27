@@ -6,8 +6,8 @@ Summary:        The RPM package management system.
 Group:          System Environment/Base
 License:        LGPL
 URL:            rpm5.org
-Source0:        rpm-5.4.15.tar.gz 
-Source1:	db-5.2.42.tar.gz
+Source0:        http://translationproject.org/extra/rpm-5.4.15.tar.gz
+Source1:	http://optware.kupper.org/sources/db-5.2.42.tar.gz
 Source2:	configure-db3
 Source3:        configure.ac
 
@@ -106,6 +106,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc
+%{_bindir}/rpm
 %{_bindir}/rpm2cpio
 %{_bindir}/gendiff
 %{_usrlibrpm}/macros

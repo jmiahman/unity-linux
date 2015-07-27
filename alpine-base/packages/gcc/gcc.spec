@@ -287,6 +287,12 @@ ln -s ../../../../../%_libdir/libgcc_s.so.1 \
 ln -s gcc %buildroot%_bindir/cc
 echo ".so gcc.1" > %buildroot%_mandir/man1/cc.1
 
+ln -s /gcc/liblto_plugin.so.0.0.0 \
+	%buildroot/usr/libexec/gcc/%_target_platform/%version/liblto_plugin.so.0
+
+ln -s /gcc/liblto_plugin.so.0.0.0 \
+        %buildroot/usr/libexec/gcc/%_target_platform/%version/liblto_plugin.so
+
 %if %BUILD_GXX
 echo ".so g++.1" > %buildroot%_mandir/man1/c++.1
 %endif
@@ -366,6 +372,8 @@ fi
 /usr/libexec/gcc/%_target_platform/%version/lto-wrapper
 #%exclude %_libdir/gcc/%_target_platform/%version/*.la
 /usr/libexec/gcc/%_target_platform/%version/liblto_plugin.so.0.0.0
+/usr/libexec/gcc/%_target_platform/%version/liblto_plugin.so.0
+/usr/libexec/gcc/%_target_platform/%version/liblto_plugin.so
 
 %files -n cpp
 %defattr(-,root,root)
