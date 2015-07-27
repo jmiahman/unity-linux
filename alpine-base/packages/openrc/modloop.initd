@@ -15,7 +15,7 @@ init_KOPT() {
 	KOPT_BOOT_IMAGE="${1}"
 	for opt; do
 	        case "$opt" in
-			alpine_dev=*|modloop=*|BOOT_IMAGE=*)
+			distro_dev=*|modloop=*|BOOT_IMAGE=*)
 				eval "KOPT_${opt%%=*}='${opt#*=}'" ;;
         	esac
 	done
@@ -33,7 +33,7 @@ find_mnt() {
 	local dev mnt fs mntopts chk
 	case "$search_dev" in
 		UUID=*|LABEL=*|/dev/*);;
-		nfs) search_dev="${KOPT_alpine_dev#nfs:}";;
+		nfs) search_dev="${KOPT_distro_dev#nfs:}";;
 		*) search_dev=/dev/$search_dev;;
 	esac
 	local search_real_dev=$(resolve_dev $search_dev)
@@ -53,24 +53,24 @@ find_mnt() {
 	done < $fstab 2>/dev/null
 }
 
-# initialies: alpine_dev, alpine_mnt, alpine_fs, alpine_mounted
+# initialies: distro_dev, distro_mnt, distro_fs, distro_mounted
 find_media() {
 	init_KOPT
-	[ -z "$KOPT_alpine_dev" ] && return 0
-	alpine_mounted=
-	alpine_dev=${KOPT_alpine_dev%%:*}
-	alpine_fs=${KOPT_alpine_dev#*:}
-	[ "$alpine_fs" = "$KOPT_alpine_dev" ] && unset alpine_fs
-	# first we check if alpine_dev is mounted and use this
-	alpine_mnt=$(find_mnt $alpine_dev /proc/mounts)
-	if [ -z "$alpine_mnt" ]; then
+	[ -z "$KOPT_distro_dev" ] && return 0
+	distro_mounted=
+	distro_dev=${KOPT_distro_dev%%:*}
+	distro_fs=${KOPT_distro_dev#*:}
+	[ "$distro_fs" = "$KOPT_distro_dev" ] && unset distro_fs
+	# first we check if distro_dev is mounted and use this
+	distro_mnt=$(find_mnt $distro_dev /proc/mounts)
+	if [ -z "$distro_mnt" ]; then
 		# then we check fstab
-		alpine_mnt=$(find_mnt $alpine_dev /etc/fstab)
+		distro_mnt=$(find_mnt $distro_dev /etc/fstab)
 	else
-		alpine_mounted=yes
+		distro_mounted=yes
 	fi
 	# finally we fallback to /media/<devicename>
-	[ -z "$alpine_mnt" ] && alpine_mnt=/media/$alpine_dev
+	[ -z "$distro_mnt" ] && distro_mnt=/media/$distro_dev
 }
 
 start() {
@@ -84,32 +84,32 @@ start() {
 				&& modloop=$modloop_dldir/$(basename $KOPT_modloop)
 			;;
 		*)
-			if [ -z "$alpine_dev" ]; then
+			if [ -z "$distro_dev" ]; then
 				return 0
 			fi
-			if [ -z "$alpine_mounted" ]; then
-				ebegin "Mounting $alpine_mnt"
-				[ -n "$alpine_fs" ] && mount_opts="-t $alpine_fs"
-				mount $mount_opts /dev/$alpine_dev $alpine_mnt 2>/dev/null
+			if [ -z "$distro_mounted" ]; then
+				ebegin "Mounting $distro_mnt"
+				[ -n "$distro_fs" ] && mount_opts="-t $distro_fs"
+				mount $mount_opts /dev/$distro_dev $distro_mnt 2>/dev/null
 				eend $? || return 1
 			fi
 
 			bootimagedir=${KOPT_BOOT_IMAGE%/*}
-			bootdir=${alpine_mnt}${bootimagedir}
+			bootdir=${distro_mnt}${bootimagedir}
 			kver=$(uname -r)
 			case $kver in
 			*-rc[0-9]) kflavor=vanilla;;
 			*-[a-z]*)  kflavor=${kver##*-};;
 			*)         kflavor=vanilla;;
 			esac
-			for modloop in ${alpine_mnt}$KOPT_modloop \
+			for modloop in ${distro_mnt}$KOPT_modloop \
 				${bootdir}/modloop-$kver \
 				${bootdir}/modloop-$kflavor \
 				${bootdir}/modloop \
-				${alpine_mnt}/boot/modloop-$kver \
-				${alpine_mnt}/boot/modloop-$kflavor \
-				${alpine_mnt}/boot/modloop \
-				${alpine_mnt}$KOPT_BOOT_IMAGE.modloop.*; do
+				${distro_mnt}/boot/modloop-$kver \
+				${distro_mnt}/boot/modloop-$kflavor \
+				${distro_mnt}/boot/modloop \
+				${distro_mnt}$KOPT_BOOT_IMAGE.modloop.*; do
 
 				[ -f "$modloop" -o -n "$KOPT_modloop" ] && break
 			done
@@ -133,9 +133,9 @@ start() {
 	fi
 
 	# copy firmware if there are any
-	if [ -d $alpine_mnt/firmware ]; then
-	        ebegin "Copying firmware from $alpine_mnt/firmware"
-	        cp -R -a $alpine_mnt/firmware /lib/
+	if [ -d $distro_mnt/firmware ]; then
+	        ebegin "Copying firmware from $distro_mnt/firmware"
+	        cp -R -a $distro_mnt/firmware /lib/
 	        eend $?
 	elif  [ -d /lib/modules/firmware ]; then
 		rmdir /lib/firmware 2>/dev/null \
@@ -147,15 +147,15 @@ start() {
 stop() {
 	local rc=0
 	find_media
-	[ -z "$alpine_dev" ] && return 0
+	[ -z "$distro_dev" ] && return 0
 	if mountinfo --quiet /.modloop; then
 		ebegin "Unmounting /.modloop"
 		umount -d /.modloop
 		eend $? || return 1
 	fi
-	if mountinfo --quiet $alpine_mnt; then
-		ebegin "Unmounting $alpine_mnt"
-		umount $alpine_mnt
+	if mountinfo --quiet $distro_mnt; then
+		ebegin "Unmounting $distro_mnt"
+		umount $distro_mnt
 		eend $?
 	fi
 }
