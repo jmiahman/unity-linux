@@ -1,0 +1,29 @@
+#!/bin/sh
+
+prog_name='bash'
+prog_ver='4.3'
+prog_ver_tr=`echo "$prog_ver" | tr -d .`
+
+rm -f patchlist.txt
+rm -f patchlist2.txt
+
+wget -r -nH --no-parent --cut-dirs=4 --reject="index.html*" http://ftp.gnu.org/gnu/bash/bash-$prog_ver-patches/ 
+
+rm *.sig
+
+num=0
+for patch in $(ls -1 $prog_name$prog_ver_tr*)
+do
+  num=$((num+1))
+  echo "Patch$num:   $patch" >> patchlist.txt
+  echo "%patch$num -p0 -b .$patch" >> patchlist2.txt
+done
+
+sed -i '/Source0:/ a\ ' $prog_name.spec
+sed -i '/Source0:/r patchlist.txt' $prog_name.spec
+
+sed -i '/%setup -q/ a\ ' $prog_name.spec
+sed -i '/%setup -q/r patchlist2.txt' $prog_name.spec
+
+rm -f patchlist.txt
+rm -f patchlist2.txt

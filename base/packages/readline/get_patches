@@ -1,0 +1,5 @@
+#!/bin/sh
+
+wget -r -nH --no-parent --cut-dirs=4 --reject="index.html*" http://ftp.gnu.org/gnu/readline/readline-6.3-patches/
+
+rm *.sig
