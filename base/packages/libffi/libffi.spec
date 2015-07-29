@@ -1,3 +1,5 @@
+%global multilib_arches %{ix86} ppc ppc64 ppc64p7 s390 s390x x86_64
+
 Name:		libffi	
 Version:	3.2.1
 Release:	1%{?dist}
@@ -7,8 +9,11 @@ Group:		System Environment/Libraries
 License:	BSD
 URL:		http://sourceware.org/libffi
 Source0:	ftp://sourceware.org/pub/libffi/libffi-%{version}.tar.gz
+Source1:	ffi-multilib.h
+Source2:	ffitarget-multilib.h
 
 Patch0:		gnu-linux-define.patch
+Patch1:         libffi-3.1-fix-include-path.patch
 
 BuildRequires: texinfo
 
@@ -51,7 +56,8 @@ developing applications that use %{name}.
 
 %prep
 %setup -q
-%patch -p1 -b .gnu-linux-define
+%patch0 -p1 -b .gnu-linux-define
+%patch1 -p1 -b .fix-include-path
 
 %build
 ./configure \
@@ -68,8 +74,21 @@ rm %{buildroot}/usr/lib/*.la
 install -m755 -d "%{buildroot}/usr/share/licenses/%{name}"
 install -m644 LICENSE "%{buildroot}/usr/share/licenses/%{name}/"
 
-mkdir %{buildroot}/usr/include/
-mv %{buildroot}/usr/lib/libffi-3.2.1/include/*.h %{buildroot}/usr/include/ 
+mkdir -p $RPM_BUILD_ROOT%{_includedir}
+%ifarch %{multilib_arches}
+# Do header file switcheroo to avoid file conflicts on systems where you
+# can have both a 32- and 64-bit version of the library, and they each need
+# their own correct-but-different versions of the headers to be usable.
+for i in ffi ffitarget; do
+  mv $RPM_BUILD_ROOT%{_libdir}/libffi-%{version}/include/$i.h $RPM_BUILD_ROOT%{_includedir}/$i-${basearch}.h
+done
+
+install -m644 %{SOURCE1} $RPM_BUILD_ROOT%{_includedir}/ffi.h
+install -m644 %{SOURCE2} $RPM_BUILD_ROOT%{_includedir}/ffitarget.h
+%else
+mv $RPM_BUILD_ROOT%{_libdir}/libffi-%{version}/include/{ffi,ffitarget}.h $RPM_BUILD_ROOT%{_includedir}
+%endif
+rm -rf $RPM_BUILD_ROOT%{_libdir}/libffi-%{version}
 
 %files
 %{_libdir}/libffi.so.6.0.4

@@ -34,7 +34,6 @@ Summary: Libraries and header files for apps which will use bzip2
 Group: Development/Libraries
 
 %description devel
-
 Header files and a library of bzip2 functions, for developing apps
 which will use the library.
 
@@ -63,6 +62,7 @@ make -f Makefile-libbz2_so all
 make all
 
 %install
+%__rm -rf %{buildroot}
 make PREFIX=%{buildroot}/usr install
 install -D libbz2.so.%{version} %{buildroot}/usr/lib/libbz2.so.%{version}
 ln -s libbz2.so.%{version} %{buildroot}/usr/lib/libbz2.so
@@ -80,10 +80,11 @@ ln -s libbz2.so.%{version} %{buildroot}/usr/lib/libbz2.so.1
 /usr/bin/bzfgrep
 /usr/bin/bzip2recover
 /usr/bin/bzcat
+%{_libdir}/libbz2.so.*
 
 %files devel
-/usr/lib/libbz2.so
-/usr/lib/libbz2.a
-/usr/include/bzlib.h
+/usr/lib/*.so
+/usr/lib/*.a
+/usr/include/*
 
 %changelog

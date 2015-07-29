@@ -47,6 +47,16 @@ Group: System Environment/Libraries
 %description -n libssl
 SSL Shared Libraries
 
+%package devel
+Summary: Files for development of applications which will use OpenSSL
+Group: Development/Libraries
+Requires: libssl = %{version}
+
+%description devel
+OpenSSL is a toolkit for supporting cryptography. The openssl-devel
+package contains include files needed to develop applications which
+support various cryptographic algorithms and protocols.
+
 %prep
 %setup -q
 
@@ -93,7 +103,8 @@ cd ..
 ln -sf openssl %{buildroot}/usr/bin/c_rehash
 
 %files
-%doc
+%dir /etc/ssl
+%dir /etc/ssl/misc
 /etc/ssl/openssl.cnf
 /etc/ssl/misc/CA.sh
 /etc/ssl/misc/CA.pl
@@ -124,5 +135,9 @@ ln -sf openssl %{buildroot}/usr/bin/c_rehash
 %files -n libssl
 /lib/libssl.so.1.0.0
 /usr/lib/libssl.so.1.0.0
+
+%files devel
+%dir /usr/include/openssl/
+/usr/include/openssl/*
 
 %changelog
