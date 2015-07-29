@@ -29,7 +29,7 @@ Source12:	services
 Unitys base file system structure and core files
 
 %prep
-#%setup -q
+%__rm -rf %{buildroot}
 mkdir -p %{buildroot}
 
 %build
@@ -46,7 +46,6 @@ awk -F: '{
 #' fix syntax higlighting
 
 %install
-#%make_install
 cd %{buildroot}
 install -m 0755 -d \
 	dev \
@@ -81,11 +80,14 @@ install -m 0755 -d \
 	sbin \
 	sys \
 	usr/bin \
+	usr/include \
 	usr/sbin \
+	usr/lib \
 	usr/local/bin \
 	usr/local/lib \
 	usr/local/share \
 	usr/share \
+	usr/share/aclocal \
 	var/cache/misc \
 	var/lib/misc \
 	var/lock/subsys \
@@ -161,12 +163,11 @@ install -m644 \
 
 install -m640 -g shadow %{buildroot}/shadow %{buildroot}/etc/
 
-# symlinks
+%post
 ln -s /etc/crontabs %{buildroot}/var/spool/cron/crontabs
 ln -s /proc/mounts %{buildroot}/etc/mtab
 
 %files
-#%doc
 /dev
 /etc
 /home

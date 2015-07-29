@@ -10,6 +10,7 @@ Source0:	http://rabbit.dereferenced.org/~nenolod/distfiles/pkgconf-%{version}.ta
 
 #BuildRequires:	
 #Requires:	
+Provides: pkgconfig
 
 %description
 
@@ -32,10 +33,13 @@ Source0:	http://rabbit.dereferenced.org/~nenolod/distfiles/pkgconf-%{version}.ta
 %make check
 
 %install
+%__rm -rf %{buildroot}
 %make_install
 %__ln -s pkgconf $RPM_BUILD_ROOT/usr/bin/pkg-config
+mkdir -p %{buildroot}/usr/lib/pkgconfig
 
 %files
+%dir /usr/lib/pkgconfig
 %{_bindir}/pkgconf
 %{_bindir}/pkg-config
 /usr/share/aclocal/pkg.m4

@@ -51,5 +51,6 @@ rm -rf ${RPM_BUILD_ROOT}/usr/lib/charset.alias
 /usr/share/texinfo/init/*.pm
 /usr/share/texinfo/DebugTexinfo/*.pm
 /usr/share/texinfo/Pod-Simple-Texinfo/Pod/Simple/*.pm
+%dir /usr/share/texinfo
 
 %changelog
