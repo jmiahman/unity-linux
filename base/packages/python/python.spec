@@ -128,7 +128,14 @@ rm %{buildroot}/usr/bin/2to3
 /usr/lib/python%{baseversion}/lib-tk/test/
 
 %files devel
+/usr/bin/%{name}*-config
 %dir /usr/include/python%{baseversion}
-/usr/include/python%{baseversion}/pyconfig.h
+%dir /usr/lib/python%{baseversion}/config
+%dir /usr/lib/python%{baseversion}/distutils
+/usr/lib/python2.7/config/*
+/usr/lib/python2.7/distutils/*
+/usr/include/python%{baseversion}/*.h
+/usr/lib/pkgconfig/*.pc
+/usr/lib/libpython%{baseversion}.so
 
 %changelog

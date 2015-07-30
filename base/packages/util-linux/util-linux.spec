@@ -7,6 +7,7 @@ Group:		System Environment/Base
 License:	GPLv2 and GPLv2+ and LGPLv2+ and BSD with advertising and Public Domain	
 URL:		http://en.wikipedia.org/wiki/Util-linux
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.26/util-linux-%{version}.tar.xz
+Source1: 	ttydefaults.h
 
 BuildRequires: zlib-devel, sed, ncurses-devel, tar 
 BuildRequires: autoconf, automake, libtool 
@@ -18,26 +19,34 @@ utilities that are necessary for a Linux system to function. Among
 others, Util-linux contains the fdisk configuration tool and the login
 program.
 
-
 %package -n blkid
+Summary: Block device identification tool.
+Group: System Environment/Base
+License: LGPLv2+
+Requires: libblkid = %{version}-%{release}
+
+%description -n blkid
+This is block device identification library, part of util-linux.
+
+%package -n libblkid
 Summary: Block device identification tool.
 Group: Development/Libraries
 License: LGPLv2+
+Requires: libuuid = %{version}-%{release}
 
-%description -n blkid
-Block device identification tool.
+%description -n libblkid
+This is block device identification library, part of util-linux.
 
-
-%package -n libblkid
+%package -n libblkid-devel
 Summary:  Block device identification library from util-linux.
 Group: Development/Libraries
 License: LGPLv2+
-Requires: libfdisk = %{version}-%{release}
+Requires: libblkid = %{version}-%{release}
 Requires: pkgconfig
 
-%description -n libblkid
-Block device identification library from util-linux.
-
+%description -n libblkid-devel
+This is the block device identification development library and headers,
+part of util-linux.
 
 %package -n libuuid
 Summary: DCE compatible Universally Unique Identifier library.
@@ -47,25 +56,16 @@ License: LGPLv2+
 %description -n libuuid
 DCE compatible Universally Unique Identifier library.
 
-
-%package -n sfdisk
-Summary: Partition table manipulator from util-linux.
+%package -n libuuid-devel
+Summary: Universally unique ID library
 Group: Development/Libraries
 License: LGPLv2+
+Requires: libuuid = %{version}-%{release}
 Requires: pkgconfig
 
-%description -n sfdisk
-Partition table manipulator from util-linux.
-
-%package -n cfdisk
-Summary: Curses based partition table manipulator from util-linux.
-Group: Development/Libraries
-License: LGPLv2+
-Requires: pkgconfig
-
-%description -n cfdisk
-Curses based partition table manipulator from util-linux.
-
+%description -n libuuid-devel
+This is the universally unique ID development library and headers,
+part of util-linux.
 
 %package -n libmount
 Summary: Device mounting library
@@ -112,9 +112,28 @@ This is the block device identification development library and headers,
 part of util-linux.
 
 
+%package -n cfdisk
+Summary: Curses based partition table manipulator from util-linux.
+Group: System Environment/Base
+License: LGPLv2+
+Requires: pkgconfig
+
+%description -n cfdisk
+cfdisk is a curses based program for partitioning any hard disk drive.
+
+
+%package -n sfdisk
+Summary: Partition table manipulator from util-linux
+Group: System Environment/Base
+License: LGPLv2+
+Requires: pkgconfig
+
+%description -n sfdisk
+sfdisk has four (main) uses: list the size of a partition, list the partitions on a device, check the partitions on a device, and - very dangerous - repartition a device.
+
 %package -n mcookie
 Summary: Generate magic cookies for xauth
-Group: Development/Libraries
+Group: System Environment/Base
 License: LGPLv2+
 
 %description -n mcookie
@@ -135,6 +154,12 @@ A wrapper around libmount, for reading and manipulating filesystem tables
 
 
 %build
+cp -rf %{SOURCE1} include/
+libtoolize --force
+aclocal -I m4
+autoconf
+automake --add-missing
+
 ./configure \
 	--prefix=/usr \
 	--enable-raw \
@@ -148,6 +173,7 @@ A wrapper around libmount, for reading and manipulating filesystem tables
 	--disable-sulogin \
 	--disable-su \
 	--enable-chsh \
+	--with-python=2
 
 make %{?_smp_mflags}
 
@@ -158,28 +184,81 @@ make -j1 install DESTDIR=%{buildroot}
 rm -f %{buildroot}/usr/lib/*.la \
 	%{buildroot}/usr/lib/python*/site-packages/libmount/*.la
 
+mv %{buildroot}/lib/* %{buildroot}/usr/lib/
+mv %{buildroot}/bin/* %{buildroot}/usr/bin/
+mv %{buildroot}/sbin/* %{buildroot}/usr/sbin/
+rmdir %{buildroot}/lib
+rmdir %{buildroot}/bin
+rmdir %{buildroot}/sbin
+
 %files
+/usr/lib/*
+/usr/bin/*
+/usr/sbin/*
+
+%exclude %{_sbindir}/blkid
+%exclude %{_libdir}/libblkid.so.*
+%exclude %{_libdir}/libblkid.so
+%exclude %{_includedir}/blkid
+%exclude %{_libdir}/pkgconfig/blkid.pc
+%exclude %{_libdir}/libuuid.so.*
+%exclude %{_libdir}/libuuid.so
+%exclude %{_includedir}/uuid
+%exclude %{_libdir}/pkgconfig/uuid.pc
+%exclude %{_libdir}/libmount.so.*
+%exclude %{_libdir}/libmount.so 
+%exclude %{_includedir}/libmount
+%exclude %{_libdir}/pkgconfig/mount.pc
+%exclude %{_sbindir}/cfdisk
+%exclude %{_sbindir}/sfdisk
+%exclude %{_bindir}/mcookie
+%exclude %{_libdir}/python*/site-packages/libmount/*
 
 %files -n blkid
+%{_sbindir}/blkid
 
 %files -n libblkid
-
-%files -n libuuid
-
-%files -n sfdisk
-
-%files -n cfdisk
-
-%files -n libmount
- 
-%files -n libmount-devel
-
-%files -n libblkid
+%{_libdir}/libblkid.so.*
 
 %files -n libblkid-devel
+%{_libdir}/libblkid.so
+%{_includedir}/blkid
+%{_libdir}/pkgconfig/blkid.pc
+
+%files -n libuuid
+%{_libdir}/libuuid.so.*
+
+%files -n libuuid-devel
+%{_libdir}/libuuid.so
+%{_includedir}/uuid
+%{_libdir}/pkgconfig/uuid.pc
+
+#%files -n libfdisk
+#%{_libdir}/libfdisk.so.*
+
+#%files -n libfdisk-devel
+#%{_libdir}/libfdisk.so
+#%{_includedir}/libfdisk
+#%{_libdir}/pkgconfig/fdisk.pc
+
+%files -n libmount
+%{_libdir}/libmount.so.*
+
+%files -n libmount-devel
+%{_libdir}/libmount.so
+%{_includedir}/libmount
+%{_libdir}/pkgconfig/mount.pc
+
+%files -n cfdisk
+%{_sbindir}/cfdisk
+
+%files -n sfdisk
+%{_sbindir}/sfdisk
 
 %files -n mcookie
+%{_bindir}/mcookie
 
 %files -n python-libmount
+%{_libdir}/python*/site-packages/libmount/*
 
 %changelog

@@ -70,20 +70,18 @@ install -m 0755 -d \
 	etc/periodic/weekly \
 	etc/sysctl.d \
 	home \
-	lib/firmware \
-	lib/mdev \
 	media/cdrom \
 	media/floppy \
 	media/usb \
 	mnt \
 	proc \
-	sbin \
 	sys \
-	bin \
 	usr/bin \
 	usr/include \
 	usr/sbin \
 	usr/lib \
+        usr/lib/firmware \
+        usr/lib/mdev \
 	usr/libexec \
 	usr/local/bin \
 	usr/local/lib \
@@ -98,6 +96,11 @@ install -m 0755 -d \
 	var/spool/cron \
 	run \
 
+
+ln -s usr/bin bin
+ln -s usr/sbin sbin
+ln -s usr/lib lib
+ln -s usr/include include
 
 install -d -m 0700 %{buildroot}/root 
 install -d -m 1777 %{buildroot}/tmp %{buildroot}/var/tmp
@@ -188,14 +191,18 @@ ln -s /etc/crontabs %{buildroot}/var/spool/cron/crontabs
 ln -s /proc/mounts %{buildroot}/etc/mtab
 
 %files
+/bin
+/usr/bin
 /dev
 /etc
 /home
 /lib
+/usr/lib
 /media
 /mnt
 /proc
 /sbin
+/usr/sbin
 /sys
 /usr
 /var
