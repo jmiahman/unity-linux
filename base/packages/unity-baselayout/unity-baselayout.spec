@@ -79,10 +79,12 @@ install -m 0755 -d \
 	proc \
 	sbin \
 	sys \
+	bin \
 	usr/bin \
 	usr/include \
 	usr/sbin \
 	usr/lib \
+	usr/libexec \
 	usr/local/bin \
 	usr/local/lib \
 	usr/local/share \
@@ -163,6 +165,24 @@ install -m644 \
 
 install -m640 -g shadow %{buildroot}/shadow %{buildroot}/etc/
 
+echo %{version} > %{buildroot}/etc/unity-release
+
+# create /etc/issue
+cat > %{buildroot}/etc/issue <<EOF
+Welcome to Unity Linux %{version}
+Kernel \\r on an \\m (\\l)
+EOF
+
+
+cat > %{buildroot}/etc/os-release <<EOF
+NAME="Unity Linux"
+ID=unity
+VERSION_ID=%{version}
+PRETTY_NAME="Unity Linux v%{version}"
+HOME_URL="http://unity-linux.org"
+BUG_REPORT_URL="http://bugs.unity-linux.org"
+EOF
+
 %post
 ln -s /etc/crontabs %{buildroot}/var/spool/cron/crontabs
 ln -s /proc/mounts %{buildroot}/etc/mtab
@@ -180,5 +200,8 @@ ln -s /proc/mounts %{buildroot}/etc/mtab
 /usr
 /var
 /run
+/etc/os-release
+/etc/issue
+/etc/unity-release
 
 %changelog
