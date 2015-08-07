@@ -8,8 +8,8 @@ License:	GPLv2+
 URL:		http://acl.bestbits.at/
 Source0:	http://download-mirror.savannah.gnu.org/releases/acl/acl-2.2.52.src.tar.gz	
 
-#BuildRequires: gawk, getext, libattr-devel, libtool
-#Requires: libacl
+BuildRequires: gawk, gettext, libattr-devel, libtool
+Requires: libacl
 
 %description
 This package contains the getfacl and setfacl utilities needed for
