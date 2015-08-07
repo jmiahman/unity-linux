@@ -61,7 +61,7 @@ Development files and headers for %{name}.
 %setup -q
 %patch0 -p1
 %patch1 -p0
-%patch2 -p0
+%patch2 -p1
 
 %build
 
@@ -128,6 +128,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files build
 %{_bindir}/rpmbuild
+%{_usrlibrpmbin}/
 %{_usrlibrpm}/brp-*
 %{_usrlibrpm}/check-files
 %{_usrlibrpm}/cross-build

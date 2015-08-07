@@ -1,5 +1,6 @@
---- macros/macros.in
-+++ macros/macros.in_new
+diff -Naur rpm-5.4.15/macros/macros.in rpm-5.4.15_mv/macros/macros.in
+--- rpm-5.4.15/macros/macros.in	2014-08-08 15:40:40.000000000 +0700
++++ rpm-5.4.15_mv/macros/macros.in	2015-08-06 12:40:09.221917218 +0700
 @@ -127,6 +127,30 @@
  %__xz			@__XZ@
  
@@ -31,7 +32,7 @@
  # ---- Required macros.
  #	Macros that used to be initialized as a side effect of parsing.
  #	These are the default values that can be overridden by other
-@@ -199,19 +223,82 @@
+@@ -199,17 +223,80 @@
  %_srcrpmdir		%{_topdir}/SRPMS
  
  #	The directory where buildroots will be created.
@@ -50,8 +51,8 @@
 -%_topdir		@PKGSRCDIR_MACRO@
 +#       Path to top of build area.
 +%_topdir        %{getenv:HOME}/rpmbuild
- 
- #==============================================================================
++
++#==============================================================================
 +# ---- specfile macros.
 +#       Macro(s) here can be used reliably for reproducible builds.
 +#       (Note: Above is the goal, below are the macros under development)
@@ -113,16 +114,13 @@
 +        infodir=%{?buildroot:%{buildroot}}%{_infodir} \\\
 +  install
 +
-+
-+#==============================================================================
+ 
+ #==============================================================================
  # ---- Optional macros.
- #	Macros that are initialized as a side effect of spec
- #	file parsing.
-@@ -978,6 +1065,190 @@
- %_target_cpu		%{_host_cpu}
+@@ -979,6 +1066,190 @@
  %_target_vendor		%{_host_vendor}
  %_target_os		%{_host_os}
-+
+ 
 +%_build_name_fmt        %%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm
 +
 +# Define per-arch and per-os defaults. Normally overridden by per-target macros.
@@ -306,6 +304,7 @@
 +#%__spec_triggerin_pre          %{nil}
 +#%__spec_triggerin_post         %{nil}
 +
- 
++
  #------------------------------------------------------------------------
  # lua macros
+ #
