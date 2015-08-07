@@ -18,6 +18,16 @@ toolkit. Includes entropy sources, random generators, block ciphers, hash
 functions, message authentication codes, multiprecision integer routines
 and public key primitives.
 
+%package devel
+Summary:	Development files for the beecrypt toolkit and library
+Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description devel
+The beecrypt-devel package includes header files and libraries necessary
+for developing programs which use the beecrypt C toolkit and library. And
+beecrypt is a general-purpose cryptography library.
+
 %prep
 %setup -q
 
@@ -33,15 +43,19 @@ LIBS=-lgomp \
 	--with-cplusplus=no
 
 
-make libaltdir=/usr/lib
+make libaltdir=%{_libdir}
 
 
 %install
-make libaltdir=/usr/lib DESTDIR=%{buildroot} install
-rm %{buildroot}/usr/lib/*.la
+make libaltdir=%{_libdir} DESTDIR=%{buildroot} install
+rm %{buildroot}%{_libdir}/*.la
 
 %files
-/usr/lib/libbeecrypt.so.7.0.0
-/usr/lib/libbeecrypt.so.7
+%{_libdir}/libbeecrypt.so.7.0.0
+%{_libdir}/libbeecrypt.so.7
+
+%files devel
+%{_includedir}/%{name}
+%{_libdir}/libbeecrypt.so
 
 %changelog
