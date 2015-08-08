@@ -9,7 +9,7 @@ URL:		http://tukaani.org/%{name}/
 Source0:	http://tukaani.org/%{name}/%{name}-%{version}.tar.xz
 
 #BuildRequires:	
-#Requires:	
+Requires:	%{name}-libs = %{version}-%{release}
 
 %description
 XZ Utils are an attempt to make LZMA compression easy to use on free (as in
@@ -29,6 +29,16 @@ License:	Public Domain
 %description 	libs
 Libraries for decoding files compressed with LZMA or XZ utils.
 
+
+%package        devel
+Summary:        Development libraries for decoding LZMA compression
+Group:          Development/Libraries
+License:        Public Domain
+Requires:	%{name}-libs = %{version}-%{release}
+Requires:	pkgconfig
+
+%description    devel
+Development libraries for decoding files compressed with LZMA or XZ utils.
 
 %prep
 %setup -q
@@ -51,32 +61,38 @@ make DESTDIR=%{buildroot} install
 
 
 %files
-/usr/bin/lzdiff
-/usr/bin/xzegrep
-/usr/bin/lzless
-/usr/bin/xzdiff
-/usr/bin/lzgrep
-/usr/bin/xzless
-/usr/bin/xzmore
-/usr/bin/lzcat
-/usr/bin/xz
-/usr/bin/xzfgrep
-/usr/bin/lzcmp
-/usr/bin/unlzma
-/usr/bin/lzfgrep
-/usr/bin/lzmainfo
-/usr/bin/lzegrep
-/usr/bin/unxz
-/usr/bin/xzgrep
-/usr/bin/xzcmp
-/usr/bin/lzmadec
-/usr/bin/xzcat
-/usr/bin/xzdec
-/usr/bin/lzma
-/usr/bin/lzmore
+%{_bindir}/lzdiff
+%{_bindir}/xzegrep
+%{_bindir}/lzless
+%{_bindir}/xzdiff
+%{_bindir}/lzgrep
+%{_bindir}/xzless
+%{_bindir}/xzmore
+%{_bindir}/lzcat
+%{_bindir}/xz
+%{_bindir}/xzfgrep
+%{_bindir}/lzcmp
+%{_bindir}/unlzma
+%{_bindir}/lzfgrep
+%{_bindir}/lzmainfo
+%{_bindir}/lzegrep
+%{_bindir}/unxz
+%{_bindir}/xzgrep
+%{_bindir}/xzcmp
+%{_bindir}/lzmadec
+%{_bindir}/xzcat
+%{_bindir}/xzdec
+%{_bindir}/lzma
+%{_bindir}/lzmore
 
 %files libs
-/usr/lib/liblzma.so.5
-/usr/lib/liblzma.so.5.2.1
+%{_libdir}/liblzma.so.5
+%{_libdir}/liblzma.so.5.2.1
+
+%files devel
+%{_includedir}/lzma/*.h
+%{_includedir}/lzma.h
+%{_libdir}/*.so
+%{_libdir}/pkgconfig/liblzma.pc
 
 %changelog
