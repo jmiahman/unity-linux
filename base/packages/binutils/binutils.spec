@@ -1,3 +1,5 @@
+%define _libiberty 1
+
 Name:           binutils
 Version:        2.25 
 Release:        1%{?dist}
@@ -10,7 +12,7 @@ Source0:        http://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
 Patch0:		binutils-ld-fix-static-linking.patch
 Patch1: 	hash-style-gnu.patch
 
-#BuildRequires:  
+BuildRequires: gettext, flex, bison, zlib-devel
 #Requires:       
 
 %description
@@ -55,17 +57,21 @@ This package contains BFD and opcodes static and dynamic libraries.
 	--enable-gold=yes \
 	--enable-64-bit-bfd \
 	--enable-plugins \
+	%if %{_libiberty} == 1
 	--enable-install-libiberty \
+	%endif
+        %if %{_libiberty} == 0
+        --disable-install-libiberty \
+        %endif
 	--disable-werror \
-	--disable-nls
+	--disable-nls \
 
-%make
+make
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -73,8 +79,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc README
 %{_bindir}/*
+%dir /usr/x86_64-alpine-linux-musl
+%dir /usr/x86_64-alpine-linux-musl/bin/
+%dir /usr/x86_64-alpine-linux-musl/lib/
+%dir /usr/x86_64-alpine-linux-musl/lib/ldscripts/
 /usr/x86_64-alpine-linux-musl/bin/*
 /usr/x86_64-alpine-linux-musl/lib/ldscripts/*
 %{_libdir}/*%{version}.so
@@ -82,7 +91,7 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(-,root,root,-)
 %{exclude} %{_libdir}/*%{version}.so
-/usr/include/*.h
-/usr/include/libiberty/*.h
+%{_includedir}/*.h
+%{_includedir}/libiberty/*.h
 
 %changelog
