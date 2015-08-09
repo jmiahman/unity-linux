@@ -35,8 +35,8 @@ The make-devel package contains gnumake.h.
 
 %build
 ./configure \
-	--build=$CBUILD \
-	--host=$CHOST \
+	--build=x86_64-alpine-linux-musl \
+	--host=x86_64-alpine-linux-musl \
 	--prefix=/usr \
 	--mandir=/usr/share/man \
 	--infodir=/usr/share/info \
@@ -46,7 +46,7 @@ make check
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+make install DESTDIR=%{buildroot}
 
 
 %clean
@@ -54,10 +54,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc NEWS README COPYING AUTHORS
+#%doc NEWS README COPYING AUTHORS
 %{_bindir}/*
-%{_mandir}/man*/*
-%{_infodir}/*.info*
+#%{_mandir}/man*/*
+#%{_infodir}/*.info*
 %{_includedir}/gnumake.h
 
 %files devel
