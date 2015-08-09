@@ -29,15 +29,15 @@ Header files and shared object symlinks for MPC is a C library.
 
 
 %build
+EGREP=egrep \
 ./configure \
-	--build=%{_build} \
-	--host=%{_host} \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--mandir=/usr/share/man \
 	--infodir=/usr/share/info \
-	--enable-shared \
-make
+	--enable-shared
+
+make ARCH=%{_arch}
 %install
 %__rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -48,12 +48,12 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%doc README NEWS COPYING.LESSER
+#%doc README NEWS COPYING.LESSER
 %{_libdir}/libmpc.so.3*
 
 %files devel
 %{_libdir}/libmpc.so
 %{_includedir}/mpc.h
-%{_infodir}/*.info*
+#%{_infodir}/*.info*
 
 %changelog
