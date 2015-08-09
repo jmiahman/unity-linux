@@ -1,3 +1,6 @@
+#%global _default_patch_fuzz 3
+
+%define _target_platform %{_arch}-alpine-linux-musl
 %define BUILD_GXX 1
 %undefine _with_test
 
@@ -5,6 +8,9 @@
 %define with_musl 1
 %define gcc_stage 3
 
+%define _gcclibdir /usr/lib/gcc/%_target_platform/%{version}
+
+#%define _languages 'c,c++,fortran,objc'
 %define _languages 'c,c++'
 
 Summary:	C compiler from the GNU Compiler Collection.
@@ -15,6 +21,11 @@ License:	GPLv3+
 Group:		Development/Languages
 URL:		http://gcc.gnu.org
 Source0:	http://mirrors.axint.net/repos/gnu.org/%{name}/%{name}-%{version}/%{name}-%{version}.tar.bz2
+
+Source1:	hardenednopie.specs
+Source2:	hardenednopiessp.specs
+Source3:	hardenednossp.specs
+Source4:	vanilla.specs
 
 Patch0:		005_all_gcc-spec-env.patch
 Patch1:		010_all_default-fortify-source.patch
@@ -28,6 +39,7 @@ Patch8:		067_all_gcc-poison-system-directories.patch
 Patch9:		074_all_gcc5_isl-dl.patch
 Patch10:	086_all_gcc5-pie-copy-relocs-pr65780.patch
 Patch11:	090_all_pr55930-dependency-tracking.patch
+
 Patch12:	101_all_gcc49_configure.patch
 Patch13:	102_all_gcc48_config.in.patch
 Patch14:	103_all_gcc49_Makefile.in.patch
@@ -48,6 +60,7 @@ Patch28:	211-unwind.patch
 Patch29:	212-gthr.patch
 Patch30:	213-posix_memalign.patch
 Patch31:	214-stdint.patch
+
 Patch32:        libgcc-always-build-gcceh.a.patch
 Patch33:        gcc-4.8-musl-libssp.patch
 Patch34:        gcc-4.9-musl-fortify.patch
@@ -55,12 +68,14 @@ Patch35:        boehm-gc-musl.patch
 Patch36:        gcc-pure64.patch
 Patch37:        fix-gcj-musl.patch
 Patch38:        fix-gcj-iconv-musl.patch
+
 Patch39:        gcc-4.8-build-args.patch
 Patch40:        fix-cxxflags-passing.patch
-Patch41:        ada-fixes.patch
-Patch42:        ada-musl.patch
-Patch43:        ada-no-pie.patch
-Patch44:        ada-shared.patch
+
+Patch41:        ada-no-pie.patch
+Patch42:        ada-fixes.patch
+Patch43:        ada-shared.patch
+Patch44:        ada-musl.patch
 
 
 #BuildRequires: binutils, gettext, bison, flex, texinfo
@@ -152,14 +167,14 @@ This package contains GCC OpenMP headers and library.
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
-#%patch12 -p1
+%patch12 -p1 
 %patch13 -p1
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
 %patch17 -p1
 %patch18 -p1
-#%patch19 -p1
+%patch19 -p1
 %patch20 -p1
 %patch21 -p1
 %patch22 -p1
@@ -173,13 +188,13 @@ This package contains GCC OpenMP headers and library.
 %patch30 -p1
 %patch31 -p1
 %patch32 -p1
-#%patch33 -p1
+%patch33 -p1
 %patch34 -p1
 %patch35 -p1
 %patch36 -p1
 %patch37 -p1
 %patch38 -p1
-#%patch39 -p1
+%patch39 -p1
 %patch40 -p1
 %patch41 -p1
 %patch42 -p1
@@ -200,6 +215,10 @@ for f in */acinclude.m4; do
 	cd ..
 done
 
+sed -i gcc/Makefile.in -e 's|^build/genautomata$(build_exeext) .*|& -fno-PIC|'
+
+echo %{version} > gcc/BASE-VER
+
 # We will build this software outside source tree as recommended by INSTALL/*
 rm -rf obj-%_target_platform
 mkdir obj-%_target_platform
@@ -219,12 +238,11 @@ cd obj-%_target_platform
 		--disable-multilib \
 		--disable-nls \
 		--disable-werror \
-		%{_symvers} \
 		--enable-__cxa_atexit \
 		--enable-esp \
 		--enable-cloog-backend \
-		--enable-languages=%{_languages} \
 		--with-system-zlib \
+		--enable-c99 \
 		%if %with_musl
 		--disable-libssp \
 		--disable-libmudflap \
@@ -236,22 +254,28 @@ cd obj-%_target_platform
 		--without-headers \
 		--disable-shared \
 		--enable-threads=no \
+		--enable-languages='c' \
 		%endif
 		%if %{gcc_stage} == 2
 		--with-newlib \
 		--disable-shared \
 		--enable-threads=no \
+		--enable-static \
+		--enable-languages='c' \
+		--disable-libquadmath \
+		--disable-threads \
+		--disable-multilib \
 		%endif
 		%if %{gcc_stage} == 3
 		--enable-shared \
 		--enable-threads \
 		--enable-tls \
+		--enable-libquadmath \
+		--enable-languages=%{_languages} \
 		%endif
 
 
-export ADA_CFLAGS='-fno-stack-check'
-
-%make
+make 
 
 cd ..
 mkdir -p rpm-doc/gcc
@@ -287,11 +311,11 @@ ln -s ../../../../../%_libdir/libgcc_s.so.1 \
 ln -s gcc %buildroot%_bindir/cc
 echo ".so gcc.1" > %buildroot%_mandir/man1/cc.1
 
-ln -s /gcc/liblto_plugin.so.0.0.0 \
-	%buildroot/usr/libexec/gcc/%_target_platform/%version/liblto_plugin.so.0
+#ln -s /gcc/liblto_plugin.so.0.0.0 \
+#	%buildroot/usr/libexec/gcc/%_target_platform/%version/liblto_plugin.so.0
 
-ln -s /gcc/liblto_plugin.so.0.0.0 \
-        %buildroot/usr/libexec/gcc/%_target_platform/%version/liblto_plugin.so
+#ln -s /gcc/liblto_plugin.so.0.0.0 \
+#        %buildroot/usr/libexec/gcc/%_target_platform/%version/liblto_plugin.so
 
 %if %BUILD_GXX
 echo ".so g++.1" > %buildroot%_mandir/man1/c++.1
@@ -303,38 +327,43 @@ rm %buildroot%_infodir/gccinstall.info*
 #rm %buildroot%_libdir/libiberty.a
 rm -f %buildroot%_libdir/*.la
 
-%post
-/sbin/install-info --info-dir=%_infodir %_infodir/gcc.info
-/sbin/install-info --info-dir=%_infodir %_infodir/gccint.info
-%_libdir/gcc/%_target_platform/%version/install-tools/mkheaders
-chmod -R go+rX %_libdir/gcc/%_target_platform/%version/include/*
+install -m644 %{SOURCE1} %{buildroot}/%{_gcclibdir}/hardenednopie.specs
+install -m644 %{SOURCE2} %{buildroot}/%{_gcclibdir}/hardenednopiessp.specs
+install -m644 %{SOURCE3} %{buildroot}/%{_gcclibdir}/hardenednossp.specs
+install -m644 %{SOURCE4} %{buildroot}/%{_gcclibdir}/vanilla.specs
 
-%preun
-if [ $1 -eq 0 ]; then
-	/sbin/install-info --delete --info-dir=%_infodir %_infodir/gccint.info
-	/sbin/install-info --delete --info-dir=%_infodir %_infodir/gcc.info
-	if [ -d %_libdir/gcc/%_target_platform/%version/include ]; then
-		rm -rf %_libdir/gcc/%_target_platform/%version/include/*
-	fi
-fi
+#%post
+#/sbin/install-info --info-dir=%_infodir %_infodir/gcc.info
+#/sbin/install-info --info-dir=%_infodir %_infodir/gccint.info
+#%_libdir/gcc/%_target_platform/%version/install-tools/mkheaders
+#chmod -R go+rX %_libdir/gcc/%_target_platform/%version/include/*
 
-%post -n libgcc -p /sbin/ldconfig
-%postun -n libgcc -p /sbin/ldconfig
+#%preun
+#if [ $1 -eq 0 ]; then
+#	/sbin/install-info --delete --info-dir=%_infodir %_infodir/gccint.info
+#	/sbin/install-info --delete --info-dir=%_infodir %_infodir/gcc.info
+#	if [ -d %_libdir/gcc/%_target_platform/%version/include ]; then
+#		rm -rf %_libdir/gcc/%_target_platform/%version/include/*
+#	fi
+#fi
 
-%post -n cpp
-/sbin/install-info --info-dir=%_infodir %_infodir/cpp.info
-/sbin/install-info --info-dir=%_infodir %_infodir/cppinternals.info
+#%post -n libgcc -p /sbin/ldconfig
+#%postun -n libgcc -p /sbin/ldconfig
 
-%preun -n cpp
-if [ $1 -eq 0 ]; then
-	/sbin/install-info --delete --info-dir=%_infodir %_infodir/cppinternals.info
-	/sbin/install-info --delete --info-dir=%_infodir %_infodir/cpp.info
-fi
+#%post -n cpp
+#/sbin/install-info --info-dir=%_infodir %_infodir/cpp.info
+#/sbin/install-info --info-dir=%_infodir %_infodir/cppinternals.info
 
-%if %BUILD_GXX
-%post -n libstdc++ -p /sbin/ldconfig
-%postun -n libstdc++ -p /sbin/ldconfig
-%endif
+#%preun -n cpp
+#if [ $1 -eq 0 ]; then
+#	/sbin/install-info --delete --info-dir=%_infodir %_infodir/cppinternals.info
+#	/sbin/install-info --delete --info-dir=%_infodir %_infodir/cpp.info
+#fi
+
+#%if %BUILD_GXX
+#%post -n libstdc++ -p /sbin/ldconfig
+#%postun -n libstdc++ -p /sbin/ldconfig
+#%endif
 
 %files 
 %defattr(-,root,root)
@@ -343,13 +372,15 @@ fi
 %_bindir/gcov
 %_bindir/%_target_platform-gcc
 %_bindir/%_target_platform-gcc-%version
-%_infodir/gcc.info*
-%_infodir/gccint.info*
+#%_infodir/gcc.info*
+#%_infodir/gccint.info*
 %dir %_libdir/gcc
 %dir %_libdir/gcc/%_target_platform
 %dir %_libdir/gcc/%_target_platform/%version
+%dir /usr/libexec/gcc/%_target_platform
 /usr/libexec/gcc/%_target_platform/%version/cc1
 /usr/libexec/gcc/%_target_platform/%version/collect2
+%dir /usr/libexec/gcc/x86_64-alpine-linux-musl/5.1.0
 %_libdir/gcc/%_target_platform/%version/crt*.o
 %_libdir/gcc/%_target_platform/%version/libgcc*.a
 %_libdir/gcc/%_target_platform/%version/libgcc*.so
@@ -360,13 +391,13 @@ fi
 %_libdir/gcc/%_target_platform/%version/include-fixed
 %_libdir/gcc/%_target_platform/%version/install-tools
 
-%_mandir/man1/cc.1*
-%_mandir/man1/gcc.1*
-%_mandir/man1/gcov.1*
-%_mandir/man7/fsf-funding.7*
-%_mandir/man7/gfdl.7*
-%_mandir/man7/gpl.7*
-%doc rpm-doc/gcc/*
+#%_mandir/man1/cc.1*
+#%_mandir/man1/gcc.1*
+#%_mandir/man1/gcov.1*
+#%_mandir/man7/fsf-funding.7*
+#%_mandir/man7/gfdl.7*
+#%_mandir/man7/gpl.7*
+#%doc rpm-doc/gcc/*
 
 /usr/libexec/gcc/%_target_platform/%version/lto1
 /usr/libexec/gcc/%_target_platform/%version/lto-wrapper
@@ -378,11 +409,11 @@ fi
 %files -n cpp
 %defattr(-,root,root)
 %_bindir/cpp
-%_infodir/cpp.info*
-%_infodir/cppinternals.info*
+#%_infodir/cpp.info*
+#%_infodir/cppinternals.info*
 %dir %_libdir/gcc
 %dir %_libdir/gcc/%_target_platform
-%_mandir/man1/cpp.1*
+#%_mandir/man1/cpp.1*
 
 %files -n libgcc
 %defattr(-,root,root)
@@ -397,18 +428,19 @@ fi
 %dir %_libdir/gcc
 %dir %_libdir/gcc/%_target_platform
 /usr/libexec/gcc/%_target_platform/%version/cc1plus
-%_mandir/man1/?++.1*
-%doc rpm-doc/g++/*
+#%_mandir/man1/?++.1*
+#%doc rpm-doc/g++/*
 
 %files -n libstdc++
 %defattr(-,root,root)
 %_libdir/libstdc++.so.6*
-%doc rpm-doc/libstdc++/*
-%doc libstdc++-v3/doc/html
+#%doc rpm-doc/libstdc++/*
+#%doc libstdc++-v3/doc/html
 %exclude %_datadir/gcc-%version/python
 
 %files -n libstdc++-devel
 %defattr(-,root,root)
+%dir %_includedir/c++
 %_includedir/c++/%version
 %_libdir/libs*++.a
 %_libdir/libstdc++.so
@@ -417,7 +449,7 @@ fi
 %files -n libgcc%gcc_branch-plugin-devel
 %defattr(-,root,root)
 %_libdir/gcc/%_target_platform/%version/plugin
-%_infodir/libquadmath.info*
+#%_infodir/libquadmath.info*
 %_libdir/libquadmath.a
 
 %files -n libgomp%gcc_branch
@@ -431,7 +463,7 @@ fi
 %_libdir/gcc/%_target_platform/%version/plugin
 %_libdir/gcc/%_target_platform/%version/include/omp.h
 %dir %_libdir/gcc/%_target_platform/%version
-%_infodir/libgomp*.info*
+#%_infodir/libgomp*.info*
 %_libdir/libgomp.a
 %_libdir/libgomp.so
 %_libdir/libgomp.spec
