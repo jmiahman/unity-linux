@@ -44,11 +44,13 @@ make %{?_smp_mflags}
 
 
 %files
-/usr/bin/xmlwf
-/usr/lib/libexpat.so.1
-/usr/lib/libexpat.so.1.6.0
+%{_bindir}/xmlwf
+%{_libdir}/libexpat.so.1
+%{_libdir}/libexpat.so.1.6.0
 
 %files devel
-/usr/include/*.h
+%{_libdir}/lib*.so
+%{_libdir}/pkgconfig/*.pc
+%{_includedir}/*.h
 
 %changelog
