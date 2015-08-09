@@ -26,6 +26,7 @@ the old GNU fileutils, sh-utils, and textutils packages.
 %build
 LIBS=-lrt \
 FORCE_UNSAFE_CONFIGURE=1 \
+CC=gcc \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
