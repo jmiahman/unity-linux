@@ -52,6 +52,14 @@ Group: Development/Libraries
 %description tools
 Auxiliary utilities for %{name}.
 
+%package devel
+Summary: Development files for %{name}
+Group: Development/Libraries
+Requires: %{name} = %{version}-%{release}
+
+%description devel
+Development files (Headers, libraries for dynamic linking, etc) for %{name}.
+
 
 %prep
 %setup -q
@@ -80,25 +88,31 @@ make %{?_smp_mflags}
 
 
 %files
-/usr/lib/libpcreposix.so.0.0.3
-/usr/lib/libpcre.so.1
-/usr/lib/libpcre.so.1.2.5
-/usr/lib/libpcreposix.so.0
+%{_libdir}/libpcreposix.so.0.0.3
+%{_libdir}/libpcre.so.1
+%{_libdir}/libpcre.so.1.2.5
+%{_libdir}/libpcreposix.so.0
 
 %files -n libpcrecpp
-/usr/lib/libpcrecpp.so.0
-/usr/lib/libpcrecpp.so.0.0.1
+%{_libdir}/libpcrecpp.so.0
+%{_libdir}/libpcrecpp.so.0.0.1
 
 %files -n libpcre16
-/usr/lib/libpcre16.so.0
-/usr/lib/libpcre16.so.0.2.5
+%{_libdir}/libpcre16.so.0
+%{_libdir}/libpcre16.so.0.2.5
 
 %files -n libpcre32
-/usr/lib/libpcre32.so.0
-/usr/lib/libpcre32.so.0.0.5
+%{_libdir}/libpcre32.so.0
+%{_libdir}/libpcre32.so.0.0.5
 
 %files tools
-/usr/bin/pcregrep
-/usr/bin/pcretest
+%{_bindir}/pcregrep
+%{_bindir}/pcretest
+
+%files devel
+%{_libdir}/*.so
+%{_libdir}/pkgconfig/*
+%{_includedir}/*.h
+%{_bindir}/pcre-config
 
 %changelog
