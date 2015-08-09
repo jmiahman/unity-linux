@@ -9,7 +9,7 @@ License:        LGPLv3+ and GPLv3+ and GFDL
 URL:            http://www.mpfr.org/ 
 Source0:        http://www.mpfr.org/mpfr-current/%{name}-%{version}.tar.xz
 
-#BuildRequires:  
+BuildRequires: binutils-devel, gmp-devel  
 #Requires:       
 
 %description
@@ -23,6 +23,7 @@ ANSI/IEEE-754 standard for double-precision floating-point arithmetic
 %package devel
 Summary: Development tools A C library for mpfr library
 Group: Development/Libraries
+Requires: %{name} = %{version}
 
 %description devel
 Header files and documentation for using the MPFR 
@@ -37,11 +38,13 @@ install the mpfr package.
 
 %build
 ./configure \
-	--build=%{_build} \
-	--host=%{_host} \
+	--host=x86_64-alpine-linux-musl \
+	--build=x86_64-alpine-linux-musl \
+	--target=x86_64-alpine-linux-musl \
 	--prefix=/usr \
-	--enable-shared \
-make
+	--enable-shared
+
+make ARCH=%{_arch}
 
 %install
 %__rm -rf $RPM_BUILD_ROOT
@@ -57,13 +60,13 @@ make
 
 %files
 %defattr(-,root,root,-)
-%doc COPYING COPYING.LESSER NEWS README
+#%doc COPYING COPYING.LESSER NEWS README
 %{_libdir}/libmpfr.so.*
 
 %files devel
 %defattr(-,root,root,-)
 %{_libdir}/libmpfr.so
 %{_includedir}/*.h
-%{_infodir}/mpfr.info*
+#%{_infodir}/mpfr.info*
 
 %changelog

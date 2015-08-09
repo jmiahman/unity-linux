@@ -8,7 +8,7 @@ License:        LGPLv3+ or GPLv2+
 URL:            http://gmplib.org/
 Source0:        ftp://ftp.gmplib.org/pub/gmp-%{version}/gmp-%{version}a.tar.bz2
 
-#BuildRequires:  
+BuildRequires: binutils-devel
 #Requires:       
 
 %description
@@ -23,6 +23,7 @@ emphasizes speed over simplicity/elegance in its operations.
 %package devel
 Summary: Development tools for the GNU MP arbitrary precision library
 Group: Development/Libraries
+Requires: %{name} = %{version}
 
 %description devel
 The libraries, header files and documentation for using the GNU MP 
@@ -36,16 +37,16 @@ arbitrary precision library in applications.
 %build
 
 ./configure \
-	--build=%{_build} \
-	--host=%{_host} \
+	--host=x86_64-alpine-linux-musl \
 	--prefix=/usr \
 	--infodir=/usr/share/info \
 	--mandir=/usr/share/man \
 	--localstatedir=/var/state/gmp \
 	--enable-cxx \
 	--with-pic \
+	--with-mpfr=/usr \
 
-make
+make ARCH=%{_arch}
 make check
 
 
@@ -59,7 +60,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc NEWS README
 %{_libdir}/libgmp.so.*
 %{_libdir}/libgmpxx.so.*
 
@@ -68,6 +68,5 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libgmp.so
 %{_libdir}/libgmpxx.so
 %{_includedir}/*.h
-%{_infodir}/gmp.info*
 
 %changelog
