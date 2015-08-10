@@ -1,0 +1,35 @@
+if [ "$(id -u)" != "0" ]; then
+   echo 'This script must be run as root, use sudo or su -c "./rootme"' 1>&2
+   exit 1
+fi
+
+if [ ! "$(ls -A ./proc)" ]; then
+   mkdir -pv {dev,proc,sys}
+   mount -v --bind /dev dev
+   mount -vt proc proc proc
+   mount -vt sysfs sysfs sys
+fi
+
+if [ -h dev/shm ]; then
+  mkdir -pv $(readlink dev/shm)
+fi
+
+if [ ! -f "./usr/bin/busybox" ]; then
+   cd usr/bin
+   ln -s ../../bin/* .
+   cd ../../
+fi
+
+if [ ! "$(ls -A ./root/packages)" ]; then
+        mount --bind ../unity-linux/base/packages/ root/packages
+fi
+
+if [ ! "$(ls -A ./root/rpms)" ]; then
+        mount --bind ../rpms root/rpms/
+fi
+
+if [ ! "$(ls -A ./root/building)" ]; then
+        mount --bind ../building root/building/
+fi
+
+chroot . /usr/bin/bash -c "su -"

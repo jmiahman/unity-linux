@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ "$(id -u)" != "0" ]; then
+   echo 'This script must be run as root, use sudo or su -c "./rootme"' 1>&2
+   exit 1
+fi
+
+umount $(mount | grep chroot | awk '{print $3}') &> /dev/null
+
+if [ ! "$(mount | grep chroot | awk '{print $3}')" ]; then
+	echo "All Chroot mounts removed."
+	echo "Removing chroot"
+	rm -rf chroot-x86_64
+else
+	echo "Warning: Chroot mounts still exist."
+fi

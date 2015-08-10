@@ -1,0 +1,47 @@
+#!/bin/sh
+if [ "$(id -u)" != "0" ]; then
+   echo 'This script must be run as root, use sudo or su -c "./rootme"' 1>&2
+   exit 1
+fi
+
+rpmdir=`pwd`/rpms
+chroot_name='chroot-x86_64'
+
+mkdir $chroot_name
+
+rpm -Uhv --nodeps --force --root=`pwd`/$chroot_name $rpmdir/*x86_64.rpm
+mkdir -p $chroot_name/root/rpmbuild/{SOURCES,SPECS,BUILD,BUILDROOT,SRPMS,RPMS}
+mkdir -p $chroot_name/root/{packages,rpms,building}
+mkdir -p $chroot_name/home/builduser
+mkdir -p $chroot_name/tmp
+
+echo 'builduser:x:1003:1003::/home/builduser:/bin/bash' >> $chroot_name/etc/passwd
+echo 'builduser:x:1003:' >> $chroot_name/etc/group
+cp *rootme $chroot_name/
+cd $chroot_name
+
+if [ ! "$(ls -A ./root/packages)" ]; then
+        mount --bind ../build-unity/unity-linux/base/packages/ root/packages
+fi
+
+if [ ! "$(ls -A ./root/rpms)" ]; then
+        mount --bind ../rpms/ root/rpms/
+fi
+
+if [ ! "$(ls -A ./root/building)" ]; then
+        mount --bind ../building/ root/building/
+fi
+
+chroot `pwd` /bin/bash -x <<'EOF'
+/bin/busybox --install -s
+EOF
+
+chroot `pwd` /bin/bash -x <<'EOF'
+/bin/ln -s /usr/libexec/gcc/x86_64-alpine-linux-musl/5.1.0/liblto_plugin.so.0.0.0 /usr/libexec/gcc/x86_64-alpine-linux-musl/5.1.0/liblto_plugin.so.0
+/bin/ln -s /usr/libexec/gcc/x86_64-alpine-linux-musl/5.1.0/liblto_plugin.so.0.0.0 /usr/libexec/gcc/x86_64-alpine-linux-musl/5.1.0/liblto_plugin.so
+/bin/rm -rf /var/lib/rpm/*
+/usr/bin/rpm --rebuilddb
+/usr/bin/rpm -i -v --nodeps --noscripts --notriggers --force --excludepath / /root/rpms/*.rpm
+EOF
+
+./rootme
