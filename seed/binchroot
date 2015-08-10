@@ -1,0 +1,33 @@
+#!/bin/sh
+
+package=$1
+
+if [ "$(id -u)" != "0" ]; then
+   echo 'This script must be run as root, use sudo or su -c "./rootme"' 1>&2
+   exit 1
+fi
+
+rpmdir=`pwd`/rpms
+chroot_name='chroot-x86_64'
+
+if [ ! "$(ls -A $chroot_name/root/packages)" ]; then
+        mount --bind ./build-unity/unity-linux/base/packages/ $chroot_name/root/packages
+fi
+
+if [ ! "$(ls -A $chroot_name/root/rpms)" ]; then
+        mount --bind ./rpms/ $chroot_name/root/rpms/
+fi
+
+if [ ! "$(ls -A $chroot_name/root/building)" ]; then
+        mount --bind ./building/ $chroot_name/root/building/
+fi
+
+if [[ -n $(screen -ls | grep $package) ]]; then
+	for session in $(screen -ls | grep -o '[0-9]*\.'$package); 
+		do 
+			screen -S "${session}" -X quit 
+		done
+fi
+screen -dmS $package
+
+screen -r $package -p 0 -X stuff $"chroot $chroot_name /usr/bin/bash -c 'cd /root/packages/$package/;rpmbuild -ba $package.spec &> /root/rpmbuild/RPMS/logs/$package.log';exit ^M"
