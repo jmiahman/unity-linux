@@ -1,3 +1,5 @@
+%global _default_patch_fuzz 3
+
 Name:		linux-headers	
 Version:	3.18.18
 Release:	1%{?dist}
@@ -24,9 +26,9 @@ glibc package.
 
 %prep
 %setup -qn linux-%{version}
-%patch0 -p1 -b .inclusion-of-sysinfo
-#%patch1 -p1 -b .in6
-#%patch2 -p1 -b .prevent-redefinition-of-struct-ethhdr
+%patch0 -p1 
+#%patch1 -p1 
+%patch2 -p1 
 
 %install
 %__rm -rf %{buildroot}
