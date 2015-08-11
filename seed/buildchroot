@@ -42,6 +42,8 @@ chroot `pwd` /bin/bash -x <<'EOF'
 /bin/rm -rf /var/lib/rpm/*
 /usr/bin/rpm --rebuilddb
 /usr/bin/rpm -i -v --nodeps --noscripts --notriggers --force --excludepath / /root/rpms/*.rpm
+ln -s /root/rpms/testing /root/rpmbuild/RPMS/x86_64
+ln -s /root/rpms/logs /root/rpmbuild/RPMS/logs
 EOF
 
 ./rootme

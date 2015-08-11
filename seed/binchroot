@@ -1,6 +1,8 @@
 #!/bin/sh
 
 package=$1
+verbose=$2
+tee=""
 
 if [ "$(id -u)" != "0" ]; then
    echo 'This script must be run as root, use sudo or su -c "./rootme"' 1>&2
@@ -31,3 +33,8 @@ fi
 screen -dmS $package
 
 screen -r $package -p 0 -X stuff $"chroot $chroot_name /usr/bin/bash -c 'cd /root/packages/$package/;rpmbuild -ba $package.spec &> /root/rpmbuild/RPMS/logs/$package.log';exit ^M"
+
+if [ $verbose == 'v' ]; then
+        screen -r $package
+fi
+
