@@ -1,0 +1,30 @@
+#!/bin/bash
+
+EXT=$1
+PATH=$2
+
+if [[ $# -lt 2 ]]; then
+       echo "Usage: wgetdir \"extension\" \"path\"".
+       echo "Example: wgetdir rpm http://your-path-to-download/directory/"
+       echo "Example: wgetdir -all http://your-path-to-download/directory/"
+
+elif [[ $EXT -eq '-all' ]]; then
+
+        dir_cnt=`echo $PATH | /usr/bin/tr -d -c '/' | /usr/bin/awk '{ print length; }'`
+        let cnt_dir=$dir_cnt-2
+        dir_name=`echo $PATH | /usr/bin/cut -d '/' -f$dir_cnt`
+	echo $dir_name
+	echo $cnt_dir
+	
+	/usr/bin/mkdir $dir_name
+	cd $dir_name
+	/usr/bin/wget -r -nH --no-parent --cut-dirs=$cnt_dir --reject html $PATH
+
+else
+        /usr/bin/wget -r -nd -np -l1 -A "*.$1" "$2"
+        if [[ $? -eq 0 ]]; then
+                echo "All $1 files downloaded successfully from $2."
+        else
+                echo "Problem in downloading all $1 from $2, please verify."
+        fi
+fi
