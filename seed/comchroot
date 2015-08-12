@@ -1,0 +1,42 @@
+#!/bin/sh
+
+command=$1
+
+if [ "$(id -u)" != "0" ]; then
+   echo 'This script must be run as root, use sudo or su -c "./rootme"' 1>&2
+   exit 1
+fi
+
+rpmdir=`pwd`/rpms
+chroot_name='chroot-x86_64'
+
+if [ ! "$(ls -A $chroot_name/proc)" ]; then
+   mkdir -pv {dev,proc,sys}
+   mount -v --bind /dev $chroot_name/dev
+   mount -vt proc proc $chroot_name/proc
+   mount -vt sysfs sysfs $chroot_name/sys
+fi
+
+if [ -h $chroot_name/dev/shm ]; then
+  mkdir -pv $(readlink $chroot_name/dev/shm)
+fi
+
+if [ ! -f "$chroot_name/usr/bin/busybox" ]; then
+   cd $chroot_name/usr/bin
+   ln -s ../../bin/* .
+   cd ../../../
+fi
+
+if [ ! "$(ls -A $chroot_name/root/packages)" ]; then
+        mount --bind ./unity-linux/base/packages/ $chroot_name/root/packages
+fi
+
+if [ ! "$(ls -A $chroot_name/root/rpms)" ]; then
+        mount --bind ./rpms/ $chroot_name/root/rpms/
+fi
+
+if [ ! "$(ls -A $chroot_name/root/building)" ]; then
+        mount --bind ./building/ $chroot_name/root/building/
+fi
+
+chroot $chroot_name /usr/bin/bash -c "$command"
