@@ -1,3 +1,6 @@
+%define __find_requires %{nil}
+%define _sysconfdir /etc
+
 Name:		openssl	
 Version:	1.0.2d	
 Release:	1%{?dist}
@@ -60,7 +63,7 @@ support various cryptographic algorithms and protocols.
 %prep
 %setup -q
 
-%patch0 -p1
+%patch0 -p1 -b .test
 %patch1 -p1
 %patch2 -p1 
 %patch3 -p1 
@@ -76,68 +79,77 @@ support various cryptographic algorithms and protocols.
 %patch13 -p1 
 
 %build
-rm -rf %{_builddir}/apps/progs.h
-export LDFLAGS="$LDFLAGS -Wa,--noexecstack"
-./config --prefix=/usr \
-	--libdir=lib \
-	--openssldir=/etc/ssl \
+rm -rf %{_builddir}/apps/progs.h 
+LDFLAGS="-Wa,--noexecstack" \
+./config \
+	--prefix=/usr \
+	--openssldir=%{_sysconfdir}/ssl \
 	shared zlib enable-montasm enable-md2 \
 	%ifarch x86_64
 	enable-ec_nistp_64_gcc_128 \
 	%endif
 	-DOPENSSL_NO_BUF_FREELISTS
 
-%make 
-%make build-shared
+make 
+make build-shared
 
 
 %install
 rm -rf %{buildroot}
 make INSTALL_PREFIX=%{buildroot} MANDIR=/usr/share/man install
 
+cd %{buildroot}/usr/bin
+%__ln -sf openssl c_rehash
+cd ../../
 mkdir %{buildroot}/lib
+mv %{buildroot}/usr/lib/libcrypto.so.1.0.0 %{buildroot}/lib/libcrypto.so.1.0.0
+mv %{buildroot}/usr/lib/libssl.so.1.0.0 %{buildroot}/lib/libssl.so.1.0.0
 cd %{buildroot}/lib
-ln -s ../usr/lib/libcrypto.so.1.0.0 libcrypto.so.1.0.0
-ln -s ../usr/lib/libssl.so.1.0.0 libssl.so.1.0.0
-cd ..
-ln -sf openssl %{buildroot}/usr/bin/c_rehash
+%__ln -s libcrypto.so.1.0.0 ../usr/lib/libcrypto.so.1.0.0
+%__ln -s libssl.so.1.0.0 ../usr/lib/libssl.so.1.0.0
+
+
 
 %files
-%dir /etc/ssl
-%dir /etc/ssl/misc
-/etc/ssl/openssl.cnf
-/etc/ssl/misc/CA.sh
-/etc/ssl/misc/CA.pl
-/etc/ssl/misc/c_issuer
-/etc/ssl/misc/c_name
-/etc/ssl/misc/c_hash
-/etc/ssl/misc/tsget
-/etc/ssl/misc/c_info
-/usr/bin/openssl
-/usr/bin/c_rehash
+%{_bindir}/*
+%{_sysconfdir}/ssl/openssl.cnf
+%{_sysconfdir}/ssl/misc/CA.sh
+%{_sysconfdir}/ssl/misc/CA.pl
+%{_sysconfdir}/ssl/misc/c_issuer
+%{_sysconfdir}/ssl/misc/c_name
+%{_sysconfdir}/ssl/misc/c_hash
+%{_sysconfdir}/ssl/misc/tsget
+%{_sysconfdir}/ssl/misc/c_info
+%dir %{_sysconfdir}/ssl
+%dir %{_sysconfdir}/ssl/misc
+
 
 %files -n libcrypto
 /lib/libcrypto.so.1.0.0
-/usr/lib/libcrypto.so.1.0.0
-/usr/lib/engines/libubsec.so
-/usr/lib/engines/libatalla.so
-/usr/lib/engines/libcapi.so
-/usr/lib/engines/libgost.so
-/usr/lib/engines/libcswift.so
-/usr/lib/engines/libchil.so
-/usr/lib/engines/libgmp.so
-/usr/lib/engines/libnuron.so
-/usr/lib/engines/lib4758cca.so
-/usr/lib/engines/libsureware.so
-/usr/lib/engines/libpadlock.so
-/usr/lib/engines/libaep.so
+%{_libdir}/libcrypto.so.1.0.0
+%{_libdir}/engines/libubsec.so
+%{_libdir}/engines/libatalla.so
+%{_libdir}/engines/libcapi.so
+%{_libdir}/engines/libgost.so
+%{_libdir}/engines/libcswift.so
+%{_libdir}/engines/libchil.so
+%{_libdir}/engines/libgmp.so
+%{_libdir}/engines/libnuron.so
+%{_libdir}/engines/lib4758cca.so
+%{_libdir}/engines/libsureware.so
+%{_libdir}/engines/libpadlock.so
+%{_libdir}/engines/libaep.so
+%dir %{_libdir}/engines
 
 %files -n libssl
 /lib/libssl.so.1.0.0
-/usr/lib/libssl.so.1.0.0
+%{_libdir}/libssl.so.1.0.0
 
 %files devel
 %dir /usr/include/openssl/
-/usr/include/openssl/*
+%{_prefix}/include/openssl
+%attr(0755,root,root) %{_libdir}/*.so
+%attr(0644,root,root) %{_libdir}/pkgconfig/*.pc
+%attr(0644,root,root) %{_libdir}/*.a
 
 %changelog
