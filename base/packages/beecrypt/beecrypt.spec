@@ -9,7 +9,7 @@ URL:		http://beecrypt.sourceforge.net/
 #Source0:	http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Source0:	http://repository.timesys.com/buildsources/b/beecrypt/beecrypt-4.2.1/beecrypt-4.2.1.tar.gz	
 
-#BuildRequires:	
+BuildRequires: libtool, m4	
 #Requires:	
 
 %description
