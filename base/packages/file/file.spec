@@ -38,6 +38,7 @@ rm %{buildroot}/usr/lib/*.la
 /usr/bin/file
 /usr/lib/libmagic.so.1.0.0
 /usr/lib/libmagic.so.1
+%dir /usr/share/misc/
 /usr/share/misc/magic.mgc
 
 %changelog

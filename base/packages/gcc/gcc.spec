@@ -1,6 +1,6 @@
 #%global _default_patch_fuzz 3
 
-%define _target_platform %{_arch}-alpine-linux-musl
+%define _target_platform %{_arch}-unity-linux-musl
 %define BUILD_GXX 1
 %undefine _with_test
 
@@ -377,10 +377,11 @@ install -m644 %{SOURCE4} %{buildroot}/%{_gcclibdir}/vanilla.specs
 %dir %_libdir/gcc
 %dir %_libdir/gcc/%_target_platform
 %dir %_libdir/gcc/%_target_platform/%version
+%dir /usr/libexec/gcc
 %dir /usr/libexec/gcc/%_target_platform
 /usr/libexec/gcc/%_target_platform/%version/cc1
 /usr/libexec/gcc/%_target_platform/%version/collect2
-%dir /usr/libexec/gcc/x86_64-alpine-linux-musl/5.1.0
+%dir /usr/libexec/gcc/%{_target_platform}/5.1.0
 %_libdir/gcc/%_target_platform/%version/crt*.o
 %_libdir/gcc/%_target_platform/%version/libgcc*.a
 %_libdir/gcc/%_target_platform/%version/libgcc*.so

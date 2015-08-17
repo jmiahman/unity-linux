@@ -1,3 +1,5 @@
+%define _target_platform %{_arch}-unity-linux-musl
+
 Name:           gmp
 Version:        6.0.0 
 Release:        1%{?dist}
@@ -37,7 +39,7 @@ arbitrary precision library in applications.
 %build
 
 ./configure \
-	--host=x86_64-alpine-linux-musl \
+	--host=%{_target_platform} \
 	--prefix=/usr \
 	--infodir=/usr/share/info \
 	--mandir=/usr/share/man \

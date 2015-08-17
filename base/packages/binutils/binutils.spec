@@ -1,3 +1,4 @@
+%define _target_platform %{_arch}-unity-linux-musl
 %define _libiberty 1
 
 Name:           binutils
@@ -43,9 +44,9 @@ This package contains BFD and opcodes static and dynamic libraries.
 
 %build
 ./configure \
-	--build=x86_64-alpine-linux-musl \
-	--host=x86_64-alpine-linux-musl \
-	--target=x86_64-alpine-linux-musl \
+	--build=%{_target_platform} \
+	--host=%{_target_platform} \
+	--target=%{_target_platform} \
 	--with-build-sysroot=%{buildroot} \
 	--with-sysroot=/ \
 	--prefix=/usr \
@@ -80,12 +81,12 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/*
-%dir /usr/x86_64-alpine-linux-musl
-%dir /usr/x86_64-alpine-linux-musl/bin/
-%dir /usr/x86_64-alpine-linux-musl/lib/
-%dir /usr/x86_64-alpine-linux-musl/lib/ldscripts/
-/usr/x86_64-alpine-linux-musl/bin/*
-/usr/x86_64-alpine-linux-musl/lib/ldscripts/*
+%dir /usr/%{_target_platform}
+%dir /usr/%{_target_platform}/bin/
+%dir /usr/%{_target_platform}/lib/
+%dir /usr/%{_target_platform}/lib/ldscripts/
+/usr/%{_target_platform}/bin/*
+/usr/%{_target_platform}/lib/ldscripts/*
 %{_libdir}/*%{version}.so
 
 %files devel

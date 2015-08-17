@@ -1,3 +1,5 @@
+%define _target_platform %{_arch}-unity-linux-musl
+
 Summary: Development files for musl libc
 Name:	 musl
 Version: 1.1.10
@@ -36,13 +38,13 @@ Development files and headers for %{name}.
 
 make ARCH=%{_arch} prefix=/usr DESTDIR=%{buildroot} install-headers
 
-/usr/bin/%{_arch}-alpine-linux-musl-gcc $CPPFLAGS $CFLAGS -c %{SOURCE1} -o __stack_chk_fail_local.o
+/usr/bin/%{_target_platform}-gcc $CPPFLAGS $CFLAGS -c %{SOURCE1} -o __stack_chk_fail_local.o
 %__ar r libssp_nonshared.a __stack_chk_fail_local.o
 
 LDFLAGS='-Wl,-soname,libc.musl-%{_arch}.so.1' \
 ARCH=%{_arch} \
 ./configure \
-        --host=%{_arch}-alpine-linux-musl \
+        --host=%{_target_platform} \
         --prefix=/usr \
         --sysconfdir=/etc \
         --mandir=/usr/share/man \
@@ -74,9 +76,9 @@ local LDSO=$(make -f Makefile --eval "$(echo -e 'print-ldso:\n\t@echo $$(basenam
 
 #%__sed -i 's!/usr/lib/musl!/usr!' %{buildroot}/usr/bin/musl-gcc
 
-/usr/bin/%{_arch}-alpine-linux-musl-gcc $CPPFLAGS $CFLAGS %{SOURCE4} -o getconf
-/usr/bin/%{_arch}-alpine-linux-musl-gcc $CPPFLAGS $CFLAGS %{SOURCE5} -o getent
-/usr/bin/%{_arch}-alpine-linux-musl-gcc $CPPFLAGS $CFLAGS %{SOURCE6} -o iconv
+/usr/bin/%{_target_platform}-gcc $CPPFLAGS $CFLAGS %{SOURCE4} -o getconf
+/usr/bin/%{_target_platform}-gcc $CPPFLAGS $CFLAGS %{SOURCE5} -o getent
+/usr/bin/%{_target_platform}-gcc $CPPFLAGS $CFLAGS %{SOURCE6} -o iconv
 
 #Utils (Different Package Maybe?)
 	mkdir -p %{buildroot}/usr/bin 

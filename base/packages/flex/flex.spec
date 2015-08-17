@@ -8,7 +8,7 @@ License:	BSD and LGPLv2+
 URL:		http://flex.sourceforge.net/
 Source0:	http://fossies.org/linux/misc/%{name}-%{version}.tar.xz	
 
-#BuildRequires:	
+BuildRequires: m4, autoconf	
 #Requires:	
 
 %description
@@ -42,26 +42,24 @@ instead of implementing their own.
 
 
 %build
+
 ./configure \
-	--build=%{_build} \
-	--host=%{_host} \
 	--prefix=/usr \
 	--mandir=/usr/share/man \
 	--infodir=/usr/share/info \
-	--disable-static \
-	--enable-shared
+	--enable-shared \
 	
-%make
+make
 
 
 %install
-%make_install
+make install DESTDIR=%{buildroot}
 
 find %{buildroot} -name '*.so' -delete
 find %{buildroot} -name '*.so.2' -delete
 find %{buildroot} -name '*.so.2.0.0' -delete
 
-( cd ${RPM_BUILD_ROOT}
+( cd %{buildroot}
   ln -sf flex .%{_bindir}/lex
   ln -sf flex .%{_bindir}/flex++
   ln -s flex.1 .%{_mandir}/man1/lex.1
@@ -71,15 +69,15 @@ find %{buildroot} -name '*.so.2.0.0' -delete
 
 %files
 %defattr(-,root,root)
-%doc COPYING NEWS README
+#%doc COPYING NEWS README
 %{_bindir}/*
-%{_mandir}/man1/*
+#%{_mandir}/man1/*
 %{_includedir}/FlexLexer.h
-%{_infodir}/flex.info*
+#%{_infodir}/flex.info*
 
 %files devel
 %defattr(-,root,root)
-%doc COPYING
+#%doc COPYING
 %{_libdir}/*.a
 
 

@@ -1,3 +1,5 @@
+%define _target_platform %{_arch}-unity-linux-musl
+
 Name:           mpfr
 Version:        3.1.3 
 Release:        1%{?dist}
@@ -38,9 +40,9 @@ install the mpfr package.
 
 %build
 ./configure \
-	--host=x86_64-alpine-linux-musl \
-	--build=x86_64-alpine-linux-musl \
-	--target=x86_64-alpine-linux-musl \
+	--host=%{_target_platform} \
+	--build=%{_target_platform} \
+	--target=%{_target_platform} \
 	--prefix=/usr \
 	--enable-shared
 

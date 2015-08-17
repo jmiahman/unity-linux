@@ -6,7 +6,7 @@ Summary:	OpenRC manages the services, startup and shutdown of a host
 Group:		System Environment/Base
 License:	FreeBSD License
 URL:		https://wiki.gentoo.org/wiki/Project:OpenRC
-Source0:	https://github.com/OpenRC/openrc/archive/%{version}.tar.gz
+Source0:	http://github.com/OpenRC/openrc/archive/%{version}.tar.gz
 
 Source1:	hostname.initd
 Source2:	hwdrivers.initd

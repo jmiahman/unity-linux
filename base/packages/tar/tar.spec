@@ -43,12 +43,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 rm -rf %{buildroot}/usr/lib/charset.alias
 
-mkdir %{buildroot}/bin
-mv %{buildroot}/usr/bin/tar %{buildroot}/bin/
-ln -s /bin/tar %{buildroot}/usr/bin/tar
-
 %files
-/bin/tar
 /usr/libexec/rmt
 /usr/bin/tar
 

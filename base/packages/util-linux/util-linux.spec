@@ -139,15 +139,15 @@ License: LGPLv2+
 %description -n mcookie
 Mcookie generates a 128-bit random hexadecimal number for use with the X authority system.
 
-%package -n python-libmount
-Summary: A wrapper around libmount
-Group: Development/Libraries
-License: BSD
-Requires: libmount = %{version}-%{release}
-Requires: pkgconfig
+#%package -n python-libmount
+#Summary: A wrapper around libmount
+#Group: Development/Libraries
+#License: BSD
+#Requires: libmount = %{version}-%{release}
+#Requires: pkgconfig
 
-%description -n  python-libmount
-A wrapper around libmount, for reading and manipulating filesystem tables
+#%description -n  python-libmount
+#A wrapper around libmount, for reading and manipulating filesystem tables
 
 %prep
 %setup -q
@@ -172,7 +172,7 @@ automake --add-missing
 	--disable-last \
 	--disable-sulogin \
 	--disable-su \
-	--enable-chsh \
+	--enable-chsh-only-listed \
 	--with-python=2
 
 make %{?_smp_mflags}
@@ -212,7 +212,7 @@ rmdir %{buildroot}/sbin
 %exclude %{_sbindir}/cfdisk
 %exclude %{_sbindir}/sfdisk
 %exclude %{_bindir}/mcookie
-%exclude %{_libdir}/python*/site-packages/libmount/*
+#%exclude %{_libdir}/python*/site-packages/libmount/*
 
 %files -n blkid
 %{_sbindir}/blkid
@@ -258,7 +258,7 @@ rmdir %{buildroot}/sbin
 %files -n mcookie
 %{_bindir}/mcookie
 
-%files -n python-libmount
-%{_libdir}/python*/site-packages/libmount/*
+#%files -n python-libmount
+#%{_libdir}/python*/site-packages/libmount/*
 
 %changelog

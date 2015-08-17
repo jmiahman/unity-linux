@@ -1,3 +1,5 @@
+
+
 Name:		automake
 Version:	1.15
 Release:	1%{?dist}
@@ -25,6 +27,8 @@ Makefiles.
 
 %build
 ./configure \
+	--host=%{_target_platform} \
+	--build=%{_target_platform} \
 	--prefix=/usr \
 
 make %{?_smp_mflags}
