@@ -1,0 +1,53 @@
+diff -Naur squashfs4.3_new/squashfs-tools/action.c squashfs4.3/squashfs-tools/action.c
+--- squashfs4.3_new/squashfs-tools/action.c	2015-08-18 19:45:35.858376425 +0000
++++ squashfs4.3/squashfs-tools/action.c	2015-08-18 19:47:21.280672771 +0000
+@@ -44,6 +44,10 @@
+ #include "action.h"
+ #include "error.h"
+ 
++#ifndef FNM_EXTMATCH
++#define FNM_EXTMATCH 0
++#endif
++
+ /*
+  * code to parse actions
+  */
+diff -Naur squashfs4.3_new/squashfs-tools/mksquashfs.c squashfs4.3/squashfs-tools/mksquashfs.c
+--- squashfs4.3_new/squashfs-tools/mksquashfs.c	2015-08-18 19:45:35.873378744 +0000
++++ squashfs4.3/squashfs-tools/mksquashfs.c	2015-08-18 19:46:32.274097250 +0000
+@@ -61,6 +61,10 @@
+ #include <sys/sysinfo.h>
+ #endif
+ 
++#if !defined(FNM_EXTMATCH)
++#define FNM_EXTMATCH 0
++#endif
++
+ #include "squashfs_fs.h"
+ #include "squashfs_swap.h"
+ #include "mksquashfs.h"
+diff -Naur squashfs4.3_new/squashfs-tools/pseudo.c squashfs4.3/squashfs-tools/pseudo.c
+--- squashfs4.3_new/squashfs-tools/pseudo.c	2014-05-10 04:54:13.000000000 +0000
++++ squashfs4.3/squashfs-tools/pseudo.c	2015-08-18 19:46:32.212087664 +0000
+@@ -32,6 +32,7 @@
+ #include <stdlib.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
++#include <sys/stat.h>
+ #include <ctype.h>
+ 
+ #include "pseudo.h"
+diff -Naur squashfs4.3_new/squashfs-tools/unsquashfs.c squashfs4.3/squashfs-tools/unsquashfs.c
+--- squashfs4.3_new/squashfs-tools/unsquashfs.c	2015-08-18 19:45:35.881379981 +0000
++++ squashfs4.3/squashfs-tools/unsquashfs.c	2015-08-18 19:46:32.282098486 +0000
+@@ -38,6 +38,10 @@
+ #include <limits.h>
+ #include <ctype.h>
+ 
++#ifndef FNM_EXTMATCH
++#define FNM_EXTMATCH 0
++#endif
++
+ struct cache *fragment_cache, *data_cache;
+ struct queue *to_reader, *to_inflate, *to_writer, *from_writer;
+ pthread_t *thread, *inflator_thread;

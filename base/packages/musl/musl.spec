@@ -27,9 +27,19 @@ Summary:	Development files for %{name}
 Group:		Development/C
 License:	LGPLv2+
 Requires:	%{name} = %{version}
+Requires:	%{name}-utils = %{version}
 
 %description devel
 Development files and headers for %{name}.
+
+%package utils
+Summary:        Utilities files for %{name}
+Group:          Development/C
+License:        LGPLv2+
+Requires:       %{name} = %{version}
+
+%description utils
+Utilities for the %{name} c library (libc) implementation.
 
 %prep
 %setup -q
@@ -80,7 +90,7 @@ local LDSO=$(make -f Makefile --eval "$(echo -e 'print-ldso:\n\t@echo $$(basenam
 /usr/bin/%{_target_platform}-gcc $CPPFLAGS $CFLAGS %{SOURCE5} -o getent
 /usr/bin/%{_target_platform}-gcc $CPPFLAGS $CFLAGS %{SOURCE6} -o iconv
 
-#Utils (Different Package Maybe?)
+#Utils
 	mkdir -p %{buildroot}/usr/bin 
 	mkdir -p %{buildroot}/sbin
 	install -D \
@@ -109,11 +119,14 @@ rm -rf $RPM_BUILD_ROOT
 %files
 #%doc INSTALL README WHATSNEW 
 /%{_lib}/*-%{_arch}.so.*
+/lib/*
 
 %files devel
 %{_libdir}/
 %{_includedir}/*
-%{_bindir}/*
+
+%files utils
+/sbin/*
 %{_bindir}/*
 
 %changelog
