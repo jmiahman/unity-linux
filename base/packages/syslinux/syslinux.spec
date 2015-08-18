@@ -17,10 +17,10 @@ BuildRequires: nasm, perl
 BuildRequires: libuuid-devel, linux-headers, gnu-efi-devel
 Requires: syslinux-nonlinux = %{version}-%{release}
 %ifarch %{ix86}
-Requires: mtools, libc.so.6
+Requires: mtools, musl-devel
 %endif
 %ifarch x86_64
-Requires: mtools, libc.so.6()(64bit)
+Requires: mtools, musl-devel
 %endif
 
 # NOTE: extlinux belongs in /sbin, not in /usr/sbin, since it is typically
@@ -52,34 +52,22 @@ Headers and libraries for syslinux development.
 Summary: The EXTLINUX bootloader, for booting the local system.
 Group: System/Boot
 Requires: syslinux
-Requires: syslinux-extlinux-nonlinux = %{version}-%{release}
+#Requires: syslinux-extlinux-nonlinux = %{version}-%{release}
 
 %description extlinux
 The EXTLINUX bootloader, for booting the local system, as well as all
 the SYSLINUX/PXELINUX modules in /boot.
 
-%ifarch %{ix86}
-%package tftpboot
-Summary: SYSLINUX modules in /tftpboot, available for network booting
-Group: Applications/Internet
-BuildArch: noarch
-ExclusiveArch: %{ix86} x86_64
-Requires: syslinux
+#%package extlinux-nonlinux
+#Summary: The parts of the EXTLINUX bootloader which aren't run from linux.
+#Group: System/Boot
+#Requires: syslinux
+#BuildArch: noarch
+#ExclusiveArch: %{ix86} x86_64
 
-%description tftpboot
-All the SYSLINUX/PXELINUX modules directly available for network
-booting in the /tftpboot directory.
-
-%package extlinux-nonlinux
-Summary: The parts of the EXTLINUX bootloader which aren't run from linux.
-Group: System/Boot
-Requires: syslinux
-BuildArch: noarch
-ExclusiveArch: %{ix86} x86_64
-
-%description extlinux-nonlinux
-All the EXTLINUX binaries that run from the firmware rather than
-from a linux host.
+#%description extlinux-nonlinux
+#All the EXTLINUX binaries that run from the firmware rather than
+#from a linux host.
 
 %package nonlinux
 Summary: SYSLINUX modules which aren't run from linux.
@@ -92,7 +80,6 @@ ExclusiveArch: %{ix86} x86_64
 All the SYSLINUX binaries that run from the firmware rather than from a
 linux host. It also includes a tool, MEMDISK, which loads legacy operating
 systems from media.
-%endif
 
 %ifarch %{x86_64}
 %package efi64
@@ -125,19 +112,21 @@ make bios install \
 	INSTALLROOT=%{buildroot} BINDIR=%{_bindir} SBINDIR=%{_sbindir} \
 	LIBDIR=%{_prefix}/lib DATADIR=%{_datadir} \
 	MANDIR=%{_mandir} INCDIR=%{_includedir} \
+	EXTLINUXDIR=/boot/extlinux \
 	LDLINUX=ldlinux.c32
 %ifarch %{x86_64}
 make efi64 install netinstall \
 	INSTALLROOT=%{buildroot} BINDIR=%{_bindir} SBINDIR=%{_sbindir} \
 	LIBDIR=%{_prefix}/lib DATADIR=%{_datadir} \
 	MANDIR=%{_mandir} INCDIR=%{_includedir} \
+	EXTLINUXDIR=/boot/extlinux \
 	LDLINUX=ldlinux.c32
 %endif
 
 mkdir -p %{buildroot}/%{_docdir}/%{name}/sample
 install -m 644 sample/sample.* %{buildroot}/%{_docdir}/%{name}/sample/
 mkdir -p %{buildroot}/etc
-( cd %{buildroot}/etc && ln -s ../boot/extlinux/extlinux.conf . )
+mkdir -p %{buildroot}/boot/extlinux
 
 mkdir -p %{buildroot}/etc/update-extlinux.d
 cp %{SOURCE1} %{buildroot}/etc/
@@ -207,11 +196,7 @@ rm -rf %{buildroot}
 %{_sbindir}/extlinux
 %{_sbindir}/update-extlinux
 %config /etc/update-extlinux.conf
-%config /etc/extlinux.conf
-
-%ifarch %{ix86}
-%files tftpboot
-/tftpboot
+#%config /etc/extlinux.conf
 
 %files nonlinux
 %{_datadir}/syslinux/*.com
@@ -221,19 +206,8 @@ rm -rf %{buildroot}
 %{_datadir}/syslinux/*.0
 %{_datadir}/syslinux/memdisk
 
-%files extlinux-nonlinux
-/boot/extlinux
-
-%else
-%exclude %{_datadir}/syslinux/memdisk
-%exclude %{_datadir}/syslinux/*.com
-%exclude %{_datadir}/syslinux/*.exe
-%exclude %{_datadir}/syslinux/*.c32
-%exclude %{_datadir}/syslinux/*.bin
-%exclude %{_datadir}/syslinux/*.0
-#%exclude /boot/extlinux
-#%exclude /tftpboot
-%endif
+#%files extlinux-nonlinux
+#/boot/extlinux
 
 %ifarch %{x86_64}
 %files efi64
