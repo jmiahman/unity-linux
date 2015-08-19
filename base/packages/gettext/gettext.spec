@@ -52,7 +52,8 @@ export LIBS="-lrt"
 	--enable-threads=posix \
 	--disable-java \
 	--disable-static
-										%make
+
+make
 
 %install
 make -j1 DESTDIR=%{buildroot} install
@@ -69,7 +70,7 @@ make -j1 DESTDIR=%{buildroot} install
 /usr/lib/libintl.so.8
 
 %files devel
-#/usr/share/gettext/archive.git.tar.gz
+/usr/share/gettext/archive.dir.tar.xz
 /usr/share/gettext/ABOUT-NLS
 /usr/share/gettext/gettext.h
 /usr/share/gettext/po/remove-potcdate.sin
