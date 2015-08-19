@@ -101,6 +101,7 @@ chgrp shadow %{buildroot}/sbin/unix_chkpwd \
 
 %files
 /etc/environment
+%dir /etc/security/
 /etc/security/pam_env.conf
 /etc/security/group.conf
 /etc/security/time.conf
@@ -108,6 +109,7 @@ chgrp shadow %{buildroot}/sbin/unix_chkpwd \
 /etc/security/limits.conf
 /etc/security/namespace.conf
 /etc/security/namespace.init
+%dir /etc/pam.d
 /etc/pam.d/base-session-noninteractive
 /etc/pam.d/base-account
 /etc/pam.d/other
@@ -120,6 +122,7 @@ chgrp shadow %{buildroot}/sbin/unix_chkpwd \
 /lib/libpam_misc.so.0
 /lib/libpam_misc.so.0.82.1
 /lib/libpam.so.0.84.1
+%dir /lib/security/
 /lib/security/pam_tally.so
 /lib/security/pam_mail.so
 /lib/security/pam_ftp.so
@@ -129,6 +132,7 @@ chgrp shadow %{buildroot}/sbin/unix_chkpwd \
 /lib/security/pam_namespace.so
 /lib/security/pam_echo.so
 /lib/security/pam_time.so
+%dir /lib/security/pam_filter
 /lib/security/pam_filter/upperLOWER
 /lib/security/pam_keyinit.so
 /lib/security/pam_debug.so
@@ -170,6 +174,7 @@ chgrp shadow %{buildroot}/sbin/unix_chkpwd \
 /lib/libpam_misc.so
 /lib/libpam.so
 /lib/libpamc.so
+%dir /usr/include/security
 /usr/include/security/_pam_compat.h
 /usr/include/security/_pam_macros.h
 /usr/include/security/pam_filter.h

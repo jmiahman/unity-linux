@@ -76,9 +76,12 @@ install -m 0755 -d \
 	mnt \
 	proc \
 	sys \
+	bin \
 	usr/bin \
 	usr/include \
+	sbin \
 	usr/sbin \
+	lib \
 	usr/lib \
         usr/lib/firmware \
         usr/lib/mdev \
@@ -96,15 +99,9 @@ install -m 0755 -d \
 	var/spool/cron \
 	run \
 
-
-ln -s usr/bin bin
-ln -s usr/sbin sbin
-ln -s usr/lib lib
-ln -s usr/include include
-
 install -d -m 0700 %{buildroot}/root 
 install -d -m 1777 %{buildroot}/tmp %{buildroot}/var/tmp
-install -m755 mkmntdirs %{buildroot}/sbin/mkmntdirs
+install -m755 %{buildroot}/mkmntdirs %{buildroot}/sbin/mkmntdirs
 
 install -m644 %{SOURCE1} %{buildroot}/etc/crontabs/root 
 install -m644 %{SOURCE2} %{buildroot}/etc/profile.d/
@@ -191,10 +188,13 @@ ln -s /etc/crontabs %{buildroot}/var/spool/cron/crontabs
 ln -s /proc/mounts %{buildroot}/etc/mtab
 
 %files
-/bin
+%dir /bin
+/bin/
 /usr/bin
 /dev
-/etc
+%dir /etc
+%dir /etc/crontabs
+%dir /etc/sysctl.d
 /home
 /lib
 /usr/lib
@@ -207,8 +207,17 @@ ln -s /proc/mounts %{buildroot}/etc/mtab
 /usr
 /var
 /run
+%config(noreplace) /etc/shadow
 /etc/os-release
 /etc/issue
 /etc/unity-release
+/etc/fstab
+/etc/sysctl.d/00-unity.conf
+/etc/sysctl.conf
+/etc/motd
+/etc/shells
+/etc/TZ
+/etc/crontabs/root
+/etc/profile.d/
 
 %changelog

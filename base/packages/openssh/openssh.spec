@@ -38,6 +38,7 @@ Requires: %{name}-client = %{version}
 %package server
 Summary: An open source SSH server daemon
 Group: System Environment/Daemons
+Requires: %{name}-client = %{version}
 
 %description
 SSH (Secure SHell) is a program for logging into and executing
@@ -103,22 +104,18 @@ make
 %install
 make DESTDIR=%{buildroot} install
 mkdir -p %{buildroot}/var/empty
-install -D -m755 %{SOURCE1} 
+install -D -m755 %{SOURCE1} \
 	%{buildroot}/etc/init.d/sshd
 install -D -m644 %{SOURCE2} \
 	%{buildroot}/etc/conf.d/sshd
-install -Dm644 %{_builddir}/contrib/ssh-copy-id.1 \
+install -Dm644 %{_builddir}/%{name}-%{version}/contrib/ssh-copy-id.1 \
 	%{buildroot}/usr/share/man/man1/ssh-copy-id.1
 sed -i 's/#UseDNS yes/UseDNS no/' %{buildroot}/etc/ssh/sshd_config
-install -Dm755 %{_builddir}/contrib/findssl.sh \
+install -Dm755 %{_builddir}/%{name}-%{version}/contrib/findssl.sh \
 	%{buildroot}/usr/bin/findssl.sh
-install -Dm755 %{_builddir}/contrib/ssh-copy-id \
+install -Dm755 %{_builddir}/%{name}-%{version}/contrib/ssh-copy-id \
 	%{buildroot}/usr/bin/ssh-copy-id
 install -d %{buildroot}/usr/lib/ssh
-
-mv %{buildroot}/usr/lib/ssh/ssh-keysign \
-	%{buildroot}/usr/lib/ssh/
-
 
 %pre server
 getent group ssh_keys >/dev/null || groupadd -r ssh_keys || :
@@ -128,6 +125,8 @@ getent passwd sshd >/dev/null || \
   -s /sbin/nologin -r -d /var/empty/sshd sshd 2> /dev/null || :
 
 %files client
+%dir /etc/ssh
+%dir /usr/lib/ssh
 /etc/ssh/moduli
 /etc/ssh/ssh_config
 /usr/bin/ssh
@@ -145,8 +144,11 @@ getent passwd sshd >/dev/null || \
 /usr/lib/ssh/ssh-keysign
 
 %files server
+
 /etc/ssh/sshd_config
+%dir /etc/init.d/
 /etc/init.d/sshd
+%dir /etc/conf.d/
 /etc/conf.d/sshd
 /usr/sbin/sshd
 /usr/lib/ssh/ssh-pkcs11-helper

@@ -112,6 +112,7 @@ cd %{buildroot}/lib
 
 %files
 %{_bindir}/*
+%dir %{_sysconfdir}/ssl/certs
 %{_sysconfdir}/ssl/openssl.cnf
 %{_sysconfdir}/ssl/misc/CA.sh
 %{_sysconfdir}/ssl/misc/CA.pl
