@@ -10,12 +10,14 @@ Summary:	A Python Imaging Library
 Group:          Development/Languages
 
 License:    BSD
-URL:        http://pygments.org/
+URL:        http://python-imaging.github.io/
 Source0:    http://pypi.python.org/packages/source/%{_first_letter}/%{upstream_name}/%{upstream_name}-%{version}.tar.gz
 
-BuildRequires:  python-devel python-setuptools
-#freetype-dev jpeg-dev libwebp-dev tiff-dev
-#libpng-dev lcms2-dev openjpeg-dev zlib-dev
+BuildRequires:  python-devel python-setuptools libpng-devel
+BuildRequires:	libjpeg-turbo-devel freetype-devel libtiff-devel
+Buildrequires:	lcms2-devel
+#libwebp-dev
+#openjpeg-dev
 
 Requires:  python
 
