@@ -12,19 +12,19 @@ URL:            https://github.com/Tojaj/librepo
 #  utils/make_tarball.sh %{gitrev}
 Source0:        https://github.com/Tojaj/librepo/archive/librepo-%{version}.tar.gz
 
-BuildRequires:  check-devel
+#BuildRequires:  check-devel
 BuildRequires:  cmake
 BuildRequires:  doxygen
 BuildRequires:  expat-devel
-BuildRequires:  glib-devel >= 2.22.0
+BuildRequires:  glib-devel
 BuildRequires:  gpgme-devel
 BuildRequires:  libattr-devel
-BuildRequires:  libcurl-devel >= 7.19.0
+BuildRequires:  libcurl-devel
 BuildRequires:  openssl-devel
 
 # prevent provides from nonstandard paths:
-%filter_provides_in %{python_sitearch}/.*\.so$
-%filter_setup
+#%filter_provides_in %{python_sitearch}/.*\.so$
+#%filter_setup
 
 %description
 A library providing C and Python (libcURL like) API to downloading repository
@@ -42,7 +42,7 @@ Development files for librepo.
 Summary:        Python bindings for the librepo library
 Group:          Development/Languages
 BuildRequires:  pygpgme
-BuildRequires:  python2-devel
+BuildRequires:  python-devel
 BuildRequires:  python-sphinx
 BuildRequires:  pyxattr
 Requires:       %{name} = %{version}-%{release}
