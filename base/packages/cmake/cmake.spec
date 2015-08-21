@@ -38,11 +38,13 @@ make %{?_smp_mflags}
 
 %install
 %make_install
-
+#we need to own this dir
+mkdir -p %{buildroot}/%{_libdir}/cmake/
 
 %files
 /usr/bin/*
 /usr/share/aclocal/cmake.m4
+%dir %{_libdir}/cmake/
 %dir /usr/share/cmake/
 %dir /usr/share/cmake/Templates/
 /usr/share/cmake/Templates/*
