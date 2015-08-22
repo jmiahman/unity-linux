@@ -1,0 +1,79 @@
+
+Name:		guile
+Version:	2.0.11
+Release:	1%{?dist}
+Summary:	Guile is a portable, embeddable Scheme implementation written in C
+
+Group:		Development/Libraries		
+License:	GPL
+URL:		http://www.gnu.org/software/guile/
+Source0:	ftp://ftp.gnu.org/pub/gnu/%{name}/%{name}-%{version}.tar.gz
+
+Patch0: 	strtol_l.patch
+
+BuildRequires:	gmp-devel libtool ncurses-devel gc-devel
+BuildRequires:	texinfo libunistring-devel libffi-devel
+
+%description
+Guile is a library designed to help programmers create 
+flexible applications. Using Guile in an application allows 
+the application's functionality to be extended by users or 
+other programmers with plug-ins, modules, or scripts.
+
+%package        libs                                                                                                                                                                                          
+Summary:        Libraries for %{name}                                                                                                                                                                  
+Requires:       %{name} = %{version}-%{release}     
+                                                    
+%description    libs                                                                                                                                                                                          
+This package contains libraries in order                                                                                                                                                
+to run applications that use %{name}.
+
+%package        devel
+Summary:        Development files for %{name}
+Requires:       %{name} = %{version}-%{release}
+
+%description    devel
+This package contains libraries and header files for
+developing applications that use %{name}.
+
+%prep
+%setup -q 
+
+%patch0 -p1
+
+%build
+%configure \
+	--prefix=/usr \
+	--disable-static \
+	--disable-error-on-warning \
+
+make %{?_smp_mflags}
+
+
+%install
+make -j1 DESTDIR=%{buildroot} install
+rm %{buildroot}/usr/lib/*.la
+
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
+
+%files
+#%license COPYING COPYING.LESSER
+%{_bindir}/*
+%{_datadir}/guile/*
+%{_libdir}/guile/*
+
+%files libs
+%{_libdir}/usr/lib/libguile-2.0.so.*
+
+%files devel
+#%doc AUTHORS ChangeLog NEWS README
+%{_bindir}/%{name}-config
+%{_libdir}/*.so
+%{_libdir}/pkgconfig/*.pc
+/usr/share/aclocal/guile.m4
+%{_includedir}/guile/
+%dir %{_includedir}/guile/
+#%{_mandir}/*/*
+
+%changelog

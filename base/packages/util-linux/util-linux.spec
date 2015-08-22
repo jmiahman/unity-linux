@@ -139,15 +139,15 @@ License: LGPLv2+
 %description -n mcookie
 Mcookie generates a 128-bit random hexadecimal number for use with the X authority system.
 
-#%package -n python-libmount
-#Summary: A wrapper around libmount
-#Group: Development/Libraries
-#License: BSD
-#Requires: libmount = %{version}-%{release}
-#Requires: pkgconfig
+%package -n python-libmount
+Summary: A wrapper around libmount
+Group: Development/Libraries
+License: BSD
+Requires: libmount = %{version}-%{release}
+Requires: pkgconfig
 
-#%description -n  python-libmount
-#A wrapper around libmount, for reading and manipulating filesystem tables
+%description -n  python-libmount
+A wrapper around libmount, for reading and manipulating filesystem tables
 
 %prep
 %setup -q
@@ -172,29 +172,33 @@ automake --add-missing
 	--disable-last \
 	--disable-sulogin \
 	--disable-su \
+	--enable-usrdir-path \
 	--enable-chsh-only-listed \
-	--with-python=2
+	--with-python='2.7'
 
 make %{?_smp_mflags}
 
 
 %install
+rm -rf %{buildroot}
 make -j1 install DESTDIR=%{buildroot}
 # use pkg-config
 rm -f %{buildroot}/usr/lib/*.la \
 	%{buildroot}/usr/lib/python*/site-packages/libmount/*.la
 
-mv %{buildroot}/lib/* %{buildroot}/usr/lib/
+cd %{buildroot}/lib
+ln -s * ../usr/lib/
+cd ..
 mv %{buildroot}/bin/* %{buildroot}/usr/bin/
 mv %{buildroot}/sbin/* %{buildroot}/usr/sbin/
-rmdir %{buildroot}/lib
-rmdir %{buildroot}/bin
-rmdir %{buildroot}/sbin
 
 %files
 /usr/lib/*
 /usr/bin/*
 /usr/sbin/*
+
+/%{_lib}/libfdisk.so.*
+/%{_lib}/libsmartcols.so.*
 
 %exclude %{_sbindir}/blkid
 %exclude %{_libdir}/libblkid.so.*
@@ -219,6 +223,7 @@ rmdir %{buildroot}/sbin
 
 %files -n libblkid
 %{_libdir}/libblkid.so.*
+/%{_lib}/libblkid.so.*
 
 %files -n libblkid-devel
 %{_libdir}/libblkid.so
@@ -226,15 +231,13 @@ rmdir %{buildroot}/sbin
 %{_libdir}/pkgconfig/blkid.pc
 
 %files -n libuuid
+/%{_lib}/libuuid.so.*
 %{_libdir}/libuuid.so.*
 
 %files -n libuuid-devel
 %{_libdir}/libuuid.so
 %{_includedir}/uuid
 %{_libdir}/pkgconfig/uuid.pc
-
-#%files -n libfdisk
-#%{_libdir}/libfdisk.so.*
 
 #%files -n libfdisk-devel
 #%{_libdir}/libfdisk.so
@@ -243,6 +246,7 @@ rmdir %{buildroot}/sbin
 
 %files -n libmount
 %{_libdir}/libmount.so.*
+/%{_lib}/libmount.so.* 
 
 %files -n libmount-devel
 %{_libdir}/libmount.so
@@ -258,7 +262,7 @@ rmdir %{buildroot}/sbin
 %files -n mcookie
 %{_bindir}/mcookie
 
-#%files -n python-libmount
-#%{_libdir}/python*/site-packages/libmount/*
+%files -n python-libmount
+%{_libdir}/python*/site-packages/libmount/*
 
 %changelog

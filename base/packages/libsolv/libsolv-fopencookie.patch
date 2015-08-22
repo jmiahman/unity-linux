@@ -1,0 +1,12 @@
+diff -Naur libsolv-1f9abfb5b1bb18a8f46887fa2541957e74132567_chng/ext/solv_xfopen.c libsolv-1f9abfb5b1bb18a8f46887fa2541957e74132567/ext/solv_xfopen.c
+--- libsolv-1f9abfb5b1bb18a8f46887fa2541957e74132567_chng/ext/solv_xfopen.c	2015-08-05 09:50:19.000000000 +0000
++++ libsolv-1f9abfb5b1bb18a8f46887fa2541957e74132567/ext/solv_xfopen.c	2015-08-22 05:40:22.674537021 +0000
+@@ -61,7 +61,7 @@
+   cio.close = cclose;
+   return  fopencookie(cookie, *mode == 'w' ? "w" : "r", cio);
+ #else
+-# error Need to implement custom I/O
++return 0;
+ #endif
+ }
+ 
