@@ -111,7 +111,7 @@ incorporates useful features from the Korn shell (ksh) and the C shell
 
 
 %build
-./configure \
+%configure \
 	--prefix=/usr \
 	--bindir=/bin \
 	--mandir=/usr/share/man \

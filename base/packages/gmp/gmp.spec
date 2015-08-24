@@ -1,3 +1,5 @@
+%define _target_platform %{_arch}-unity-linux-musl
+
 Name:           gmp
 Version:        6.0.0 
 Release:        1%{?dist}
@@ -35,16 +37,15 @@ arbitrary precision library in applications.
 
 
 %build
-
-./configure \
-	--host=x86_64-alpine-linux-musl \
+sed -i -e "/# We cannot seem to hardcode it, guess we'll fake it./"'{ n; s/add_dir="-L$libdir"/add_dir="-L$lt_sysroot$libdir"/ }' ltmain.sh
+%configure \
+	--with-sysroot=%{buildroot} \
 	--prefix=/usr \
 	--infodir=/usr/share/info \
 	--mandir=/usr/share/man \
 	--localstatedir=/var/state/gmp \
 	--enable-cxx \
 	--with-pic \
-	--with-mpfr=/usr \
 
 make ARCH=%{_arch}
 make check

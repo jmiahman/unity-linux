@@ -1,3 +1,5 @@
+%define _target_platform %{_arch}-unity-linux-musl
+
 Name:           make
 Version:        4.1 
 Release:        1%{?dist}
@@ -35,8 +37,8 @@ The make-devel package contains gnumake.h.
 
 %build
 ./configure \
-	--build=x86_64-alpine-linux-musl \
-	--host=x86_64-alpine-linux-musl \
+	--build=%{_target_platform} \
+	--host=%{_target_platform} \
 	--prefix=/usr \
 	--mandir=/usr/share/man \
 	--infodir=/usr/share/info \

@@ -1,3 +1,5 @@
+%define _target_platform %{_arch}-unity-linux-musl
+
 Name:		pkgconf		
 Version:	0.9.11
 Release:	1%{?dist}
@@ -21,8 +23,8 @@ Provides: pkgconfig
 
 %build
 ./configure \
-	--build=%{_build} \
-	--host=%{_host} \
+	--build=%{_target_platform} \
+	--host=%{_target_platform} \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--mandir=/usr/share/man \

@@ -24,6 +24,7 @@ Patch10:	1000-fbsplash-use-virtual-y-size-in-mmap-size-calculation.patch
 Patch11:	1001-fbsplash-support-console-switching.patch
 Patch12:	1002-fbsplash-support-image-and-bar-alignment-and-positio.patch
 Patch13:	glibc.patch
+Patch14:	linux-headers.patch
 
 #BuildRequires:  
 #Requires:       
@@ -50,6 +51,7 @@ particularly those involving broken shared libraries.
 %patch11 -p1 -b .1001-fbsplash-support-console-switching
 %patch12 -p1 -b .1002-fbsplash-support-image-and-bar-alignment-and-positio
 %patch13 -p1 -b .glibc
+%patch14 -p1 -b .header
 
 %__cp %{SOURCE2} loginutils/
 %define _dyndir %{buildroot}/build-dynamic

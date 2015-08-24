@@ -69,9 +69,16 @@ the ncurses terminal handling library.
 
 %build
 #build
+for i in $(find . -name config.guess 2>/dev/null) $(find . -name config.sub 2>/dev/null) ; do \
+        [ -f /usr/share/automake-1.15/$(basename $i) ] && %{__rm} -f $i && %{__cp} -fv \
+                 /usr/share/automake-1.15/$(basename $i) $i ; \
+done
+
 mkdir %{name}-build
 cd %{name}-build
 ../configure \
+	--build=%{_host} \
+	--host=%{_host} \
 	--mandir=/usr/share/man \
 	--without-ada \
 	--disable-termcap \
@@ -89,6 +96,8 @@ cd ..
 mkdir %{name}wc-build
 cd %{name}wc-build
 ../configure \
+        --build=%{_host} \
+        --host=%{_host} \
         --mandir=/usr/share/man \
         --without-ada \
         --disable-termcap \
@@ -103,6 +112,7 @@ cd %{name}wc-build
 make libs
 cd ..
 %install
+rm -rf %{buildroot}
 make -j1 -C ncurses-build DESTDIR=%{buildroot} install.libs \
 		install.progs install.data
 
@@ -142,12 +152,14 @@ done
 /usr/bin/captoinfo
 /usr/bin/tput
 /usr/bin/infocmp
+%dir /usr/share/tabset
 /usr/share/tabset/stdcrt
 /usr/share/tabset/std
 /usr/share/tabset/vt100
 /usr/share/tabset/vt300
 
 %files terminfo
+%dir /usr/share/terminfo
 /usr/share/terminfo/1/
 /usr/share/terminfo/2/
 /usr/share/terminfo/3/

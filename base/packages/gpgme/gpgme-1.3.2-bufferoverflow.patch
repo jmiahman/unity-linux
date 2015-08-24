@@ -1,0 +1,26 @@
+diff -up wrk/src/engine-gpgsm.c.wrk wrk/src/engine-gpgsm.c
+--- wrk/src/engine-gpgsm.c.wrk	2014-12-06 04:22:35.944109162 +0100
++++ wrk/src/engine-gpgsm.c	2014-12-06 04:24:15.127086534 +0100
+@@ -834,7 +834,8 @@ status_handler (void *opaque, int fd)
+ 	      else
+ 		{
+ 		  *aline = newline;
+-		  gpgsm->colon.attic.linesize += linelen + 1;
++		  //  gpgsm->colon.attic.linesize += linelen + 1; - cherrypicked security fix
++		  gpgsm->colon.attic.linesize = *alinelen + linelen + 1;
+ 		}
+ 	    }
+ 	  if (!err)
+diff -up wrk/src/engine-uiserver.c.wrk wrk/src/engine-uiserver.c
+--- wrk/src/engine-uiserver.c.wrk	2014-12-06 04:24:32.200254777 +0100
++++ wrk/src/engine-uiserver.c	2014-12-06 04:25:16.718693472 +0100
+@@ -699,7 +699,8 @@ status_handler (void *opaque, int fd)
+ 	      else
+ 		{
+ 		  *aline = newline;
+-		  uiserver->colon.attic.linesize += linelen + 1;
++		  //uiserver->colon.attic.linesize += linelen + 1; - cherrypicked security fix
++		  uiserver->colon.attic.linesize = *alinelen + linelen + 1;
+ 		}
+ 	    }
+ 	  if (!err)

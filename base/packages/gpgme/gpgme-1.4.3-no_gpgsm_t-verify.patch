@@ -1,0 +1,25 @@
+diff -up gpgme-1.4.3/tests/gpgsm/Makefile.in.no_t-verify gpgme-1.4.3/tests/gpgsm/Makefile.in
+--- gpgme-1.4.3/tests/gpgsm/Makefile.in.no_t-verify	2013-08-12 07:36:10.000000000 -0500
++++ gpgme-1.4.3/tests/gpgsm/Makefile.in	2013-10-09 10:28:52.991728837 -0500
+@@ -72,8 +72,8 @@ POST_UNINSTALL = :
+ build_triplet = @build@
+ host_triplet = @host@
+ TESTS = t-import$(EXEEXT) t-keylist$(EXEEXT) t-encrypt$(EXEEXT) \
+-	t-verify$(EXEEXT) t-decrypt$(EXEEXT) t-sign$(EXEEXT) \
+-	t-export$(EXEEXT)
++	t-decrypt$(EXEEXT) t-sign$(EXEEXT) \
++	t-export$(EXEEXT) # t-verify$(EXEEXT)
+ noinst_PROGRAMS = $(am__EXEEXT_1) t-genkey$(EXEEXT) \
+ 	cms-keylist$(EXEEXT) cms-decrypt$(EXEEXT)
+ subdir = tests/gpgsm
+@@ -94,8 +94,8 @@ CONFIG_HEADER = $(top_builddir)/config.h
+ CONFIG_CLEAN_FILES =
+ CONFIG_CLEAN_VPATH_FILES =
+ am__EXEEXT_1 = t-import$(EXEEXT) t-keylist$(EXEEXT) t-encrypt$(EXEEXT) \
+-	t-verify$(EXEEXT) t-decrypt$(EXEEXT) t-sign$(EXEEXT) \
+-	t-export$(EXEEXT)
++	t-decrypt$(EXEEXT) t-sign$(EXEEXT) \
++	t-export$(EXEEXT) # t-verify$(EXEEXT)
+ PROGRAMS = $(noinst_PROGRAMS)
+ cms_decrypt_SOURCES = cms-decrypt.c
+ cms_decrypt_OBJECTS = cms-decrypt.$(OBJEXT)

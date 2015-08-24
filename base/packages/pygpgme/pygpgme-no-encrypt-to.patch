@@ -1,0 +1,12 @@
+diff:
+=== modified file 'src/pygpgme-constants.c'
+--- src/pygpgme-constants.c     2013-02-13 02:17:54 +0000
++++ src/pygpgme-constants.c     2013-06-19 12:01:23 +0000
+@@ -164,6 +164,7 @@
+ 
+   /* gpgme_encrypt_flags_t */
+   CONST(ENCRYPT_ALWAYS_TRUST),
++  CONST(ENCRYPT_NO_ENCRYPT_TO),
+ 
+   /* gpgme_sigsum_t */
+   CONST(SIGSUM_VALID),

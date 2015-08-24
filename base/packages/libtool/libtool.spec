@@ -1,3 +1,5 @@
+%define _target_platform %{_arch}-unity-linux-musl
+
 Name:		libtool	
 Version:	2.4.6
 Release:	1%{?dist}
@@ -45,9 +47,7 @@ the rest of the GNU Autotools (including GNU Autoconf and GNU Automake).
 %setup -q
 
 %build
-./configure \
-	--build=%{_arch}-alpine-linux-musl \
-	--host=%{_arch}-alpine-linux-musl \
+%configure \
 	--prefix=/usr \
 	--disable-static \
 

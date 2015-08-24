@@ -11,7 +11,8 @@ URL:		http://kernel.org
 Source0:	http://www.linuxgrill.com/anonymous/kernel/v3.1x/linux-%{version}.tar.xz
 
 Patch0: 1-4-glibc-specific-inclusion-of-sysinfo.h-in-kernel.h.patch
-Patch1: 3-4-libc-compat.h-fix-some-issues-arising-from-in6.h.patch
+#Patch1: 3-4-libc-compat.h-fix-some-issues-arising-from-in6.h.patch
+Patch1: 270-bridge_header_fix.patch
 Patch2: 4-4-libc-compat.h-prevent-redefinition-of-struct-ethhdr.patch
 
 #BuildRequires:	
@@ -27,8 +28,8 @@ glibc package.
 %prep
 %setup -qn linux-%{version}
 %patch0 -p1 
-#%patch1 -p1 
-%patch2 -p1 
+%patch1 -p1 
+#%patch2 -p1 
 
 %install
 %__rm -rf %{buildroot}

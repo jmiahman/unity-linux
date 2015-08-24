@@ -50,7 +50,7 @@ graphs), dependence analysis and bounds on piecewise step-polynomials.
 	--localstatedir=/var \
 	--with-sysroot=%{buildroot}
 
-make %{?_smp_mflags}
+make ARCH=%{_arch} %{?_smp_mflags}
 
 
 %install

@@ -1,0 +1,73 @@
+diff -up asciidoc-8.6.8/a2x.py.explicit-interpreter asciidoc-8.6.8/a2x.py
+--- asciidoc-8.6.8/a2x.py.explicit-interpreter	2014-02-10 17:09:28.400042041 +0100
++++ asciidoc-8.6.8/a2x.py	2014-02-10 17:16:54.945502122 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ '''
+ a2x - A toolchain manager for AsciiDoc (converts Asciidoc text files to other
+       file formats)
+diff -up asciidoc-8.6.8/asciidocapi.py.explicit-interpreter asciidoc-8.6.8/asciidocapi.py
+--- asciidoc-8.6.8/asciidocapi.py.explicit-interpreter	2012-02-29 23:21:24.000000000 +0100
++++ asciidoc-8.6.8/asciidocapi.py	2014-02-10 17:16:54.932502080 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ """
+ asciidocapi - AsciiDoc API wrapper class.
+ 
+diff -up asciidoc-8.6.8/asciidoc.py.explicit-interpreter asciidoc-8.6.8/asciidoc.py
+--- asciidoc-8.6.8/asciidoc.py.explicit-interpreter	2012-07-10 04:47:22.000000000 +0200
++++ asciidoc-8.6.8/asciidoc.py	2014-02-10 17:16:54.960502172 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ """
+ asciidoc - converts an AsciiDoc text file to HTML or DocBook
+ 
+diff -up asciidoc-8.6.8/filters/code/code-filter.py.explicit-interpreter asciidoc-8.6.8/filters/code/code-filter.py
+--- asciidoc-8.6.8/filters/code/code-filter.py.explicit-interpreter	2008-12-31 02:37:47.000000000 +0100
++++ asciidoc-8.6.8/filters/code/code-filter.py	2014-02-10 17:16:54.939502103 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ '''
+ NAME
+     code-filter - AsciiDoc filter to highlight language keywords
+diff -up asciidoc-8.6.8/filters/graphviz/graphviz2png.py.explicit-interpreter asciidoc-8.6.8/filters/graphviz/graphviz2png.py
+--- asciidoc-8.6.8/filters/graphviz/graphviz2png.py.explicit-interpreter	2011-01-31 21:52:09.000000000 +0100
++++ asciidoc-8.6.8/filters/graphviz/graphviz2png.py	2014-02-10 17:16:54.941502110 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ 
+ import os, sys, subprocess
+ from optparse import *
+diff -up asciidoc-8.6.8/filters/latex/latex2png.py.explicit-interpreter asciidoc-8.6.8/filters/latex/latex2png.py
+--- asciidoc-8.6.8/filters/latex/latex2png.py.explicit-interpreter	2012-02-29 03:05:58.000000000 +0100
++++ asciidoc-8.6.8/filters/latex/latex2png.py	2014-02-10 17:16:54.936502093 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ '''
+ NAME
+     latex2png - Converts LaTeX source to PNG file
+diff -up asciidoc-8.6.8/filters/music/music2png.py.explicit-interpreter asciidoc-8.6.8/filters/music/music2png.py
+--- asciidoc-8.6.8/filters/music/music2png.py.explicit-interpreter	2012-07-10 23:32:19.000000000 +0200
++++ asciidoc-8.6.8/filters/music/music2png.py	2014-02-10 17:16:54.934502087 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ '''
+ NAME
+     music2png - Converts textual music notation to classically notated PNG file
+diff -up asciidoc-8.6.8/tests/asciidocapi.py.explicit-interpreter asciidoc-8.6.8/tests/asciidocapi.py
+diff -up asciidoc-8.6.8/tests/testasciidoc.py.explicit-interpreter asciidoc-8.6.8/tests/testasciidoc.py
+--- asciidoc-8.6.8/tests/testasciidoc.py.explicit-interpreter	2012-03-01 00:19:57.000000000 +0100
++++ asciidoc-8.6.8/tests/testasciidoc.py	2014-02-10 17:16:54.965502188 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python2
+ 
+ USAGE = '''Usage: testasciidoc.py [OPTIONS] COMMAND
+ 

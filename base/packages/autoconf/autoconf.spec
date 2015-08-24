@@ -1,3 +1,5 @@
+%define _target_platform %{_arch}-unity-linux-musl
+
 Name:		autoconf		
 Version:	2.69		
 Release:	1%{?dist}
@@ -34,8 +36,7 @@ their use.
 %build
 export M4=/usr/bin/m4 
 ./configure \
-	--build=%{_build} \
-	--host=%{_host} \
+	--build=%{_target_platform} \
 	--prefix=/usr
 										%make
 

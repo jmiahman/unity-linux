@@ -15,7 +15,8 @@ Patch0:		rpm-musl-5.4.patch
 Patch1:		rpm-musl-name.patch
 Patch2:		rpm-macro.patch
 
-#BuildRequires:  
+
+BuildRequires: expat-devel, python-devel 
 #Requires:       
 
 %description
@@ -39,6 +40,8 @@ This package contains the %{name} shared libraries.
 %package	build
 Summary:	Scripts and executable programs used to build packages.
 Group:		System Environment/Base
+Requires:	%{name} = %{version}-%{release}
+Requires:       %{name}-libs = %{version}-%{release}
 
 %description 	build
 The rpm-build package contains the scripts and executable programs
@@ -46,11 +49,28 @@ that are used to build packages using the RPM Package Manager.
 
 #--------------------------------------------------------------------
 
+%package	python
+Summary:	Python 2 bindings for apps which will manipulate RPM packages
+Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:       %{name}-libs = %{version}-%{release}
+
+%description python
+The rpm-python package contains a module that permits applications
+written in the Python programming language to use the interface
+supplied by RPM Package Manager libraries.
+
+This package should be installed if you want to develop Python 2
+programs that will manipulate RPM packages and databases.
+
+#--------------------------------------------------------------------
+
 %package	devel
 Summary:        Development files for %{name}
 Group:          System Environment/Base
 License:        LGPL
-Requires:       %{name} = %{version}
+Requires:       %{name} = %{version}-%{release}
+Requires:       %{name}-libs = %{version}-%{release}
 
 %description	devel
 Development files and headers for %{name}.
@@ -89,6 +109,7 @@ autoconf
 	--with-beecrypt=external \
 	--with-zlib \
 	--without-db-tools-integrated \
+	--with-python='2.7' \
 	--enable-debug
 
 make
@@ -113,6 +134,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_usrlibrpm}/rpm.*
 %{_usrlibrpm}/tgpg
 %{_usrlibrpm}/rpmpopt
+%dir %{_libdir}/rpm
 
 #--------------------------------------------------------------------
 
@@ -155,6 +177,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_usrlibrpm}/u_pkg.sh
 %{_usrlibrpm}/vpkg-provides.sh
 %{_usrlibrpm}/vpkg-provides2.sh
+
+#--------------------------------------------------------------------
+
+%files python
+%defattr(-,root,root)
+/usr/lib/python2.7/site-packages/rpm
 
 #--------------------------------------------------------------------
 

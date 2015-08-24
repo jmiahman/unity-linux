@@ -13,7 +13,7 @@ Source1:	ffi-multilib.h
 Source2:	ffitarget-multilib.h
 
 Patch0:		gnu-linux-define.patch
-Patch1:         libffi-3.1-fix-include-path.patch
+#Patch1:         libffi-3.1-fix-include-path.patch
 
 BuildRequires: texinfo
 
@@ -57,12 +57,18 @@ developing applications that use %{name}.
 %prep
 %setup -q
 %patch0 -p1 -b .gnu-linux-define
-%patch1 -p1 -b .fix-include-path
+#%patch1 -p1 -b .fix-include-path
 
 %build
-./configure \
+sed -e '/^includesdir/ s/$(libdir).*$/$(includedir)/' \
+    -i include/Makefile.in &&
+
+sed -e '/^includedir/ s/=.*$/=@includedir@/' \
+    -e 's/^Cflags: -I${includedir}/Cflags:/' \
+    -i libffi.pc.in        &&
+
+%configure \
 	--prefix=/usr \
-	--enable-pax_emutramp
 
 make %{?_smp_mflags}
 
@@ -80,15 +86,15 @@ mkdir -p $RPM_BUILD_ROOT%{_includedir}
 # can have both a 32- and 64-bit version of the library, and they each need
 # their own correct-but-different versions of the headers to be usable.
 for i in ffi ffitarget; do
-  mv $RPM_BUILD_ROOT%{_libdir}/libffi-%{version}/include/$i.h $RPM_BUILD_ROOT%{_includedir}/$i-${basearch}.h
+  mv $RPM_BUILD_ROOT%{_includedir}/$i.h $RPM_BUILD_ROOT%{_includedir}/$i-%{_arch}.h
 done
 
 install -m644 %{SOURCE1} $RPM_BUILD_ROOT%{_includedir}/ffi.h
 install -m644 %{SOURCE2} $RPM_BUILD_ROOT%{_includedir}/ffitarget.h
 %else
-mv $RPM_BUILD_ROOT%{_libdir}/libffi-%{version}/include/{ffi,ffitarget}.h $RPM_BUILD_ROOT%{_includedir}
+#mv $RPM_BUILD_ROOT%{_libdir}/libffi-%{version}/include/{ffi,ffitarget}.h $RPM_BUILD_ROOT%{_includedir}
 %endif
-rm -rf $RPM_BUILD_ROOT%{_libdir}/libffi-%{version}
+#rm -rf $RPM_BUILD_ROOT%{_libdir}/libffi-%{version}
 
 %files
 %{_libdir}/libffi.so.6.0.4
