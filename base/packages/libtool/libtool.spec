@@ -47,7 +47,13 @@ the rest of the GNU Autotools (including GNU Autoconf and GNU Automake).
 %setup -q
 
 %build
+<<<<<<< HEAD
 %configure \
+=======
+./configure \
+	--build=%{_target_platform} \
+	--host=%{_target_platform} \
+>>>>>>> 58dbac94f7b4a72462f9ba13b69f8f5dc8051fc0
 	--prefix=/usr \
 	--disable-static \
 

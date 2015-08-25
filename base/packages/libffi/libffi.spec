@@ -86,7 +86,11 @@ mkdir -p $RPM_BUILD_ROOT%{_includedir}
 # can have both a 32- and 64-bit version of the library, and they each need
 # their own correct-but-different versions of the headers to be usable.
 for i in ffi ffitarget; do
+<<<<<<< HEAD
   mv $RPM_BUILD_ROOT%{_includedir}/$i.h $RPM_BUILD_ROOT%{_includedir}/$i-%{_arch}.h
+=======
+  mv $RPM_BUILD_ROOT%{_libdir}/libffi-%{version}/include/$i.h $RPM_BUILD_ROOT%{_includedir}/$i-%{_arch}.h
+>>>>>>> 58dbac94f7b4a72462f9ba13b69f8f5dc8051fc0
 done
 
 install -m644 %{SOURCE1} $RPM_BUILD_ROOT%{_includedir}/ffi.h
