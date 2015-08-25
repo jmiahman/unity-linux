@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #For some reason we have an issue with the ice-9 module in 2.0.11 so wait to build
 
 Name:		guile
@@ -56,7 +55,6 @@ developing applications that use %{name}.
 %patch0 -p1
 
 %build
-<<<<<<< HEAD
 
 #Remove OLD config.sub
 for i in $(find . -name config.guess 2>/dev/null) $(find . -name config.sub 2>/dev/null) ; do \
@@ -64,24 +62,15 @@ for i in $(find . -name config.guess 2>/dev/null) $(find . -name config.sub 2>/d
 		 /usr/share/automake-1.15/$(basename $i) $i ; \
 done
 
-=======
->>>>>>> 58dbac94f7b4a72462f9ba13b69f8f5dc8051fc0
 %configure \
 	--prefix=/usr \
 	--disable-static \
 	--disable-error-on-warning \
-<<<<<<< HEAD
-	--enable-posix \
 
 sed -i 's|" $sys_lib_dlsearch_path "|" $sys_lib_dlsearch_path %{_libdir} "|' \
     libtool
 
 make -j1
-=======
-
-make %{?_smp_mflags}
->>>>>>> 58dbac94f7b4a72462f9ba13b69f8f5dc8051fc0
-
 
 %install
 make -j1 DESTDIR=%{buildroot} install
@@ -106,8 +95,7 @@ rm %{buildroot}/usr/lib/*.la
 %{_libdir}/guile/*
 
 %files libs
-%{_libdir}/usr/lib/libguile-2.0.so.*
->>>>>>> 58dbac94f7b4a72462f9ba13b69f8f5dc8051fc0
+%{_libdir}/usr/lib/libguile*.so.*
 
 %files devel
 #%doc AUTHORS ChangeLog NEWS README
