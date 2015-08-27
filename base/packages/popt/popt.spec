@@ -21,6 +21,14 @@ arguments to be aliased via configuration files and includes utility
 functions for parsing arbitrary strings into argv[] arrays using
 shell-like rules.
 
+%package        devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%description    devel
+This package contains libraries and header files for
+developing applications that use %{name}.
+
 %prep
 %setup -q
 
@@ -35,11 +43,23 @@ make %{?_smp_mflags}
 
 
 %install
+rm -rf %{buildroot}
 make DESTDIR=%{buildroot} install
 rm -f %{buildroot}/lib/*.la
 
+mkdir -p $RPM_BUILD_ROOT%{_libdir}
+cd $RPM_BUILD_ROOT/%{_lib}
+ln -sf ../../%{_lib}/$(ls libpopt.so.?.?.?) $RPM_BUILD_ROOT%{_libdir}/libpopt.so
+cd ..
+
+
 %files
-/lib/libpopt.so.0.0.0
-/lib/libpopt.so.0
+/lib/libpopt.so.*
+
+%files devel
+%{_includedir}/*.h
+%{_libdir}/libpopt.so
+%{_libdir}/pkgconfig/%{name}.pc
+%{_includedir}/popt.h
 
 %changelog

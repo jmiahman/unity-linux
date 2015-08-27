@@ -6,6 +6,8 @@ License:   LGPLv2+
 URL:       https://github.com/hughsie/libhif
 Source0:   http://people.freedesktop.org/~hughsient/releases/libhif-%{version}.tar.xz
 
+Group: unkown
+
 BuildRequires: glib-devel
 BuildRequires: libtool
 #BuildRequires: docbook-utils
@@ -34,7 +36,7 @@ GLib headers and libraries for libhif.
 %setup -q
 
 # for patch2
-rm -f configure
+#rm -f configure
 
 %build
 %configure \
@@ -42,7 +44,6 @@ rm -f configure
         --disable-dnf-yumdb \
         --disable-static \
         --disable-silent-rules
-)
 
 make %{?_smp_mflags}
 

@@ -1,0 +1,22 @@
+diff -Naur hawkey-hawkey-0.6.0-1/src/python/query-py.c hawkey-hawkey-0.6.0-1_musl/src/python/query-py.c
+--- hawkey-hawkey-0.6.0-1/src/python/query-py.c	2015-08-07 17:25:16.000000000 +0000
++++ hawkey-hawkey-0.6.0-1_musl/src/python/query-py.c	2015-08-26 19:15:41.707507453 +0000
+@@ -19,6 +19,7 @@
+  */
+ 
+ #include <Python.h>
++#include <sys/ipc.h>
+ 
+ // libsolv
+ #include <solv/util.h>
+diff -Naur hawkey-hawkey-0.6.0-1/src/python/selector-py.c hawkey-hawkey-0.6.0-1_musl/src/python/selector-py.c
+--- hawkey-hawkey-0.6.0-1/src/python/selector-py.c	2015-08-07 17:25:16.000000000 +0000
++++ hawkey-hawkey-0.6.0-1_musl/src/python/selector-py.c	2015-08-26 19:15:25.395240718 +0000
+@@ -19,6 +19,7 @@
+  */
+ 
+ #include <Python.h>
++#include <sys/ipc.h>
+ 
+ // hawkey
+ #include "src/packagelist.h"

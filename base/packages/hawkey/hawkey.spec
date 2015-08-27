@@ -9,7 +9,10 @@ License:	LGPLv2+
 URL:		https://github.com/rpm-software-management/%{name}
 # git clone https://github.com/rpm-software-management/hawkey.git && cd hawkey && tito build --tgz
 #https://github.com/rpm-software-management/hawkey/archive/hawkey-0.6.0-1.tar.gz
-Source0:	https://github.com/rpm-software-management/%{name}/archive/%{name}-%{version}.tar.gz
+Source0:	https://github.com/rpm-software-management/%{name}/archive/%{name}-%{version}-1.tar.gz
+
+Patch0:		hawkey-0.6.0-musl-add-ipc_h.patch
+
 BuildRequires:	libsolv-devel >= %{libsolv_version}
 BuildRequires:	cmake expat-devel rpm-devel zlib-devel check-devel
 Requires:	libsolv >= %{libsolv_version}
@@ -44,21 +47,24 @@ Requires:	%{name} = %{version}-%{release}
 Python 2 bindings for the hawkey library.
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q -n %{name}-%{name}-%{version}-1
+%patch0 -p1
 
 %build
+rm -rf %{buildroot}
+export CFLAGS="$CFLAGS -std=gnu99"
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX:PATH=/usr .
 make %{?_smp_mflags}
 make doc-man
 
-%check
-make ARGS="-V" test
+#%check
+#make ARGS="-V" test
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
 mkdir -p %{buildroot}%{_libdir}/
-mv %{buildroot}/usr/lib64/* %{buildroot}%{_libdir}/
-rmdir %{buildroot}/usr/lib64/
+mv %{buildroot}/usr/lib64/* %{buildroot}/usr/lib/
+rm -rf %{buildroot}/usr/lib64
 
 %post -p /sbin/ldconfig
 

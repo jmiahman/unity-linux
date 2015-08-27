@@ -57,7 +57,7 @@ rm %{buildroot}/usr/lib/*.la
 %{_libdir}/lib*.so.*
 
 %files devel
-#%{_bindir}/glib-config
+%{_bindir}/*
 %{_libdir}/lib*.so
 %{_libdir}/glib-2.0/
 %{_libdir}/pkgconfig/*

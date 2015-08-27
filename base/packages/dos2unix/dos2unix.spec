@@ -1,43 +1,37 @@
-Summary: Text file format converters
-Name: dos2unix
-Version: 7.3
+Summary: Hany's Dos2Unix Text file format converters
+Name: hd2u
+Version: 1.0.3
 Release: 1%{?dist}
 Group: Applications/Text
-License: BSD
-URL: http://waterlan.home.xs4all.nl/dos2unix.html
-Source: http://waterlan.home.xs4all.nl/dos2unix/%{name}-%{version}.tar.gz
-BuildRequires: gettext
-BuildRequires: perl-Pod-Checker
+License: GPL
+URL: http://hany.sk/~hany/software/hd2u/
+Source: http://terminus.sk/~hany/_data/hd2u/hd2u-1.0.3.tgz
 Provides: unix2dos = %{version}-%{release}
-Obsoletes: unix2dos < 5.1-1
+
+BuildRequires: popt-devel
 
 %description
-Convert text files with DOS or Mac line endings to Unix line endings and 
+Hany's Dos2Unix Converts text files with DOS or Mac line endings to Unix line endings and 
 vice versa.
 
 %prep
 %setup -q
 
 %build
+%configure
 make %{?_smp_mflags}
 
 %install
-make DESTDIR=$RPM_BUILD_ROOT install
+install -c -d -m 755 %{buildroot}/usr/bin
+install -c -m 755 -s dos2unix %{buildroot}/usr/bin
 
-# We add doc files manually to %%doc
-rm -rf $RPM_BUILD_ROOT%{_docdir}
 
-%find_lang %{name} --with-man --all-name
-
-%files -f %{name}.lang
+%files
 %defattr(-,root,root,0755)
-%doc man/man1/dos2unix.htm  ChangeLog.txt COPYING.txt
-%doc NEWS.txt README.txt TODO.txt
+#%doc man/man1/dos2unix.htm  ChangeLog.txt COPYING.txt
+#%doc NEWS.txt README.txt TODO.txt
 %{_bindir}/dos2unix
-%{_bindir}/mac2unix
-%{_bindir}/unix2dos
-%{_bindir}/unix2mac
-%{_mandir}/man1/*.1*
+#%{_mandir}/man1/*.1*
 
 %clean
 rm -rf $RPM_BUILD_ROOT

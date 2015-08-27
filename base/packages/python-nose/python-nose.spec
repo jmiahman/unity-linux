@@ -1,9 +1,10 @@
 %{!?python_sitelib: %global python_sitelib %(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
+%{!?python_version: %global python_version %(echo `python -c "import sys; print(sys.version)"` | cut -d '.' -f1-2)}
 
 %global upstream_name nose
 
 # Enable building without docs to avoid a circular dependency between this and python-sphinx
-%global with_docs 1
+%global with_docs 0
 
 Name:           python-nose
 Version:        1.3.7
@@ -20,7 +21,7 @@ BuildRequires:  python-devel
 Provides:       python-%{upstream_name} = %{version}-%{release}
 
 BuildRequires:  python-setuptools
-BuildRequires:  dos2unix
+BuildRequires:  hd2u
 BuildRequires:  python-coverage >= 3.4-1
 Requires:       python-setuptools
 
@@ -78,8 +79,8 @@ cp -a doc reST
 rm -rf reST/.static reST/.templates
 
 
-%check
-python selftest.py
+#%check
+#python selftest.py
 
 %clean
 rm -rf %{buildroot}
@@ -93,11 +94,11 @@ rm -rf %{buildroot}
 #%{_mandir}/man1/nosetests.1.gz
 %{python_sitelib}/nose*
 
-%files docs
-%defattr(-,root,root,-)
-%doc reST examples
-%if 0%{?with_docs}
-%doc html
-%endif # with_docs
+#%files docs
+#%defattr(-,root,root,-)
+##%doc reST examples
+#%if 0%{?with_docs}
+#%doc html
+#%endif # with_docs
 
 %changelog

@@ -12,6 +12,8 @@ Source4: getconf.c
 Source5: getent.c
 Source6: iconv.c
 
+Patch0:  musl-1.1.10-add-qsort_r.patch
+
 License: LGPLv2+
 Group:	 Development/C
 URL:	 http://www.musl-libc.org/
@@ -43,6 +45,7 @@ Utilities for the %{name} c library (libc) implementation.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 

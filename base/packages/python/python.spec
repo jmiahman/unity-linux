@@ -1,3 +1,5 @@
+%define _target_platform %{_arch}-unity-linux-musl
+
 %define patchleveltag .10
 %define baseversion 2.7
 
@@ -13,6 +15,11 @@ Source0:	http://ftp.osuosl.org/pub/blfs/conglomeration/Python/Python-%{version}.
 
 Patch0:		find_library.patch
 Patch1:		unchecked-ioctl.patch	
+Patch2:		python-2.7.1-config.patch
+Patch3:		00146-hashlib-fips.patch
+Patch4:		00187-add-RPATH-to-pyexpat.patch
+Patch5:		python-2.6-rpath.patch
+Patch6:		python-2.6.4-distutils-rpath.patch
 
 BuildRequires:	expat-devel, openssl-devel, zlib-devel, ncurses-devel
 BuildRequires:  bzip2-devel, gdbm-devel, sqlite, libffi-devel
@@ -79,17 +86,31 @@ documentation.
 
 %patch0 -p1 -b .find_library
 %patch1 -p1 -b .unchecked-ioctl
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
 
 %build
-export OPT=$CFLAGS
+#rm -r Modules/expat Modules/zlib
+
+#Die local die! Dirty Dirty Hack.. fix later
+sed -i "s%/usr/local/%/usr/%g" $(grep -H -r '/usr/local/' ./ | cut -d: -f1)
+
+#This also is a hack.. find out why _hashlib needs it forced
+export LDFLAGS="$LDFLAGS -lz"
+
 ./configure \
+	--build=%{_target_platform} \
+	--host=%{_target_platform} \
 	--prefix=/usr \
 	--enable-shared \
 	--with-threads \
 	--enable-ipv6 \
 	--with-system-ffi \
-	--with-system-expat \
 	--with-system-zlib \
+	--with-system-expat \
 	--enable-unicode=ucs4
 
 make %{?_smp_mflags}
