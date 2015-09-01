@@ -14,6 +14,8 @@ Source3:        configure.ac
 Patch0:		rpm-musl-5.4.patch
 Patch1:		rpm-musl-name.patch
 Patch2:		rpm-macro.patch
+Patch3:		rpm-5.4.10-fix-a-couple-of-debugedit-memleaks.patch
+Patch4:		rpm-fix-missing-types-in-headers.patch
 
 
 BuildRequires: expat-devel, python-devel 
@@ -82,8 +84,11 @@ Development files and headers for %{name}.
 %patch0 -p1
 %patch1 -p0
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 %build
+rm -rf %{builddir}
 
 tar xzvf %{SOURCE1} 
 mv db-5.2.42 db
@@ -95,11 +100,18 @@ cp %{SOURCE3} .
 autoconf
 
 ./configure \
-	--prefix='/usr' \
+	--prefix=/usr \
+	--disable-silent-rules \
+	--enable-static \
+	--enable-shared \
 	--disable-openmp \
 	--disable-nls \
 	--with-file=external \
+	--with-bzip2=external \
+	--without-path-versioned \
+	--with-popt=external \
 	--with-db=internal \
+	--with-dbapi=db \
 	--without-lua \
 	--with-neon \
 	--with-openssl \
@@ -117,6 +129,10 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
+
+#Let's add some needed header files eventually db.h will be moved to db package
+%__cp %{_builddir}/%{name}-%{version}/lib/rpmlib.h %{buildroot}%{_includedir}/rpm/
+%__cp %{_builddir}/%{name}-%{version}/db3/*.h %{buildroot}%{_includedir}/rpm/
 
 
 %clean
@@ -187,7 +203,8 @@ rm -rf $RPM_BUILD_ROOT
 #--------------------------------------------------------------------
 
 %files devel
-%{_includedir}/rpm
+%{_includedir}/rpm/*.h
+%dir %{_includedir}/rpm/
 %{_libdir}/librpm.a
 %{_libdir}/librpm.la
 %{_libdir}/librpm.so

@@ -137,7 +137,7 @@ rm %{buildroot}/usr/bin/2to3
 %exclude /usr/lib/python%{baseversion}/lib-tk/test/
 
 %files gdbm
-/usr/lib/python%{baseversion}/lib-dynload/gdbm.so
+/usr/lib/python%{baseversion}/lib-dynload/gdbm*.so
 
 %files tests
 /usr/lib/python%{baseversion}/sqlite3/test

@@ -1,7 +1,7 @@
 %define _target_platform %{_arch}-unity-linux-musl
 
 Name:		glib	
-Version:	2.44.1
+Version:	2.45.6
 Release:	1%{?dist}
 Summary:	A library of handy utility functions
 
@@ -35,7 +35,7 @@ Requires: pkgconfig
 # workaround packaing issue. gtk-doc.make timestamp was newer than
 # Makefile.am, which triggers automake re-run
 touch -r docs/reference/glib/Makefile.am gtk-doc.make
-
+./autogen.sh
 ./configure \
 	--build=%{_target_platform} \
 	--host=%{_target_platform} \

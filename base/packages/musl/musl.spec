@@ -2,7 +2,7 @@
 
 Summary: Development files for musl libc
 Name:	 musl
-Version: 1.1.10
+Version: 1.1.11
 Release: 1
 Source0: http://www.musl-libc.org/releases/%{name}-%{version}.tar.gz
 Source1: __stack_chk_fail_local.c
