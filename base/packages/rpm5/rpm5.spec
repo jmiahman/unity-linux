@@ -7,15 +7,14 @@ Group:          System Environment/Base
 License:        LGPL
 URL:            rpm5.org
 Source0:        http://translationproject.org/extra/rpm-5.4.15.tar.gz
-Source1:	http://optware.kupper.org/sources/db-5.2.42.tar.gz
-Source2:	configure-db3
-Source3:        configure.ac
+#Source1:	http://optware.kupper.org/sources/db-5.2.42.tar.gz
 
-Patch0:		rpm-musl-5.4.patch
-Patch1:		rpm-musl-name.patch
-Patch2:		rpm-macro.patch
-Patch3:		rpm-5.4.10-fix-a-couple-of-debugedit-memleaks.patch
-Patch4:		rpm-fix-missing-types-in-headers.patch
+Patch0:		rpm-db5.2.patch
+Patch1:		rpm-musl-5.4.patch
+Patch2:		rpm-musl-name.patch
+Patch3:		rpm-macro.patch
+Patch4:		rpm-5.4.10-fix-a-couple-of-debugedit-memleaks.patch
+Patch5:		rpm-fix-missing-types-in-headers.patch
 
 
 BuildRequires: expat-devel, python-devel 
@@ -82,21 +81,21 @@ Development files and headers for %{name}.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p0
-%patch2 -p1
+%patch1 -p1
+%patch2 -p0
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 rm -rf %{builddir}
 
-tar xzvf %{SOURCE1} 
-mv db-5.2.42 db
-mkdir db3
-cp %{SOURCE2} db3/configure
+#tar xzvf %{SOURCE1} 
+#mv db-5.2.42 db
+#mkdir db3
+#cp %{SOURCE2} db3/configure
 
 export CFLAGS="-D_GNU_SOURCE -D__musl__ -Os"
-cp %{SOURCE3} .
 autoconf
 
 ./configure \
@@ -107,10 +106,10 @@ autoconf
 	--disable-openmp \
 	--disable-nls \
 	--with-file=external \
+        --with-db=external \
 	--with-bzip2=external \
 	--without-path-versioned \
 	--with-popt=external \
-	--with-db=internal \
 	--with-dbapi=db \
 	--without-lua \
 	--with-neon \
@@ -129,11 +128,6 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-
-#Let's add some needed header files eventually db.h will be moved to db package
-%__cp %{_builddir}/%{name}-%{version}/lib/rpmlib.h %{buildroot}%{_includedir}/rpm/
-%__cp %{_builddir}/%{name}-%{version}/db3/*.h %{buildroot}%{_includedir}/rpm/
-
 
 %clean
 rm -rf $RPM_BUILD_ROOT

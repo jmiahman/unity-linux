@@ -1,3 +1,5 @@
+%{!?python_sitearch: %global python_sitearch %(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+
 Name:           librepo
 Version:        1.7.15
 Release:        1%{?dist}
@@ -51,16 +53,17 @@ Requires:       %{name} = %{version}-%{release}
 Python bindings for the librepo library.
 
 %prep
-%setup -q -n librepo
+%setup -q -n %{name}-%{name}-%{version}
 
 %build
-%cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .
+rm -rf %{buildroot}
+cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/usr .
 make %{?_smp_mflags}
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
-popd
-%endif
+mv %{buildroot}/usr/lib64/* %{buildroot}/usr/lib/
+rm -rf %{buildroot}/usr/lib64
 
 %post -p /sbin/ldconfig
 

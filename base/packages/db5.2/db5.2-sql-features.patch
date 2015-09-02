@@ -1,0 +1,20 @@
+--- db-5.2.42/dist/configure.ac.orig	2012-02-29 19:48:30.000000000 +0100
++++ db-5.2.42/dist/configure.ac	2013-06-09 08:42:31.501650292 +0200
+@@ -582,6 +582,7 @@
+ 	if test "$db_cv_build_cryptography" = "yes"; then
+ 		SQL_FLAGS="$SQL_FLAGS -DSQLITE_HAS_CODEC=1"
+ 	fi
++	SQL_FLAGS="$SQL_FLAGS -DSQLITE_ENABLE_COLUMN_METADATA=1"
+ fi
+ 
+ if test "$db_cv_sql_compat" = "yes"; then
+--- db-5.2.42/dist/configure.orig	2012-02-29 19:48:30.000000000 +0100
++++ db-5.2.42/dist/configure	2013-06-09 09:44:23.258239592 +0200
+@@ -18737,6 +18737,7 @@
+ 	if test "$db_cv_build_cryptography" = "yes"; then
+ 		SQL_FLAGS="$SQL_FLAGS -DSQLITE_HAS_CODEC=1"
+ 	fi
++	SQL_FLAGS="$SQL_FLAGS -DSQLITE_ENABLE_COLUMN_METADATA=1"
+ fi
+ 
+ if test "$db_cv_sql_compat" = "yes"; then
