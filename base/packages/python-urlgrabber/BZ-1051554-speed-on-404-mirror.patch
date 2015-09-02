@@ -1,0 +1,18 @@
+commit fbc995805e9d860366c67819effc3bc7d5d8a8b2
+Author: Zdenek Pavlas <zpavlas@redhat.com>
+Date:   Mon Jan 13 13:20:28 2014 +0100
+
+    Don't set speed=0 on a new mirror that 404'd. BZ 1051554
+
+diff --git a/urlgrabber/grabber.py b/urlgrabber/grabber.py
+index ef18d6a..04f1179 100644
+--- a/urlgrabber/grabber.py
++++ b/urlgrabber/grabber.py
+@@ -2418,6 +2418,7 @@ class _TH:
+                 speed = (k1 * speed + k2 * dl_size / dl_time) / (k1 + k2)
+             fail = 0
+         elif getattr(ug_err, 'code', None) == 404:
++            if not ts: return # 1st update, avoid speed=0
+             fail = 0 # alive, at least
+         else:
+             fail += 1 # seems dead
