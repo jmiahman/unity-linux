@@ -1,7 +1,7 @@
 diff -Naur rpm-5.4.15/macros/macros.in rpm-5.4.15_mv/macros/macros.in
 --- rpm-5.4.15/macros/macros.in	2014-08-08 15:40:40.000000000 +0700
 +++ rpm-5.4.15_mv/macros/macros.in	2015-08-06 12:40:09.221917218 +0700
-@@ -127,6 +127,30 @@
+@@ -127,6 +127,31 @@
  %__xz			@__XZ@
  
  #==============================================================================
@@ -19,6 +19,7 @@ diff -Naur rpm-5.4.15/macros/macros.in rpm-5.4.15_mv/macros/macros.in
 +%__ranlib               ranlib
 +%__remsh                %{__rsh}
 +%__strip                /usr/bin/strip
++%__python               /usr/bin/python
 +
 +# XXX avoid failures if tools are not installed when rpm is built.
 +%__libtoolize           libtoolize
