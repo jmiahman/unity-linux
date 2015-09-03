@@ -29,14 +29,15 @@
 %endif
 
 %global _cmake_opts \\\
-	-DENABLE_APPDATA=ON \\\
-	-DENABLE_BZIP2_COMPRESSION=ON \\\
-	-DENABLE_LZMA_COMPRESSION=ON \\\
-	-DENABLE_APPDATA=ON \\\
+	-DENABLE_APPDATA=OFF \\\
+	-DENABLE_BZIP2_COMPRESSION=OFF \\\
+	-DENABLE_LZMA_COMPRESSION=OFF \\\
+	-DENABLE_HELIXREPO=OFF \\\
 	-DENABLE_PYTHON=ON \\\
-	-DENABLE_RPMDB=ON \\\
-	-DENABLE_RPMDB_BYRPMHEADER=ON \\\
-	-DENABLE_RPMMD=ON \\\
+	-DENABLE_PUBKEY=ON \\\
+	-DENABLE_RPMDB=1 \\\
+        -DSUSE=1 \\\
+	-DENABLE_RPMDB_BYRPMHEADER=1 \\\
 	-DPythonLibs_FIND_VERSION=2 \\\
 	-DPythonLibs_FIND_VERSION_MAJOR=2 \\\
 	-DRPM5=ON \\\
@@ -47,11 +48,13 @@
 #%filter_setup
 
 Name:		libsolv
-Version:	0.6.11
-Release:	1.git%{shortcommit}%{?dist}
+Version:	0.6.8
+#Release:	1.git%{shortcommit}%{?dist}
+Release:	1%{?dist}
 License:	BSD
 Url:		https://github.com/openSUSE/libsolv
-Source:		https://github.com/openSUSE/libsolv/archive/%{gitrev}.tar.gz#/%{name}-%{shortcommit}.tar.gz
+Source0:	https://github.com/openSUSE/libsolv/archive/%{version}/%{name}-%{version}.tar.gz
+#Source:		https://github.com/openSUSE/libsolv/archive/%{gitrev}.tar.gz#/%{name}-%{shortcommit}.tar.gz
 Group:		Development/Libraries
 Summary:	Package dependency solver
 BuildRequires:	cmake expat-devel rpm-devel zlib-devel
@@ -61,6 +64,7 @@ BuildRequires:  xz-devel
 #BuildRequires:  swig
 
 Patch0:		libsolv-fopencookie.patch 
+Patch1:		libsolv-python.patch
 
 %description
 A free package dependency solver using a satisfiability algorithm. The
@@ -121,8 +125,9 @@ Perl bindings for sat solver.
 %endif
 
 %prep
-%setup -q -n libsolv-%{gitrev}
+%setup -q -n libsolv-%{version}
 %patch0 -p1
+%patch1 -p1
 
 %build
 cmake %_cmake_opts \

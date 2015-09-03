@@ -1,0 +1,13 @@
+--- libsolv-0.6.6/bindings/python/CMakeLists.txt.orig	2014-10-07 14:41:37.000000000 +0200
++++ libsolv-0.6.6/bindings/python/CMakeLists.txt	2014-10-25 10:42:06.870708523 +0200
+@@ -1,8 +1,8 @@
+ #SET (PythonLibs_FIND_VERSION 3)
+ 
+ FIND_PACKAGE (PythonLibs)
+-SET (PythonInterp_FIND_VERSION ${PYTHONLIBS_VERSION_STRING})
+-FIND_PACKAGE (PythonInterp REQUIRED)
++#SET (PythonInterp_FIND_VERSION ${PYTHONLIBS_VERSION_STRING})
++FIND_PACKAGE (PythonInterp ${PYTHONLIBS_VERSION_STRING} REQUIRED)
+ EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} -c "from sys import stdout; from distutils import sysconfig; stdout.write(sysconfig.get_python_lib(True))" OUTPUT_VARIABLE PYTHON_INSTALL_DIR)
+ 
+ IF (NOT DEFINED PYTHON_VERSION_MAJOR)

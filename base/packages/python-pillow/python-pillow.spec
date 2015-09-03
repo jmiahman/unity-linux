@@ -3,7 +3,7 @@
 %global upstream_name Pillow
 %global _first_letter %(echo %{upstream_name}|cut -c1 )
 
-Name:           python-%{upstream_name}
+Name:           python-pillow
 Version:        2.8.1
 Release:        1%{?dist}
 Summary:	A Python Imaging Library 
