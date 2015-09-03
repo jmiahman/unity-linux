@@ -1,0 +1,284 @@
+diff -urN Python-2.7.org/Demo/tix/INSTALL.txt Python-2.7/Demo/tix/INSTALL.txt
+--- Python-2.7.org/Demo/tix/INSTALL.txt	2001-11-11 15:07:37.000000000 +0100
++++ Python-2.7/Demo/tix/INSTALL.txt	2010-07-05 20:00:03.472866047 +0200
+@@ -71,7 +71,7 @@
+ You should now have a working Tix implementation in Python. To see if all
+ is as it should be, run the 'tixwidgets.py' script in the Demo/tix directory.
+ Under X windows, do
+-	/usr/local/bin/python Demo/tix/tixwidgets.py
++	/usr/bin/python Demo/tix/tixwidgets.py
+ 
+ If this does not work, you may need to tell python where to find
+ the Tcl, Tk and Tix library files. This is done by setting the
+@@ -80,7 +80,7 @@
+ 	env 	TCL_LIBRARY=/usr/local/lib/tcl8.3 \
+ 		TK_LIBRARY=/usr/local/lib/tk8.3 \
+ 		TIX_LIBRARY=/usr/local/lib/tix8.1 \
+-		/usr/local/bin/python Demo/tix/tixwidgets.py
++		/usr/bin/python Demo/tix/tixwidgets.py
+ 
+ 
+ If you find any bugs or have suggestions for improvement, please report them
+--- p/Doc/c-api/init.rst~	2012-04-10 01:07:28.000000000 +0200
++++ p/Doc/c-api/init.rst	2012-05-10 17:41:58.815998870 +0200
+@@ -123,7 +123,7 @@
+    Return the *prefix* for installed platform-independent files. This is derived
+    through a number of complicated rules from the program name set with
+    :c:func:`Py_SetProgramName` and some environment variables; for example, if the
+-   program name is ``'/usr/local/bin/python'``, the prefix is ``'/usr/local'``. The
++   program name is ``'/usr/bin/python'``, the prefix is ``'/usr/local'``. The
+    returned string points into static storage; the caller should not modify its
+    value.  This corresponds to the :makevar:`prefix` variable in the top-level
+    :file:`Makefile` and the ``--prefix`` argument to the :program:`configure`
+@@ -136,7 +136,7 @@
+    Return the *exec-prefix* for installed platform-*dependent* files.  This is
+    derived through a number of complicated rules from the program name set with
+    :c:func:`Py_SetProgramName` and some environment variables; for example, if the
+-   program name is ``'/usr/local/bin/python'``, the exec-prefix is
++   program name is ``'/usr/bin/python'``, the exec-prefix is
+    ``'/usr/local'``.  The returned string points into static storage; the caller
+    should not modify its value.  This corresponds to the :makevar:`exec_prefix`
+    variable in the top-level :file:`Makefile` and the ``--exec-prefix``
+diff -urN Python-2.7.org/Doc/c-api/intro.rst Python-2.7/Doc/c-api/intro.rst
+--- Python-2.7.org/Doc/c-api/intro.rst	2010-06-11 02:23:01.000000000 +0200
++++ Python-2.7/Doc/c-api/intro.rst	2010-07-05 20:00:03.482863587 +0200
+@@ -541,7 +541,7 @@
+ path (the environment variable :envvar:`PATH`).
+ 
+ For instance, if the Python executable is found in
+-:file:`/usr/local/bin/python`, it will assume that the libraries are in
++:file:`/usr/bin/python`, it will assume that the libraries are in
+ :file:`/usr/local/lib/python{X.Y}`.  (In fact, this particular path is also
+ the "fallback" location, used when no executable file named :file:`python` is
+ found along :envvar:`PATH`.)  The user can override this behavior by setting the
+diff -urN Python-2.7.org/Doc/faq/library.rst Python-2.7/Doc/faq/library.rst
+--- Python-2.7.org/Doc/faq/library.rst	2010-03-12 10:57:43.000000000 +0100
++++ Python-2.7/Doc/faq/library.rst	2010-07-05 20:00:03.486197135 +0200
+@@ -54,7 +54,7 @@
+ The second can be done in a number of ways.  The most straightforward way is to
+ write ::
+ 
+-  #!/usr/local/bin/python
++  #!/usr/bin/python
+ 
+ as the very first line of your file, using the pathname for where the Python
+ interpreter is installed on your platform.
+@@ -650,7 +650,7 @@
+ 
+ Yes. Here's a simple example that uses httplib::
+ 
+-   #!/usr/local/bin/python
++   #!/usr/bin/python
+ 
+    import httplib, sys, time
+ 
+diff -urN Python-2.7.org/Doc/install/index.rst Python-2.7/Doc/install/index.rst
+--- Python-2.7.org/Doc/install/index.rst	2009-10-28 00:06:10.000000000 +0100
++++ Python-2.7/Doc/install/index.rst	2010-07-05 20:00:03.506197416 +0200
+@@ -369,12 +369,12 @@
+ 
+ Another possibility is a network filesystem where the name used to write to a
+ remote directory is different from the name used to read it: for example, the
+-Python interpreter accessed as :file:`/usr/local/bin/python` might search for
++Python interpreter accessed as :file:`/usr/bin/python` might search for
+ modules in :file:`/usr/local/lib/python2.{X}`, but those modules would have to
+ be installed to, say, :file:`/mnt/{@server}/export/lib/python2.{X}`.  This could
+ be done with ::
+ 
+-   /usr/local/bin/python setup.py install --prefix=/mnt/@server/export
++   /usr/bin/python setup.py install --prefix=/mnt/@server/export
+ 
+ In either case, the :option:`--prefix` option defines the installation base, and
+ the :option:`--exec-prefix` option defines the platform-specific installation
+diff -urN Python-2.7.org/Doc/library/cgi.rst Python-2.7/Doc/library/cgi.rst
+--- Python-2.7.org/Doc/library/cgi.rst	2009-08-17 21:26:49.000000000 +0200
++++ Python-2.7/Doc/library/cgi.rst	2010-07-05 20:00:03.509530626 +0200
+@@ -387,7 +387,7 @@
+ first line of the script contains ``#!`` starting in column 1 followed by the
+ pathname of the Python interpreter, for instance::
+ 
+-   #!/usr/local/bin/python
++   #!/usr/bin/python
+ 
+ Make sure the Python interpreter exists and is executable by "others".
+ 
+diff -urN Python-2.7.org/Doc/library/pickle.rst Python-2.7/Doc/library/pickle.rst
+--- Python-2.7.org/Doc/library/pickle.rst	2009-04-27 17:29:09.000000000 +0200
++++ Python-2.7/Doc/library/pickle.rst	2010-07-05 20:00:03.512863651 +0200
+@@ -737,7 +737,7 @@
+ reading resumes from the last location. The :meth:`__setstate__` and
+ :meth:`__getstate__` methods are used to implement this behavior. ::
+ 
+-   #!/usr/local/bin/python
++   #!/usr/bin/python
+ 
+    class TextReader:
+        """Print and number lines in a text file."""
+@@ -774,7 +774,7 @@
+    >>> import TextReader
+    >>> obj = TextReader.TextReader("TextReader.py")
+    >>> obj.readline()
+-   '1: #!/usr/local/bin/python'
++   '1: #!/usr/bin/python'
+    >>> obj.readline()
+    '2: '
+    >>> obj.readline()
+diff -urN Python-2.7.org/Doc/tutorial/interpreter.rst Python-2.7/Doc/tutorial/interpreter.rst
+--- Python-2.7.org/Doc/tutorial/interpreter.rst	2010-04-10 13:16:59.000000000 +0200
++++ Python-2.7/Doc/tutorial/interpreter.rst	2010-07-05 20:00:03.516196870 +0200
+@@ -10,7 +10,7 @@
+ Invoking the Interpreter
+ ========================
+ 
+-The Python interpreter is usually installed as :file:`/usr/local/bin/python` on
++The Python interpreter is usually installed as :file:`/usr/bin/python` on
+ those machines where it is available; putting :file:`/usr/local/bin` in your
+ Unix shell's search path makes it possible to start it by typing the command ::
+ 
+diff -urN Python-2.7.org/Lib/cgi.py Python-2.7/Lib/cgi.py
+--- Python-2.7.org/Lib/cgi.py	2010-03-17 21:05:11.000000000 +0100
++++ Python-2.7/Lib/cgi.py	2010-07-05 20:00:03.522865338 +0200
+@@ -1,6 +1,6 @@
+-#! /usr/local/bin/python
++#! /usr/bin/python
+ 
+-# NOTE: the above "/usr/local/bin/python" is NOT a mistake.  It is
++# NOTE: the above "/usr/bin/python" is NOT a mistake.  It is
+ # intentionally NOT "/usr/bin/env python".  On many systems
+ # (e.g. Solaris), /usr/local/bin is not in $PATH as passed to CGI
+ # scripts, and /usr/local/bin is the default directory where Python is
+diff -urN Python-2.7.org/Mac/PythonLauncher/factorySettings.plist Python-2.7/Mac/PythonLauncher/factorySettings.plist
+--- Python-2.7.org/Mac/PythonLauncher/factorySettings.plist	2004-07-16 14:34:23.000000000 +0200
++++ Python-2.7/Mac/PythonLauncher/factorySettings.plist	2010-07-05 20:00:03.526197587 +0200
+@@ -10,7 +10,7 @@
+                 <false/>
+                 <key>interpreter_list</key>
+                 <array>
+-                    <string>/usr/local/bin/pythonw</string>
++                    <string>/usr/bin/pythonw</string>
+                     <string>/usr/bin/pythonw</string>
+                     <string>/sw/bin/pythonw</string>
+                 </array>
+@@ -35,8 +35,8 @@
+                 <false/>
+                 <key>interpreter_list</key>
+                 <array>
+-                    <string>/usr/local/bin/pythonw</string>
+-                    <string>/usr/local/bin/python</string>
++                    <string>/usr/bin/pythonw</string>
++                    <string>/usr/bin/python</string>
+                     <string>/usr/bin/pythonw</string>
+                     <string>/usr/bin/python</string>
+                     <string>/sw/bin/pythonw</string>
+@@ -63,8 +63,8 @@
+                 <false/>
+                 <key>interpreter_list</key>
+                 <array>
+-                    <string>/usr/local/bin/pythonw</string>
+-                    <string>/usr/local/bin/python</string>
++                    <string>/usr/bin/pythonw</string>
++                    <string>/usr/bin/python</string>
+                     <string>/usr/bin/pythonw</string>
+                     <string>/usr/bin/python</string>
+                     <string>/sw/bin/pythonw</string>
+diff -urN Python-2.7.org/Misc/HISTORY Python-2.7/Misc/HISTORY
+--- Python-2.7.org/Misc/HISTORY	2010-03-07 16:23:59.000000000 +0100
++++ Python-2.7/Misc/HISTORY	2010-07-05 20:00:03.576196805 +0200
+@@ -13236,9 +13236,9 @@
+ were invoked.
+ 
+ - It is now recommended to use ``#!/usr/bin/env python'' instead of
+-``#!/usr/local/bin/python'' at the start of executable scripts, except
++``#!/usr/bin/python'' at the start of executable scripts, except
+ for CGI scripts.  It has been determined that the use of /usr/bin/env
+-is more portable than that of /usr/local/bin/python -- scripts almost
++is more portable than that of /usr/bin/python -- scripts almost
+ never have to be edited when the Python interpreter lives in a
+ non-standard place.  Note that this doesn't work for CGI scripts since
+ the python executable often doesn't live in the HTTP server's default
+@@ -16523,7 +16523,7 @@
+ Python exits or receives a SIGTERM or SIGHUP signal.
+ 
+ The interpreter is now generally assumed to live in
+-/usr/local/bin/python (as opposed to /usr/local/python).  The script
++/usr/bin/python (as opposed to /usr/local/python).  The script
+ demo/scripts/fixps.py will update old scripts in place (you can easily
+ modify it to do other similar changes).
+ 
+diff -urN Python-2.7.org/README Python-2.7/README
+--- Python-2.7.org/README	2010-07-03 15:56:13.000000000 +0200
++++ Python-2.7/README	2010-07-05 20:00:03.586197142 +0200
+@@ -331,7 +331,7 @@
+         1.5.2 on most older Red Hat installations; several key Red Hat tools
+         require this version.  Python 2.1.x may be installed as
+         /usr/bin/python2.  The Makefile installs Python as
+-        /usr/local/bin/python, which may or may not take precedence
++        /usr/bin/python, which may or may not take precedence
+         over /usr/bin/python, depending on how you have set up $PATH.
+ 
+ FreeBSD 3.x and probably platforms with NCurses that use libmytinfo or
+diff -urN Python-2.7.org/Tools/faqwiz/faqw.py Python-2.7/Tools/faqwiz/faqw.py
+--- Python-2.7.org/Tools/faqwiz/faqw.py	2010-03-11 23:33:25.000000000 +0100
++++ Python-2.7/Tools/faqwiz/faqw.py	2010-07-05 20:00:03.589530209 +0200
+@@ -10,7 +10,7 @@
+ # executable.
+ 
+ # You need to edit the first line and the lines that define FAQDIR and
+-# SRCDIR, below: change /usr/local/bin/python to where your Python
++# SRCDIR, below: change /usr/bin/python to where your Python
+ # interpreter lives, change the value for FAQDIR to where your FAQ
+ # lives, and change the value for SRCDIR to where your faqwiz.py
+ # module lives.  The faqconf.py and faqcust.py files live there, too.
+diff -urN Python-2.7.org/Tools/pybench/pybench.py Python-2.7/Tools/pybench/pybench.py
+--- Python-2.7.org/Tools/pybench/pybench.py	2009-10-09 16:32:19.000000000 +0200
++++ Python-2.7/Tools/pybench/pybench.py	2010-07-05 20:00:03.592863527 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/python -O
++#!/usr/bin/python -O
+ 
+ """ A Python Benchmark Suite
+ 
+diff -urN Python-2.7.org/Tools/pybench/README Python-2.7/Tools/pybench/README
+--- Python-2.7.org/Tools/pybench/README	2006-06-13 20:56:56.000000000 +0200
++++ Python-2.7/Tools/pybench/README	2010-07-05 20:00:03.596196761 +0200
+@@ -141,7 +141,7 @@
+        Processor:    x86_64
+ 
+     Python:
+-       Executable:   /usr/local/bin/python
++       Executable:   /usr/bin/python
+        Version:      2.4.2
+        Compiler:     GCC 3.3.4 (pre 3.3.5 20040809)
+        Bits:         64bit
+diff -urN Python-2.7.org/Tools/scripts/fixps.py Python-2.7/Tools/scripts/fixps.py
+--- Python-2.7.org/Tools/scripts/fixps.py	2004-08-09 19:27:55.000000000 +0200
++++ Python-2.7/Tools/scripts/fixps.py	2010-07-05 20:00:03.599292989 +0200
+@@ -15,13 +15,13 @@
+             print filename, ': can\'t open :', msg
+             continue
+         line = f.readline()
+-        if not re.match('^#! */usr/local/bin/python', line):
+-            print filename, ': not a /usr/local/bin/python script'
++        if not re.match('^#! */usr/bin/python', line):
++            print filename, ': not a /usr/bin/python script'
+             f.close()
+             continue
+         rest = f.read()
+         f.close()
+-        line = re.sub('/usr/local/bin/python',
++        line = re.sub('/usr/bin/python',
+                       '/usr/bin/env python', line)
+         print filename, ':', repr(line)
+         f = open(filename, "w")
+diff -urN Python-2.7.org/Tools/scripts/README Python-2.7/Tools/scripts/README
+--- Python-2.7.org/Tools/scripts/README	2010-02-24 18:06:31.000000000 +0100
++++ Python-2.7/Tools/scripts/README	2010-07-05 20:00:03.602863895 +0200
+@@ -47,7 +47,7 @@
+ nm2def.py		Create a template for PC/python_nt.def (Marc Lemburg)
+ objgraph.py		Print object graph from nm output on a library
+ parseentities.py	Utility for parsing HTML entity definitions
+-pathfix.py		Change #!/usr/local/bin/python into something else
++pathfix.py		Change #!/usr/bin/python into something else
+ pdeps.py		Print dependencies between Python modules
+ pickle2db.py		Load a pickle generated by db2pickle.py to a database
+ pindent.py		Indent Python code, giving block-closing comments

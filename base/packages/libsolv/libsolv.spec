@@ -1,3 +1,5 @@
+%{!?python_sitelib: %global python_sitelib %(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
+
 %global gitrev 1f9abfb5b1bb18a8f46887fa2541957e74132567
 %global shortcommit %(c=%{gitrev}; echo ${c:0:7})
 #%filter_provides_in %{perl_vendorarch}/.*\.so$
@@ -17,19 +19,36 @@
             -DMULTI_SEMANTICS=1 \\\
             -DENABLE_COMPLEX_DEPS=1 \\\
             %{nil}
-%else
+#%else
 #%bcond_with python3
-%global _cmake_opts \\\
-            -DCMAKE_BUILD_TYPE=RelWithDebInfo \\\
-            -DENABLE_LZMA_COMPRESSION=1 \\\
-            %{nil}
+#%global _cmake_opts \\\
+#            -DCMAKE_BUILD_TYPE=RelWithDebInfo \\\
+#            -DENABLE_LZMA_COMPRESSION=1 \\\
+#            -DENABLE_RPMDB=1 \\\
+#            %{nil}
 %endif
+
+%global _cmake_opts \\\
+	-DENABLE_APPDATA=ON \\\
+	-DENABLE_BZIP2_COMPRESSION=ON \\\
+	-DENABLE_LZMA_COMPRESSION=ON \\\
+	-DENABLE_APPDATA=ON \\\
+	-DENABLE_PYTHON=ON \\\
+	-DENABLE_RPMDB=ON \\\
+	-DENABLE_RPMDB_BYRPMHEADER=ON \\\
+	-DENABLE_RPMMD=ON \\\
+	-DPythonLibs_FIND_VERSION=2 \\\
+	-DPythonLibs_FIND_VERSION_MAJOR=2 \\\
+	-DRPM5=ON \\\
+	-DUSE_VENDORDIRS=ON \\\
+        %{nil}
+
 #%filter_provides_in %{ruby_vendorarch}/.*\.so$
 #%filter_setup
 
 Name:		libsolv
 Version:	0.6.11
-Release:	3.git%{shortcommit}%{?dist}
+Release:	1.git%{shortcommit}%{?dist}
 License:	BSD
 Url:		https://github.com/openSUSE/libsolv
 Source:		https://github.com/openSUSE/libsolv/archive/%{gitrev}.tar.gz#/%{name}-%{shortcommit}.tar.gz
@@ -73,25 +92,22 @@ Requires:	libsolv%{?_isa} = %{version}-%{release}
 %description tools
 Package dependency solver tools.
 
-%package demo
-Summary:	Applications demoing the libsolv library
-Group:		Development/Libraries
-Requires:	curl gnupg2
+#%package demo
+#Summary:	Applications demoing the libsolv library
+#Group:		Development/Libraries
+#Requires:	curl gnupg2
 
-%description demo
-Applications demoing the libsolv library.
+#%description demo
+#Applications demoing the libsolv library.
 
-%if 0%{?fedora}
-%package -n python2-solv
+%package -n python-solv
 Summary:	Python bindings for the libsolv library
 Group:		Development/Languages
-Requires:	python2
-Requires:	libsolv%{?_isa} = %{version}-%{release}
-%{?python_provide:%python_provide python2-solv}
+Requires:	python
+Requires:	libsolv = %{version}
 
-%description -n python2-solv
+%description -n python-solv
 Python bindings for sat solver.
-%endif
 
 %if 0%{?fedora}
 %package -n perl-solv
@@ -106,35 +122,34 @@ Perl bindings for sat solver.
 
 %prep
 %setup -q -n libsolv-%{gitrev}
-#%patch0 -p1
+%patch0 -p1
 
 %build
 cmake %_cmake_opts \
-        -DPythonLibs_FIND_VERSION=2 -DPythonLibs_FIND_VERSION_MAJOR=2
+        -DPythonLibs_FIND_VERSION=2 -DPythonLibs_FIND_VERSION_MAJOR=2 -DCMAKE_INSTALL_PREFIX=/usr -DLIB_INSTALL_DIR=/usr/lib
 make %{?_smp_mflags}
 
 %install
+rm -rf %{buildroot}
 %make_install
+mv %{buildroot}/usr/lib64/* %{buildroot}/usr/lib/
+rm -rf %{buildroot}/usr/lib64
 
 
-%check
-make ARGS="-V" test
+
+#%check
+#make ARGS="-V" test
 
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
 %files
-%doc LICENSE* README BUGS
+#%doc LICENSE* README BUGS
 %_libdir/libsolv.so.*
 %_libdir/libsolvext.so.*
 
 %files tools
-%if 0%{?fedora}
-%_bindir/archpkgs2solv
-%_bindir/archrepo2solv
-%_bindir/deb2solv
-%endif
 %_bindir/deltainfoxml2solv
 %_bindir/dumpsolv
 %_bindir/installcheck
@@ -148,25 +163,25 @@ make ARGS="-V" test
 %_bindir/updateinfoxml2solv
 
 %files devel
-%doc examples/solv.c
+#%doc examples/solv.c
 %_libdir/libsolv.so
 %_libdir/libsolvext.so
 %_includedir/solv
 %_datadir/cmake/Modules/FindLibSolv.cmake
-%{_mandir}/man?/*
+#%{_mandir}/man?/*
 
-%files demo
-%_bindir/solv
+#%files demo
+#%_bindir/solv
 
 %if 0%{?fedora}
 %files -n perl-solv
 %doc examples/p5solv
 %{perl_vendorarch}/*
-
-%files -n python2-solv
-%doc examples/pysolv
-%{python2_sitearch}/*
 %endif
+
+%files -n python-solv
+#%doc examples/pysolv
+%{python_sitelib}/*
 
 
 %changelog

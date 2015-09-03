@@ -53,7 +53,7 @@ Python 2 bindings for the hawkey library.
 %build
 rm -rf %{buildroot}
 export CFLAGS="$CFLAGS -std=gnu99"
-cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX:PATH=/usr .
+cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr .
 make %{?_smp_mflags}
 make doc-man
 

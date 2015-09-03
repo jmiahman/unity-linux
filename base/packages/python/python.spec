@@ -15,11 +15,11 @@ Source0:	http://ftp.osuosl.org/pub/blfs/conglomeration/Python/Python-%{version}.
 
 Patch0:		find_library.patch
 Patch1:		unchecked-ioctl.patch	
-Patch2:		python-2.7.1-config.patch
-Patch3:		00146-hashlib-fips.patch
 Patch4:		00187-add-RPATH-to-pyexpat.patch
 Patch5:		python-2.6-rpath.patch
 Patch6:		python-2.6.4-distutils-rpath.patch
+Patch7:		python-pythonpath.patch
+Patch8:		python-ac_fixes.patch
 
 BuildRequires:	expat-devel, openssl-devel, zlib-devel, ncurses-devel
 BuildRequires:  bzip2-devel, gdbm-devel, sqlite, libffi-devel
@@ -84,24 +84,30 @@ documentation.
 %prep
 %setup -q -n Python-%{version}
 
+
 %patch0 -p1 -b .find_library
 %patch1 -p1 -b .unchecked-ioctl
-%patch2 -p1
-%patch3 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
+%patch8 -p1
+
+sed -i -e 's#db_setup_debug = False#db_setup_debug = True#g' setup.py
+
+# remove if Lib/plat-linux3 exists
+[ -d Lib/plat-linux3 ] && exit 1
+cp -a Lib/plat-linux2 Lib/plat-linux3
+rm -r Modules/expat Modules/zlib
 
 %build
-#rm -r Modules/expat Modules/zlib
-
-#Die local die! Dirty Dirty Hack.. fix later
-sed -i "s%/usr/local/%/usr/%g" $(grep -H -r '/usr/local/' ./ | cut -d: -f1)
+aclocal
+autoconf
 
 #This also is a hack.. find out why _hashlib needs it forced
 export LDFLAGS="$LDFLAGS -lz"
 
-./configure \
+%configure \
 	--build=%{_target_platform} \
 	--host=%{_target_platform} \
 	--prefix=/usr \
@@ -117,6 +123,7 @@ make %{?_smp_mflags}
 
 
 %install
+rm -rf %{buildroot}
 make -j1 DESTDIR=%{buildroot} install
 install -Dm644 LICENSE %{buildroot}/usr/share/licenses/%{name}g/LICENSE
 rm %{buildroot}/usr/bin/2to3
