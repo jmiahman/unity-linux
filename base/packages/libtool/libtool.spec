@@ -82,13 +82,7 @@ make %{?_smp_mflags}
 %{_datadir}/libtool/lt_dlloader.c
 %{_datadir}/libtool/Makefile.am
 %{_datadir}/libtool/ltdl.c
-%{_datadir}/libtool/build-aux/depcomp
-%{_datadir}/libtool/build-aux/ltmain.sh
-%{_datadir}/libtool/build-aux/compile
-%{_datadir}/libtool/build-aux/config.sub
-%{_datadir}/libtool/build-aux/config.guess
-%{_datadir}/libtool/build-aux/install-sh
-%{_datadir}/libtool/build-aux/missing
+%{_datadir}/libtool/build-aux/*
 %{_datadir}/libtool/libltdl/lt__strl.h
 %{_datadir}/libtool/libltdl/lt__dirent.h
 %{_datadir}/libtool/libltdl/lt__argz_.h
@@ -113,11 +107,11 @@ make %{?_smp_mflags}
 %{_datadir}/aclocal/libtool.m4
 %{_datadir}/aclocal/lt~obsolete.m4
 %{_datadir}/aclocal/ltargz.m4
-%{dir} %{_datadir}/%{name}
-%{dir} %{_datadir}/%{name}/build-aux
-%{dir} %{_datadir}/%{name}/libltdl
-%{dir} %{_datadir}/%{name}/loaders
-%{dir} %{_includedir}/libltdl/
+%dir %{_datadir}/%{name}/
+%dir %{_datadir}/%{name}/build-aux/
+%dir %{_datadir}/%{name}/libltdl/
+%dir %{_datadir}/%{name}/loaders/
+%dir %{_includedir}/libltdl/
 %{_includedir}/ltdl.h
 %{_includedir}/libltdl/lt_dlloader.h
 %{_includedir}/libltdl/lt_error.h
