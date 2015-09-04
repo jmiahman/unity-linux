@@ -1,7 +1,7 @@
 diff -Naur rpm-5.4.15/macros/macros.in rpm-5.4.15_mv/macros/macros.in
 --- rpm-5.4.15/macros/macros.in	2014-08-08 15:40:40.000000000 +0700
 +++ rpm-5.4.15_mv/macros/macros.in	2015-08-06 12:40:09.221917218 +0700
-@@ -127,6 +127,31 @@
+@@ -127,6 +127,45 @@
  %__xz			@__XZ@
  
  #==============================================================================
@@ -29,6 +29,20 @@ diff -Naur rpm-5.4.15/macros/macros.in rpm-5.4.15_mv/macros/macros.in
 +%__autoconf             autoconf
 +
 +#==============================================================================
++# Conditional build stuff.
++
++# Check if symbol is defined.
++# Example usage: %if %{defined with_foo} && %{undefined with_bar} ...
++%defined()      %{expand:%%{?%{1}:1}%%{!?%{1}:0}}
++%undefined()    %{expand:%%{?%{1}:0}%%{!?%{1}:1}}
++
++# Shorthand for %{defined with_...}
++%with()         %{expand:%%{?with_%{1}:1}%%{!?with_%{1}:0}}
++%without()      %{expand:%%{?with_%{1}:0}%%{!?with_%{1}:1}}
++
++%bcond_with()           %{expand:%%{?_with_%{1}:%%global with_%{1} 1}}
++%bcond_without()        %{expand:%%{!?_without_%{1}:%%global with_%{1} 1}}
++
 +
  # ---- Required macros.
  #	Macros that used to be initialized as a side effect of parsing.

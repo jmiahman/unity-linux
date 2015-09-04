@@ -6,7 +6,7 @@ Summary:        The RPM package management system.
 Group:          System Environment/Base
 License:        LGPL
 URL:            rpm5.org
-Source0:        http://translationproject.org/extra/rpm-5.4.15.tar.gz
+Source0:        https://translationproject.org/extra/rpm-5.4.15.tar.gz
 #Source1:	http://optware.kupper.org/sources/db-5.2.42.tar.gz
 
 Patch0:		rpm-db5.2.patch
