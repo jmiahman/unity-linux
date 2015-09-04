@@ -37,15 +37,8 @@ arbitrary precision library in applications.
 
 
 %build
-<<<<<<< HEAD
-sed -i -e "/# We cannot seem to hardcode it, guess we'll fake it./"'{ n; s/add_dir="-L$libdir"/add_dir="-L$lt_sysroot$libdir"/ }' ltmain.sh
-%configure \
-	--with-sysroot=%{buildroot} \
-=======
-
 ./configure \
 	--host=%{_target_platform} \
->>>>>>> 58dbac94f7b4a72462f9ba13b69f8f5dc8051fc0
 	--prefix=/usr \
 	--infodir=/usr/share/info \
 	--mandir=/usr/share/man \
