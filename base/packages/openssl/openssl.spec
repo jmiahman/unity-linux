@@ -66,7 +66,7 @@ support various cryptographic algorithms and protocols.
 %patch0 -p1 -b .test
 %patch1 -p1
 %patch2 -p1 
-%patch3 -p1 
+#%patch3 -p1 
 %patch4 -p1 
 %patch5 -p1 
 %patch6 -p1 
@@ -99,7 +99,7 @@ rm -rf %{buildroot}
 make INSTALL_PREFIX=%{buildroot} MANDIR=/usr/share/man install
 
 cd %{buildroot}/usr/bin
-%__ln -sf openssl c_rehash
+#%__ln -sf openssl c_rehash
 cd ../../
 mkdir %{buildroot}/lib
 mv %{buildroot}/usr/lib/libcrypto.so.1.0.0 %{buildroot}/lib/libcrypto.so.1.0.0

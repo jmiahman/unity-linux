@@ -77,7 +77,7 @@ rm %{buildroot}/usr/lib/*.la
 #%{_libdir}/guile/*
 
 %files libs
-%{_libdir}/usr/lib/libguile*.so.*
+%{_libdir}/libguile*.so.*
 
 %files devel
 #%doc AUTHORS ChangeLog NEWS README

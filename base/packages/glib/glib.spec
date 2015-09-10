@@ -1,7 +1,7 @@
 %define _target_platform %{_arch}-unity-linux-musl
 
 Name:		glib	
-Version:	2.45.6
+Version:	2.45.7
 Release:	1%{?dist}
 Summary:	A library of handy utility functions
 
