@@ -86,8 +86,34 @@ install -Dm0644 sqlite3.1 %{buildroot}/usr/share/man/man1/sqlite3.1
 install -Dm644 %{SOURCE1} %{buildroot}/usr/share/licenses/%{name}/license.txt
 
 %files
-%doc
+#%doc README.md
+%{_bindir}/sqlite3
+%{_libdir}/*.so.*
+#%{_mandir}/man?/*
 
+%files devel
+%{_includedir}/*.h
+%{_libdir}/*.so
+%{_libdir}/pkgconfig/*.pc
+%if %{with static}
+%{_libdir}/*.a
+%exclude %{_libdir}/*.la
+%endif
+
+%files doc
+%doc %{name}-doc-%{docver}/*
+
+%files -n lemon
+%{_bindir}/lemon
+%{_datadir}/lemon
+
+%if %{with tcl}
+%files tcl
+%{tcl_sitearch}/sqlite3
+
+%files analyzer
+%{_bindir}/sqlite3_analyzer
+%endif
 
 
 %changelog

@@ -1,0 +1,27 @@
+--- a/createrepo/deltarpms.py	2010-03-31 16:18:27.000000000 +0200
++++ b/createrepo/deltarpms.py	2010-03-31 16:23:24.000000000 +0200
+@@ -18,7 +18,7 @@
+ import os.path
+ import commands
+ from yum import misc
+-import deltarpm
++# import deltarpm
+ from utils import MDError
+ 
+ class DeltaRPMPackage:
+@@ -62,10 +62,11 @@
+         return length
+ 
+     def _getDRPMInfo(self, filename):
+-        d = deltarpm.readDeltaRPM(filename)
+-        self.oldnevrstring = d['old_nevr']
+-        self.oldnevr = self._stringToNEVR(d['old_nevr'])
+-        self.sequence = d['seq']
++        # d = deltarpm.readDeltaRPM(filename)
++        # self.oldnevrstring = d['old_nevr']
++        # self.oldnevr = self._stringToNEVR(d['old_nevr'])
++        # self.sequence = d['seq']
++        return
+ 
+     def _stringToVersion(self, strng):
+         i = strng.find(':')

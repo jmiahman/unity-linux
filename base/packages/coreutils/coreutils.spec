@@ -88,6 +88,7 @@ mv chroot %{buildroot}/usr/sbin/
 /bin/rmdir
 /usr/sbin/chroot
 /usr/libexec/coreutils/libstdbuf.so
+%dir /usr/libexec/coreutils
 /usr/bin/tail
 /usr/bin/expand
 /usr/bin/sha256sum

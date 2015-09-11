@@ -22,7 +22,7 @@ Patch7:		python-pythonpath.patch
 Patch8:		python-ac_fixes.patch
 
 BuildRequires:	expat-devel, openssl-devel, zlib-devel, ncurses-devel
-BuildRequires:  bzip2-devel, gdbm-devel, sqlite, libffi-devel
+BuildRequires:  bzip2-devel, gdbm-devel, sqlite-devel, libffi-devel
 BuildRequires:  readline-devel
 
 %description
@@ -133,6 +133,8 @@ rm %{buildroot}/usr/bin/2to3
 /usr/lib/libpython%{baseversion}.so.1.0
 %dir /usr/lib/python%{baseversion}/
 /usr/lib/python%{baseversion}/*
+%dir /usr/lib/python%{baseversion}/sqlite3
+/usr/lib/python%{baseversion}/sqlite3/*
 
 #Exclude testing folders
 %exclude /usr/lib/python%{baseversion}/sqlite3/test

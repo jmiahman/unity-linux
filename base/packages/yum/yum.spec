@@ -22,9 +22,11 @@ Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Base
 Source0: http://yum.baseurl.org/download/3.4/%{name}-%{version}.tar.gz
-Source1: yum.conf.fedora
-Source2: yum-updatesd.conf.fedora
-Patch0: rpm5-yum.patch
+Source1: yum.conf
+#Source2: yum-updatesd.conf.fedora
+Patch0:	rpm5.patch
+Patch1: %{name}-pld.patch
+Patch3: rpm5-yum.patch
 #Patch1: yum-distro-configs.patch
 #Patch5: geode-arch.patch
 #Patch6: yum-HEAD.patch
@@ -37,7 +39,7 @@ URL: http://yum.baseurl.org/
 BuildArchitectures: noarch
 BuildRequires: python
 BuildRequires: gettext
-BuildRequires: intltool
+#BuildRequires: intltool
 # This is really CheckRequires ...
 BuildRequires: python-nose
 BuildRequires: python >= 2.4
@@ -55,7 +57,7 @@ Requires: python-sqlite
 Requires: python-urlgrabber
 Requires: yum-metadata-parser >= 1.1.0
 Requires: pygpgme
-Requires: pyliblzma
+Requires: python-pyliblzma
 Requires: pyxattr
 # Suggests, needed for yum fs diff
 Requires: diffutils
@@ -143,6 +145,8 @@ This runs after yum-cron-daily, if that is installed.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+%patch3 -p1
 #%patch5 -p1
 #%patch6 -p1
 #%patch7 -p1
@@ -152,12 +156,14 @@ This runs after yum-cron-daily, if that is installed.
 #%patch1 -p1
 
 %build
+sed -i 's!rpmUtils yum etc docs po!rpmUtils yum etc docs!g' Makefile
+
 make
 
-%if !%{disable_check}
-%check
-make check
-%endif
+#%if !%{disable_check}
+#%check
+#make check
+#%endif
 
 
 %install
@@ -165,14 +171,14 @@ make check
 
 INIT=sysv
 
-make DESTDIR=$RPM_BUILD_ROOT UNITDIR=%{_unitdir} INIT=$INIT install
+make DESTDIR=$RPM_BUILD_ROOT INIT=$INIT install
 
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/%{_sysconfdir}/yum.conf
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/yum/pluginconf.d $RPM_BUILD_ROOT/%{yum_pluginslib}
 mkdir -p $RPM_BUILD_ROOT/%{yum_pluginsshare}
 
 # for now, move repodir/yum.conf back
-mv $RPM_BUILD_ROOT/%{_sysconfdir}/yum/repos.d $RPM_BUILD_ROOT/%{_sysconfdir}/yum.repos.d
+#mv $RPM_BUILD_ROOT/%{_sysconfdir}/yum/repos.d $RPM_BUILD_ROOT/%{_sysconfdir}/yum.repos.d
 rm -f $RPM_BUILD_ROOT/%{_sysconfdir}/yum/yum.conf
 
 echo Keeping local yum-updatesd
@@ -258,20 +264,21 @@ exit 0
 #%{!?_licensedir:%global license %%doc}
 #%license COPYING
 #%doc README AUTHORS TODO ChangeLog PLUGINS
+%{_bindir}/*
 %config(noreplace) %{_sysconfdir}/yum.conf
-%dir %{_sysconfdir}/yum.repos.d
-%config(noreplace) %{_sysconfdir}/yum/version-groups.conf
+#%dir %{_sysconfdir}/yum.repos.d
+#%config(noreplace) %{_sysconfdir}/yum/version-groups.conf
 %dir %{_sysconfdir}/yum
-%dir %{_sysconfdir}/yum/protected.d
-%dir %{_sysconfdir}/yum/fssnap.d
-%dir %{_sysconfdir}/yum/vars
-%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
+#%dir %{_sysconfdir}/yum/protected.d
+#%dir %{_sysconfdir}/yum/fssnap.d
+#%dir %{_sysconfdir}/yum/vars
+#%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %(dirname %{compdir})
 %dir %{_datadir}/yum-cli
 %{_datadir}/yum-cli/*
-%exclude %{_datadir}/yum-cli/completion-helper.py?
+#%exclude %{_datadir}/yum-cli/completion-helper.py?
 %exclude %{_datadir}/yum-cli/yumupd.py*
-%{_bindir}/yum-deprecated
+#%{_bindir}/yum-deprecated
 %{python_sitelib}/yum
 %{python_sitelib}/rpmUtils
 %dir /var/cache/yum
@@ -292,36 +299,36 @@ exit 0
 %defattr(-,root,root)
 #%{!?_licensedir:%global license %%doc}
 #%license COPYING
-%{_sysconfdir}/cron.daily/0yum-daily.cron
-%{_sysconfdir}/cron.hourly/0yum-hourly.cron
-%config(noreplace) %{_sysconfdir}/yum/yum-cron.conf
-%config(noreplace) %{_sysconfdir}/yum/yum-cron-hourly.conf
-%{_sysconfdir}/rc.d/init.d/yum-cron
-%{_sbindir}/yum-cron
+#%{_sysconfdir}/cron.daily/0yum-daily.cron
+#%{_sysconfdir}/cron.hourly/0yum-hourly.cron
+#%config(noreplace) %{_sysconfdir}/yum/yum-cron.conf
+#%config(noreplace) %{_sysconfdir}/yum/yum-cron-hourly.conf
+#%{_sysconfdir}/rc.d/init.d/yum-cron
+#%{_sbindir}/yum-cron
 #%{_mandir}/man*/yum-cron.*
 
 %files cron-daily
 %defattr(-,root,root)
-%{_sysconfdir}/cron.daily/0yum-daily.cron
-%config(noreplace) %{_sysconfdir}/yum/yum-cron.conf
+#%{_sysconfdir}/cron.daily/0yum-daily.cron
+#%config(noreplace) %{_sysconfdir}/yum/yum-cron.conf
 
 %files cron-hourly
 %defattr(-,root,root)
-%{_sysconfdir}/cron.hourly/0yum-hourly.cron
-%config(noreplace) %{_sysconfdir}/yum/yum-cron-hourly.conf
+#%{_sysconfdir}/cron.hourly/0yum-hourly.cron
+#%config(noreplace) %{_sysconfdir}/yum/yum-cron-hourly.conf
 
 %files cron-security
 %defattr(-,root,root)
-%{_sysconfdir}/cron.daily/0yum-security.cron
-%config(noreplace) %{_sysconfdir}/yum/yum-cron-security.conf
+#%{_sysconfdir}/cron.daily/0yum-security.cron
+#%config(noreplace) %{_sysconfdir}/yum/yum-cron-security.conf
 
 %files updatesd
 %defattr(-, root, root)
-%config(noreplace) %{_sysconfdir}/yum/yum-updatesd.conf
-%config %{_sysconfdir}/rc.d/init.d/yum-updatesd
-%config %{_sysconfdir}/dbus-1/system.d/yum-updatesd.conf
+#%config(noreplace) %{_sysconfdir}/yum/yum-updatesd.conf
+#%config %{_sysconfdir}/rc.d/init.d/yum-updatesd
+#%config %{_sysconfdir}/dbus-1/system.d/yum-updatesd.conf
 %{_datadir}/yum-cli/yumupd.py*
-%{_sbindir}/yum-updatesd
+#%{_sbindir}/yum-updatesd
 #%{_mandir}/man*/yum-updatesd*
 
 %changelog

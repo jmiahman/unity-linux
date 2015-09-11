@@ -1,0 +1,52 @@
+--- yum-3.4.3/./rpmUtils/transaction.py~	2011-06-28 23:27:22.000000000 +0300
++++ yum-3.4.3/./rpmUtils/transaction.py	2013-03-02 21:20:39.440848577 +0200
+@@ -188,6 +188,6 @@
+         
+ def initReadOnlyTransaction(root='/'):
+     read_ts =  TransactionWrapper(root=root)
+-    read_ts.pushVSFlags((rpm._RPMVSF_NOSIGNATURES|rpm._RPMVSF_NODIGESTS))
++    read_ts.pushVSFlags(rpm.RPMVSF_NODSAHEADER)
+     return read_ts
+ 
+--- yum-3.4.3/./rpmUtils/oldUtils.py~	2011-06-28 23:27:22.000000000 +0300
++++ yum-3.4.3/./rpmUtils/oldUtils.py	2013-03-02 21:21:04.748684625 +0200
+@@ -273,7 +273,7 @@
+ 
+ class RPM_Work(RPM_Base_Work):
+     def __init__(self, rpmfn):
+-        ts.setVSFlags(~(rpm._RPMVSF_NOSIGNATURES))
++        ts.setVSFlags(~(rpm.RPMVSF_NODSAHEADER))
+         fd = os.open(rpmfn, os.O_RDONLY)
+         try:
+             self.hdr = ts.hdrFromFdno(fd)
+@@ -343,7 +342,7 @@
+             self.ts.setVSFlags(~(rpm.RPMVSF_NOMD5|rpm.RPMVSF_NEEDPAYLOAD))
+         elif sig == 'none':
+             # turn off everything - period
+-            self.ts.setVSFlags(~(rpm._RPMVSF_NOSIGNATURES))
++            self.ts.setVSFlags(~(rpm.RPMVSF_NODSAHEADER))
+         elif sig == 'default':
+             # set it back to the default
+             self.ts.setVSFlags(rpm.RPMVSF_DEFAULT)
+--- yum-3.4.3/./yum/__init__.py~	2011-06-28 23:27:22.000000000 +0300
++++ yum-3.4.3/./yum/__init__.py	2013-03-02 21:21:20.632751902 +0200
+@@ -3087,7 +3087,7 @@
+             return 1
+             
+         myts = rpmUtils.transaction.initReadOnlyTransaction(root=self.conf.installroot)
+-        myts.pushVSFlags(~(rpm._RPMVSF_NOSIGNATURES|rpm._RPMVSF_NODIGESTS))
++        myts.pushVSFlags(~(rpm.RPMVSF_NODSAHEADER))
+         idx = myts.dbMatch('name', 'gpg-pubkey')
+         keys = idx.count()
+         del idx
+--- yum-3.4.3/./yum/config.py~	2013-03-02 21:19:35.000000000 +0200
++++ yum-3.4.3/./yum/config.py	2013-03-02 21:21:29.133144673 +0200
+@@ -1006,7 +1006,7 @@
+     @return: The release version as a string (eg. '4' for FC4)
+     '''
+     ts = rpmUtils.transaction.initReadOnlyTransaction(root=installroot)
+-    ts.pushVSFlags(~(rpm._RPMVSF_NOSIGNATURES|rpm._RPMVSF_NODIGESTS))
++    ts.pushVSFlags(~(rpm.RPMVSF_NODSAHEADER))
+     try:
+         idx = ts.dbMatch('provides', distroverpkg)
+     except TypeError, e:

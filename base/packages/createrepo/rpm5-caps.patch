@@ -1,0 +1,11 @@
+--- createrepo-0.9.9/createrepo/yumbased.py~	2013-04-14 23:28:17.000000000 +0300
++++ createrepo-0.9.9/createrepo/yumbased.py	2013-04-28 01:46:21.798816913 +0300
+@@ -153,7 +153,7 @@
+         # requires
+         reqs = []
+         for (name, flag, (epoch, ver, rel), pre) in self._requires_with_pre():
+-            if name.startswith('rpmlib('):
++            if name.startswith('rpmlib(') or name.startswith('uname(') or name.startswith('cpuinfo('):
+                 continue
+             pre_bool = 'FALSE'
+             if pre == 1:

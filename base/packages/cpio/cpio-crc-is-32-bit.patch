@@ -1,0 +1,64 @@
+> The header stores only 4 bytes for crc, so it is quite reasonable.
+
+Then I would suggest something like this, though it could be made more
+efficient.
+
+--- orig/configure.ac
++++ mod/configure.ac
+@@ -51,6 +51,9 @@
+ AC_CHECK_TYPE(gid_t, int)
+ AC_HEADER_STDC
+ AC_HEADER_DIRENT
++AC_CHECK_TYPES(uint32_t)
++AC_CHECK_SIZEOF(unsigned long)
++AC_CHECK_SIZEOF(unsigned int)
+ 
+ AC_CHECK_FUNCS([fchmod fchown])
+ # This is needed for mingw build
+--- orig/src/extern.h
++++ mod/src/extern.h
+@@ -66,7 +66,17 @@
+ extern int archive_des;
+ extern char *archive_name;
+ extern char *rsh_command_option;
++#ifdef HAVE_UINT32_T
++extern uint32_t crc;
++#else
++# if SIZEOF_UNSIGNED_LONG == 4
+ extern unsigned long crc;
++# elif SIZEOF_UNSIGNED_INT == 4
++extern unsigned int crc;
++# else
++# error Wrong size for crc
++# endif
++#endif
+ extern int delayed_seek_count;
+ #ifdef DEBUG_CPIO
+ extern int debug_flag;
+
+
+--- orig/src/global.c
++++ mod/src/global.c
+@@ -139,7 +139,17 @@
+ char *rsh_command_option = NULL;
+ 
+ /* CRC checksum.  */
++#ifdef HAVE_UINT32_T
++uint32_t crc;
++#else
++# if SIZEOF_UNSIGNED_LONG == 4
+ unsigned long crc;
++# elif SIZEOF_UNSIGNED_INT == 4
++unsigned int crc;
++# else
++# error Wrong size for crc
++# endif
++#endif
+ 
+ /* Input and output buffers.  */
+ char *input_buffer, *output_buffer;
+
+
+
+
+

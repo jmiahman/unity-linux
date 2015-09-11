@@ -1,0 +1,14 @@
+--- cpio-2.7/doc/cpio.texi.orig	2006-07-06 15:52:03.000000000 +0200
++++ cpio-2.7/doc/cpio.texi	2006-10-28 13:19:35.667501250 +0200
+@@ -5,9 +5,9 @@
+ @setchapternewpage off
+ @c %**end of header
+ 
+-@dircategory Archiving
++@dircategory File utilities:
+ @direntry
+-* Cpio: (cpio).                 Copy-in-copy-out archiver to tape or disk.
++* Cpio: (cpio).				Copy-in-copy-out archiver to tape or disk
+ @end direntry
+ 
+ @include version.texi
