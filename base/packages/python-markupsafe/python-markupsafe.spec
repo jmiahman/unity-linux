@@ -3,7 +3,7 @@
 %global upstream_name MarkupSafe
 %global _first_letter %(echo %{upstream_name}|cut -c1 )
 
-Name:           python-%{upstream_name}
+Name:           python-markupsafe
 Version:        0.18
 Release:        1%{?dist}
 Summary:        Implements a XML/HTML/XHTML Markup safe string

@@ -1,5 +1,5 @@
 Name:		unity-baselayout	
-Version:	0.1
+Version:	0.4
 Release:	1%{?dist}
 Summary:	Unitys filesystem structure and core file	
 
@@ -42,7 +42,7 @@ awk -F: '{
 	pw = ":!:"
 	if ($1 == "root") { pw = "::" }
 	print($1 pw ":0:::::")
-}' %{buildroot}/passwd > %{buildroot}/shadow
+}' %{buildroot}/passwd >> %{buildroot}/shadow
 #' fix syntax higlighting
 
 %install
@@ -59,6 +59,7 @@ install -m 0755 -d \
 	etc/modprobe.d \
 	etc/modules-load.d \
 	etc/profile.d \
+	etc/network \
 	etc/network/if-down.d \
 	etc/network/if-post-down.d \
 	etc/network/if-pre-up.d \
@@ -78,6 +79,7 @@ install -m 0755 -d \
 	sys \
 	bin \
 	usr/bin \
+	usr/doc \
 	usr/include \
 	sbin \
 	usr/sbin \
@@ -90,6 +92,9 @@ install -m 0755 -d \
 	usr/local/lib \
 	usr/local/share \
 	usr/share \
+	usr/share/info \
+	usr/share/man \
+	usr/share/doc \
 	usr/share/aclocal \
 	var/cache/misc \
 	var/lib/misc \
@@ -189,6 +194,11 @@ ln -s /proc/mounts %{buildroot}/etc/mtab
 
 %files
 %dir /bin
+%dir /etc/network
+%dir /usr/doc
+%dir /usr/share/info
+%dir /usr/share/man
+%dir /usr/share/doc
 /bin/
 /usr/bin
 /dev

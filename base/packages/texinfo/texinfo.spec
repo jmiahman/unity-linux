@@ -8,8 +8,7 @@ License:	GPLv3+
 URL:		http://www.gnu.org/software/texinfo/
 Source0:	ftp://ftp.gnu.org/gnu/texinfo/texinfo-%{version}.tar.xz
 
-#BuildRequires:	
-#Requires:	
+Provides:	info
 
 %description
 Texinfo is a documentation system that can produce both online
@@ -39,18 +38,18 @@ rm -f ${RPM_BUILD_ROOT}/usr/share/info/dir
 rm -rf ${RPM_BUILD_ROOT}/usr/lib/charset.alias
 
 %files
-/usr/bin/*
-/usr/share/texinfo/*
-/usr/share/texinfo/Texinfo/*
-/usr/share/texinfo/lib/Text-Unidecode/lib/Text/*
-/usr/share/texinfo/lib/Text-Unidecode/lib/Text/Unidecode/*.pm
-/usr/share/texinfo/lib/libintl-perl/lib/Locale/*.pm
-/usr/share/texinfo/lib/libintl-perl/lib/Locale/RecodeData/*.pm
-/usr/share/texinfo/lib/libintl-perl/lib/Locale/Recode/*.pm
-/usr/share/texinfo/lib/Unicode-EastAsianWidth/lib/Unicode/*.pm
-/usr/share/texinfo/init/*.pm
-/usr/share/texinfo/DebugTexinfo/*.pm
-/usr/share/texinfo/Pod-Simple-Texinfo/Pod/Simple/*.pm
-%dir /usr/share/texinfo
+%{bindir}/*
+%{_datadir}/texinfo/*
+%{_datadir}/texinfo/Texinfo/*
+%{_datadir}/texinfo/lib/Text-Unidecode/lib/Text/*
+%{_datadir}/texinfo/lib/Text-Unidecode/lib/Text/Unidecode/*.pm
+%{_datadir}/texinfo/lib/libintl-perl/lib/Locale/*.pm
+%{_datadir}/texinfo/lib/libintl-perl/lib/Locale/RecodeData/*.pm
+%{_datadir}/texinfo/lib/libintl-perl/lib/Locale/Recode/*.pm
+%{_datadir}/texinfo/lib/Unicode-EastAsianWidth/lib/Unicode/*.pm
+%{_datadir}/texinfo/init/*.pm
+%{_datadir}/texinfo/DebugTexinfo/*.pm
+%{_datadir}/texinfo/Pod-Simple-Texinfo/Pod/Simple/*.pm
+%dir %{_datadir}/texinfo
 
 %changelog

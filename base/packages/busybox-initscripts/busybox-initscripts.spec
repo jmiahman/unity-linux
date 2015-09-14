@@ -83,4 +83,9 @@ fi
 /lib/mdev/dvbdev
 /usr/share/udhcpc/default.script
 
+%dir /etc/acpi
+%dir /etc/acpi/PWRF
+%dir /lib/mdev
+%dir /usr/share/udhcpc
+
 %changelog

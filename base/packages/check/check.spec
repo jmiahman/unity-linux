@@ -10,8 +10,8 @@ URL:            http://check.sourceforge.net/
 #Patch0:         %{name}-0.10.0-info-in-builddir.patch
 BuildRequires:  pkgconfig, libtool, autoconf, automake
 BuildRequires:	texinfo
-Requires(post): info
-Requires(preun): info
+Requires(post): texinfo
+Requires(preun): texinfo
 
 %description
 Check is a unit test framework for C. It features a simple interface for 
@@ -71,7 +71,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/%{name}
 %post
 /sbin/ldconfig
 if [ -e %{_infodir}/%{name}.info* ]; then
-  /sbin/install-info \
+  /usr/bin/install-info \
     --entry='* Check: (check).               A unit testing framework for C.' \
     %{_infodir}/%{name}.info %{_infodir}/dir || :
 fi
@@ -80,7 +80,7 @@ fi
 
 %preun
 if [ $1 = 0 -a -e %{_infodir}/%{name}.info* ]; then
-  /sbin/install-info --delete %{_infodir}/%{name}.info %{_infodir}/dir || :
+  /usr/bin/install-info --delete %{_infodir}/%{name}.info %{_infodir}/dir || :
 fi
 
 %files

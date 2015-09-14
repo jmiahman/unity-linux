@@ -36,7 +36,6 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	rpm-devel
 BuildRequires:	sed >= 4.0
 %{?with_tcl:BuildRequires:	tcl-devel >= 8.4.0}
-Requires:	uname(release) >= 2.6.0
 %if %{with default_db}
 Provides:	db = %{version}-%{release}
 Provides:	db = %{libver}

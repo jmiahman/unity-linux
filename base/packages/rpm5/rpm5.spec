@@ -114,7 +114,7 @@ autoconf
 	--without-lua \
 	--with-neon \
 	--with-openssl \
-	--with-pcre=external \
+	--with-pcre=internal \
 	--without-selinux \
 	--with-xz=external \
 	--with-beecrypt=external \
@@ -128,6 +128,8 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
+#This is needed for macros
+mkdir -p %{buildroot}/var/spool/repackage/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -141,6 +143,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/rpm2cpio
 %{_bindir}/gendiff
 %{_usrlibrpm}/macros
+%dir /var/spool/repackage
 %{_usrlibrpm}/rpm.*
 %{_usrlibrpm}/tgpg
 %{_usrlibrpm}/rpmpopt
