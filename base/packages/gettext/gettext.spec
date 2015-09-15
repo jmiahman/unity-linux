@@ -207,6 +207,7 @@ make -j1 DESTDIR=%{buildroot} install
 %{_libdir}/libgettextlib.so
 %{_libdir}/libasprintf.so
 %{_libdir}/libgettextsrc.so
+%dir %{_libdir}/gettext
 %dir %{_datadir}/gettext
 %dir %{_datadir}/gettext/intl
 %dir %{_datadir}/gettext/po

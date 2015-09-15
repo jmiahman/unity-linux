@@ -54,44 +54,51 @@ rm -rf %{buildroot}/usr/lib
 
 %files
 #%doc
-/usr/bin/gdb
-/usr/bin/gcore
-/usr/share/gdb/system-gdbinit/wrs-linux.py
-/usr/share/gdb/system-gdbinit/elinos.py
-/usr/share/gdb/python/gdb/frames.py
-/usr/share/gdb/python/gdb/__init__.py
-/usr/share/gdb/python/gdb/types.py
-/usr/share/gdb/python/gdb/FrameIterator.py
-/usr/share/gdb/python/gdb/xmethod.py
-/usr/share/gdb/python/gdb/prompt.py
-/usr/share/gdb/python/gdb/function/strfns.py
-/usr/share/gdb/python/gdb/function/__init__.py
-/usr/share/gdb/python/gdb/function/caller_is.py
-/usr/share/gdb/python/gdb/printer/__init__.py
-/usr/share/gdb/python/gdb/printer/bound_registers.py
-/usr/share/gdb/python/gdb/command/type_printers.py
-/usr/share/gdb/python/gdb/command/__init__.py
-/usr/share/gdb/python/gdb/command/xmethods.py
-/usr/share/gdb/python/gdb/command/explore.py
-/usr/share/gdb/python/gdb/command/prompt.py
-/usr/share/gdb/python/gdb/command/pretty_printers.py
-/usr/share/gdb/python/gdb/command/frame_filters.py
-/usr/share/gdb/python/gdb/printing.py
-/usr/share/gdb/python/gdb/FrameDecorator.py
-/usr/share/gdb/syscalls/sparc64-linux.xml
-/usr/share/gdb/syscalls/sparc-linux.xml
-/usr/share/gdb/syscalls/mips-n32-linux.xml
-/usr/share/gdb/syscalls/mips-n64-linux.xml
-/usr/share/gdb/syscalls/s390x-linux.xml
-/usr/share/gdb/syscalls/mips-o32-linux.xml
-/usr/share/gdb/syscalls/arm-linux.xml
-/usr/share/gdb/syscalls/ppc-linux.xml
-/usr/share/gdb/syscalls/gdb-syscalls.dtd
-/usr/share/gdb/syscalls/s390-linux.xml
-/usr/share/gdb/syscalls/amd64-linux.xml
-/usr/share/gdb/syscalls/ppc64-linux.xml
-/usr/share/gdb/syscalls/i386-linux.xml
+%{_bindir}/*
+%{_datadir}/gdb/system-gdbinit/wrs-linux.py
+%{_datadir}/gdb/system-gdbinit/elinos.py
+%{_datadir}/gdb/python/gdb/frames.py
+%{_datadir}/gdb/python/gdb/__init__.py
+%{_datadir}/gdb/python/gdb/types.py
+%{_datadir}/gdb/python/gdb/FrameIterator.py
+%{_datadir}/gdb/python/gdb/xmethod.py
+%{_datadir}/gdb/python/gdb/prompt.py
+%{_datadir}/gdb/python/gdb/function/strfns.py
+%{_datadir}/gdb/python/gdb/function/__init__.py
+%{_datadir}/gdb/python/gdb/function/caller_is.py
+%{_datadir}/gdb/python/gdb/printer/__init__.py
+%{_datadir}/gdb/python/gdb/printer/bound_registers.py
+%{_datadir}/gdb/python/gdb/command/type_printers.py
+%{_datadir}/gdb/python/gdb/command/__init__.py
+%{_datadir}/gdb/python/gdb/command/xmethods.py
+%{_datadir}/gdb/python/gdb/command/explore.py
+%{_datadir}/gdb/python/gdb/command/prompt.py
+%{_datadir}/gdb/python/gdb/command/pretty_printers.py
+%{_datadir}/gdb/python/gdb/command/frame_filters.py
+%{_datadir}/gdb/python/gdb/printing.py
+%{_datadir}/gdb/python/gdb/FrameDecorator.py
+%{_datadir}/gdb/syscalls/sparc64-linux.xml
+%{_datadir}/gdb/syscalls/sparc-linux.xml
+%{_datadir}/gdb/syscalls/mips-n32-linux.xml
+%{_datadir}/gdb/syscalls/mips-n64-linux.xml
+%{_datadir}/gdb/syscalls/s390x-linux.xml
+%{_datadir}/gdb/syscalls/mips-o32-linux.xml
+%{_datadir}/gdb/syscalls/arm-linux.xml
+%{_datadir}/gdb/syscalls/ppc-linux.xml
+%{_datadir}/gdb/syscalls/gdb-syscalls.dtd
+%{_datadir}/gdb/syscalls/s390-linux.xml
+%{_datadir}/gdb/syscalls/amd64-linux.xml
+%{_datadir}/gdb/syscalls/ppc64-linux.xml
+%{_datadir}/gdb/syscalls/i386-linux.xml
 
+%dir %{_datadir}/gdb
+%dir %{_datadir}/gdb/python
+%dir %{_datadir}/gdb/python/gdb
+%dir %{_datadir}/gdb/python/gdb/command
+%dir %{_datadir}/gdb/python/gdb/function
+%dir %{_datadir}/gdb/python/gdb/printer
+%dir %{_datadir}/gdb/syscalls
+%dir %{_datadir}/gdb/system-gdbinit
 
 %changelog
 

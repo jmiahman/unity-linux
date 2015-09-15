@@ -195,4 +195,10 @@ install -d %{buildroot}/etc/local.d %{buildroot}/run
 /sbin/service
 /sbin/openrc
 
+%dir /etc/local.d
+%dir /lib/rc/bin
+%dir /lib/rc/sbin
+%dir /lib/rc/sh
+%dir /lib/rc
+
 %changelog

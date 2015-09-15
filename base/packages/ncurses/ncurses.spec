@@ -10,9 +10,6 @@ Source0:	ftp://ftp.gnu.org/pub/gnu/%{name}/%{name}-%{version}.tar.gz
 
 Patch:		 ncurses-5.9-gcc-5.patch
 
-#BuildRequires:	
-#Requires:	
-
 %description
 The curses library routines are a terminal-independent method of
 updating character screens with reasonable optimization.  The ncurses
@@ -239,6 +236,15 @@ done
 /etc/terminfo/v/vt100
 /etc/terminfo/s/screen
 /etc/terminfo/s/sun
+
+%dir /etc/terminfo
+%dir /etc/terminfo/a
+%dir /etc/terminfo/l
+%dir /etc/terminfo/r
+%dir /etc/terminfo/v
+%dir /etc/terminfo/x
+%dir /etc/terminfo/d
+%dir /etc/terminfo/s
 
 %files devel
 %{_bindir}/ncurses*-config

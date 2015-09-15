@@ -1,8 +1,8 @@
 
 %define _privlib /usr/share/perl5/core_perl
-%define _archlib /usr/lib/perl5/core_perl
+%define _archlib %{_libdir}/perl5/core_perl
 %define _vendorlib /usr/share/perl5/vendor_perl
-%define _vendorarch /usr/lib/perl5/vendor_perl
+%define _vendorarch %{_libdir}/perl5/vendor_perl
 
 Name:		perl
 Version:	5.22.0
@@ -13,9 +13,6 @@ Group:		Development/Languages
 License:	(GPL+ or Artistic) and (GPLv2+ or Artistic) and Copyright Only and HSRL and Public Domain and UCD
 URL:		http://www.perl.org/
 Source0:	http://www.cpan.org/src/5.0/perl-%{version}.tar.xz
-
-#BuildRequires:
-#Requires:
 
 %description
 Perl is a high-level programming language with roots in C, sed, awk and shell
@@ -99,8 +96,14 @@ cp -f miniperl %{buildroot}/usr/bin
 %files
 /usr/bin/*
 %exclude %{_bindir}/miniperl
-/usr/lib/perl5/core_perl/*
-/usr/share/perl5/core_perl/*
+%{_libdir}/perl5/core_perl/*
+%{_datadir}/perl5/core_perl/*
+
+%dir %{_libdir}/perl5
+%dir %{_libdir}/perl5/core_perl
+
+%dir %{_datadir}/perl5                                                      
+%dir %{_datadir}/perl5/core_perl 
 
 %files -n miniperl
 /usr/bin/miniperl

@@ -8,7 +8,6 @@ License:	GPLv2+ and Public Domain
 URL:		http://tukaani.org/%{name}/
 Source0:	http://tukaani.org/%{name}/%{name}-%{version}.tar.xz
 
-#BuildRequires:	
 Requires:	%{name}-libs = %{version}-%{release}
 
 %description
@@ -92,6 +91,7 @@ make DESTDIR=%{buildroot} install
 %files devel
 %{_includedir}/lzma/*.h
 %{_includedir}/lzma.h
+%dir %{_includedir}/lzma
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/liblzma.pc
 

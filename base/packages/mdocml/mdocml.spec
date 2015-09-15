@@ -84,6 +84,12 @@ rm -rf %{buildroot}
 %{_datadir}/man/man8/makewhatis.8
 %{_datadir}/man/man7/*.7
 
+%dir %{_datadir}/man/man1
+%dir %{_datadir}/man/man3
+%dir %{_datadir}/man/man5
+%dir %{_datadir}/man/man7
+%dir %{_datadir}/man/man8
+
 %files devel
 %dir /usr/include/mandoc/
 /usr/include/mandoc/*.h
