@@ -38,7 +38,7 @@ rm -f $RPM_BUILD_ROOT/%{_infodir}/dir
 %defattr(-,root,root,-)
 #%doc COPYING COPYING.LIB FAQ AUTHORS NEWS README Examples/
 %{_bindir}/dc
-#%{_bindir}/bc
+%{_bindir}/bc
 #%{_mandir}/*/*
 #%{_infodir}/*
 

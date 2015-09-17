@@ -1,0 +1,7 @@
+srpm $1
+mcd $BUILDDIR/$1
+$SRC/${1}-*/configure $TCONFIGARGS
+notparallel
+test -d tools/gnulib/lib && make $J V=1 -C tools/gnulib/lib
+make $J V=1
+make $J install DESTDIR=${ROOTFS}

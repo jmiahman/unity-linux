@@ -27,6 +27,7 @@ Requires:       %{name} = %{version}
 This package provides kernel headers and makefiles sufficient to build modules
 
 %prep
+rm -rf %{buildroot}
 %setup -qn linux-%{version}
 
 mkdir -p %{buildroot}/build
@@ -80,8 +81,12 @@ find %{buildroot}/build -path './include/*' -prune -o -path './scripts/*' -prune
 	-o -name '*.lds' \) | cpio -pdm /usr/src/linux-headers-%{version}
 
 
-mv %{buildroot}/boot/vmlinuz %{buildroot}/boot/initramfs-ul-%{version}
-mv %{buildroot}/build/arch/x86/boot/bzImage %{buildroot}/boot/vmlinuz
+# /boot
+install -d $RPM_BUILD_ROOT/boot
+cp -a $RPM_BUILD_ROOT/boot/System.map $RPM_BUILD_ROOT/boot/System.map-%{version}
+cp -aL $RPM_BUILD_ROOT/.config $RPM_BUILD_ROOT/boot/config-%{version}
+%__cp -aL $RPM_BUILD_ROOT/build/arch/x86/boot/bzImage $RPM_BUILD_ROOT/boot/vmlinuz-%{version}
+install -p $RPM_BUILD_ROOT/build/vmlinux $RPM_BUILD_ROOT/boot/vmlinux-%{version}
 
 %files
 %doc

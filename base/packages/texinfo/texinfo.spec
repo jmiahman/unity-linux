@@ -9,6 +9,7 @@ URL:		http://www.gnu.org/software/texinfo/
 Source0:	ftp://ftp.gnu.org/gnu/texinfo/texinfo-%{version}.tar.xz
 
 Provides:	info
+Provides:	install-info
 
 %description
 Texinfo is a documentation system that can produce both online
