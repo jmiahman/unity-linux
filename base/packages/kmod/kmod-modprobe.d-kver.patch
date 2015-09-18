@@ -1,0 +1,32 @@
+diff -ur kmod-12/libkmod/libkmod.c kmod-12-modprobe.d-kver/libkmod/libkmod.c
+--- kmod-12/libkmod/libkmod.c	2012-11-08 04:59:03.663747793 +0100
++++ kmod-12-modprobe.d-kver/libkmod/libkmod.c	2012-12-12 19:43:19.385242679 +0100
+@@ -58,7 +58,9 @@
+ 	[KMOD_INDEX_MODULES_BUILTIN] = { .fn = "modules.builtin", .prefix = ""},
+ };
+ 
++static char kver_config_path[PATH_MAX] = SYSCONFDIR "/modprobe.d/X.Y.Z";
+ static const char *default_config_paths[] = {
++	kver_config_path,
+ 	SYSCONFDIR "/modprobe.d",
+ 	"/run/modprobe.d",
+ 	"/lib/modprobe.d",
+@@ -258,8 +260,16 @@
+ 	if (env != NULL)
+ 		kmod_set_log_priority(ctx, log_priority(env));
+ 
+-	if (config_paths == NULL)
+-		config_paths = default_config_paths;
++	if (config_paths == NULL) {
++		struct utsname u;
++
++		if (uname(&u) < 0) {
++			config_paths = &default_config_paths[1];
++		} else {
++			snprintf(kver_config_path, PATH_MAX, SYSCONFDIR "/modprobe.d/%s", u.release);
++			config_paths = default_config_paths;
++		}
++	}
+ 	err = kmod_config_new(ctx, &ctx->config, config_paths);
+ 	if (err < 0) {
+ 		ERR(ctx, "could not create config\n");

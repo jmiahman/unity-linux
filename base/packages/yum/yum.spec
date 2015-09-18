@@ -2,6 +2,8 @@
 %define yum_updatesd 0
 %define disable_check 0
 
+%define _sysconfdir /etc
+
 %{!?python_sitelib: %define python_sitelib %(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 # We always used /usr/lib here, even on 64bit ... so it's a bit meh.
@@ -295,8 +297,8 @@ exit 0
 %dir %{yum_pluginslib}
 %dir %{yum_pluginsshare}
 
-%files cron
-%defattr(-,root,root)
+#%files cron
+#%defattr(-,root,root)
 #%{!?_licensedir:%global license %%doc}
 #%license COPYING
 #%{_sysconfdir}/cron.daily/0yum-daily.cron
@@ -307,23 +309,23 @@ exit 0
 #%{_sbindir}/yum-cron
 #%{_mandir}/man*/yum-cron.*
 
-%files cron-daily
-%defattr(-,root,root)
+#%files cron-daily
+#%defattr(-,root,root)
 #%{_sysconfdir}/cron.daily/0yum-daily.cron
 #%config(noreplace) %{_sysconfdir}/yum/yum-cron.conf
 
-%files cron-hourly
-%defattr(-,root,root)
+#%files cron-hourly
+#%defattr(-,root,root)
 #%{_sysconfdir}/cron.hourly/0yum-hourly.cron
 #%config(noreplace) %{_sysconfdir}/yum/yum-cron-hourly.conf
 
-%files cron-security
-%defattr(-,root,root)
+#%files cron-security
+#%defattr(-,root,root)
 #%{_sysconfdir}/cron.daily/0yum-security.cron
 #%config(noreplace) %{_sysconfdir}/yum/yum-cron-security.conf
 
-%files updatesd
-%defattr(-, root, root)
+#%files updatesd
+#%defattr(-, root, root)
 #%config(noreplace) %{_sysconfdir}/yum/yum-updatesd.conf
 #%config %{_sysconfdir}/rc.d/init.d/yum-updatesd
 #%config %{_sysconfdir}/dbus-1/system.d/yum-updatesd.conf

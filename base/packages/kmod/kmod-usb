@@ -1,0 +1,3 @@
+# kernel warns: ehci_hcd should always be loaded before uhci_hcd and ohci_hcd, not after
+softdep uhci_hcd pre: ehci_hcd
+softdep ohci_hcd pre: ehci_hcd
