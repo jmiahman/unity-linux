@@ -186,43 +186,34 @@ make -j1 install DESTDIR=%{buildroot}
 rm -f %{buildroot}/usr/lib/*.la \
 	%{buildroot}/usr/lib/python*/site-packages/libmount/*.la
 
-cd %{buildroot}/lib
-ln -s * ../usr/lib/
-cd ..
-mv %{buildroot}/bin/* %{buildroot}/usr/bin/
-mv %{buildroot}/sbin/* %{buildroot}/usr/sbin/
 
 %files
-/usr/lib/*
+/lib/*
 /usr/bin/*
 /usr/sbin/*
 
 /%{_lib}/libfdisk.so.*
 /%{_lib}/libsmartcols.so.*
 
-%exclude %{_sbindir}/blkid
-%exclude %{_libdir}/libblkid.so.*
+%exclude /sbin/blkid
 %exclude %{_libdir}/libblkid.so
 %exclude %{_includedir}/blkid
 %exclude %{_libdir}/pkgconfig/blkid.pc
-%exclude %{_libdir}/libuuid.so.*
 %exclude %{_libdir}/libuuid.so
 %exclude %{_includedir}/uuid
 %exclude %{_libdir}/pkgconfig/uuid.pc
-%exclude %{_libdir}/libmount.so.*
 %exclude %{_libdir}/libmount.so 
 %exclude %{_includedir}/libmount
 %exclude %{_libdir}/pkgconfig/mount.pc
-%exclude %{_sbindir}/cfdisk
-%exclude %{_sbindir}/sfdisk
+%exclude /sbin/cfdisk
+%exclude /sbin/sfdisk
 %exclude %{_bindir}/mcookie
 #%exclude %{_libdir}/python*/site-packages/libmount/*
 
 %files -n blkid
-%{_sbindir}/blkid
+/sbin/blkid
 
 %files -n libblkid
-%{_libdir}/libblkid.so.*
 /%{_lib}/libblkid.so.*
 
 %files -n libblkid-devel
@@ -232,7 +223,6 @@ mv %{buildroot}/sbin/* %{buildroot}/usr/sbin/
 
 %files -n libuuid
 /%{_lib}/libuuid.so.*
-%{_libdir}/libuuid.so.*
 
 %files -n libuuid-devel
 %{_libdir}/libuuid.so
@@ -245,7 +235,6 @@ mv %{buildroot}/sbin/* %{buildroot}/usr/sbin/
 #%{_libdir}/pkgconfig/fdisk.pc
 
 %files -n libmount
-%{_libdir}/libmount.so.*
 /%{_lib}/libmount.so.* 
 
 %files -n libmount-devel
@@ -254,10 +243,10 @@ mv %{buildroot}/sbin/* %{buildroot}/usr/sbin/
 %{_libdir}/pkgconfig/mount.pc
 
 %files -n cfdisk
-%{_sbindir}/cfdisk
+/sbin/cfdisk
 
 %files -n sfdisk
-%{_sbindir}/sfdisk
+/sbin/sfdisk
 
 %files -n mcookie
 %{_bindir}/mcookie

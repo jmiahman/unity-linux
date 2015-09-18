@@ -91,6 +91,7 @@ install -p $RPM_BUILD_ROOT/build/vmlinux $RPM_BUILD_ROOT/boot/vmlinux-%{version}
 %files
 %doc
 /boot/
+%dir /lib/modules
 /lib/modules/%{version}/
 /usr/share/kernel/
 
