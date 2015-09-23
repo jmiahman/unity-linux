@@ -15,6 +15,9 @@ Source4:	modules.initd
 Source5:	modloop.initd
 Source6:	networking.initd
 Source7:	modloop.confd
+Source8:	consolefont.initd
+Source9:	consolefont.confd
+Source10:	openrc.logrotate
 
 Patch0:		0001-Force-root-be-rw-before-localmount.patch
 Patch1:		0001-sysctl.Linux.in-fix-for-busybox-sysctl.patch
@@ -22,6 +25,7 @@ Patch2:		swap-umount-tmpfs.patch
 Patch3:		swap-ifexists.patch
 Patch4:		hide-migrate-to-run-error.patch
 Patch5:		rc-pull-in-sysinit-and-boot-as-stacked-levels-when-needed.patch
+Patch6:		openrc-0.4.3-mkmntdirs.patch
 
 #BuildRequires:	
 #Requires:	
@@ -38,6 +42,7 @@ OpenRC is a dependency based init system that works with the system provided ini
 %patch3 -p1 
 %patch4 -p1 
 %patch5 -p1 
+%patch6 -p1
 
 sed -i -e '/^sed/d' pkgconfig/Makefile
 %build
@@ -57,8 +62,9 @@ install -D -m755 %{SOURCE3} %{buildroot}/etc/init.d/keymaps
 install -D -m755 %{SOURCE4} %{buildroot}/etc/init.d/modules
 install -D -m755 %{SOURCE5} %{buildroot}/etc/init.d/modloop
 install -D -m755 %{SOURCE6} %{buildroot}/etc/init.d/networking
-
 install -D -m644 %{SOURCE7} %{buildroot}/etc/conf.d/modloop
+install -D -m755 %{SOURCE8} %{buildroot}/etc/init.d/consolefont
+install -D -m644 %{SOURCE9} %{buildroot}/etc/conf.d/consolefont
 install -d %{buildroot}/etc/local.d %{buildroot}/run
 
 %files

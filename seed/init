@@ -1,0 +1,312 @@
+#!/bin/busybox ash
+
+load_module()
+{
+	for module in $@
+	do
+#		module_path=$(find /lib/modules -name $module.ko)
+		modprobe $module
+#		[ ! -z "$module_path" ] \
+#	       		&& modprobe $module_path \
+#		       	&& debug "loaded module: $module" \
+#		       	|| echo "Error: module $module not loaded!"
+	done
+}
+is_module_loaded()
+{
+	lsmod | grep -q "^$1\ "
+}
+run_debug_shell()
+{
+#        if ( pidof plymouthd > /dev/null 2>&1 ); then
+#          plymouth --hide-splash
+#        fi
+	echo "Processing initrd interrupted, dropping to shell."
+	echo "After debugging you can terminate shell (ctrl+d)"
+	echo "and resume starting process. Have fun!"
+	sh
+}
+debug()
+{
+	[ ! -z "$debugmode" ] && echo "$@"
+	return 0
+}
+
+udev_daemon() {
+	OPTIONS="/sbin/udevd /lib/udev/udevd"
+
+	for o in $OPTIONS; do
+		if [ -x "$o" ]; then
+			echo $o
+			return 0
+		fi
+	done
+
+	return 1
+}
+
+_UDEV_DAEMON=`udev_daemon`
+
+#--------------------------------
+# disk discovery 
+
+# List all CD-ROMs
+# by using /proc entries
+# Return empty result when nocd parameter was given.
+
+list_cdrom_devices()
+{
+   if [ -n "$nocd" ]; then return 1; fi
+   for CDDEVICE in `cat /proc/sys/dev/cdrom/info | head -n 3 | tail -n 1 | cut -d ':' -f2 | sed -e 's/^[ \t]*//'`; do
+      echo "/dev/$CDDEVICE"
+   done
+}
+
+# List all partition devices
+# take list of all partitions and output unique disks.
+# Return empty result when nohd parameter was given.
+
+list_partition_devices()
+{
+   if [ -n "$nohd" ]; then return 1; fi
+   for part in `cat /proc/partitions|tail -n +3|awk '{print $4}'`
+   do
+     echo "/dev/$part"
+   done
+}
+
+# List all disk devices
+
+list_disk_devices()
+{
+   list_partition_devices | grep  "[0-9]"
+}
+
+# List all block devices
+
+list_block_devices()
+{
+   list_cdrom_devices
+   list_disk_devices
+}
+
+
+#--------------------------------
+# Mount proc and sys now as it's needed
+
+mount -t proc  none /proc
+mount -t sysfs none /sys
+mount -t devtmpfs none /dev
+echo "0" >/proc/sys/kernel/printk # shut up!
+
+#--------------------------------
+
+#--------------------------------
+# Get Booting Options
+
+for x in $(cat /proc/cmdline); do
+        case $x in
+                debug) DEBUG=y; ;;
+                md5sum) domd5=y; ;;
+                splash=silent) silent=y; ;;
+                unionfs=no) dounionfs=n; ;;
+                copy2ram) live_toram=1; ;;
+                nocd) nocd=y; ;;
+                nohd) nohd=y; ;;
+                fromusb) usblive=y; ;;
+                livecd=*) BASEIMG="${x#livecd=}"; [ -z "$BASEIMG" ] &&  BASEIMG="livecd"; ;;
+		overlay=*) changes="${x#overlay=}"; ;;
+		bootfrom=*) dev_path="${x#bootfrom=}"; ;;
+                bootfromiso=*) ISO_PATH="${x#bootfromiso=}"; ;;
+		rootfstype=*) rootfs="${x#rootfstype=}"; ;;
+		rlvl=*) run_lvl="${x#rlvl=}"; ;;
+                systemd_cmd1=*) systemd_cmd1="${x#systemd_cmd1=}"; ;;
+                systemd_cmd2=*) systemd_cmd2="${x#systemd_cmd2=}"; ;;
+        esac
+done
+#-------------------------------
+
+#"Starting Live initrd. Use 'debuginitrd' argument to enable debug mode."
+for arg in $@
+do
+	[ "$arg" = 'debuginitrd' ] && debugmode=1
+done
+
+# Loading kernel modules
+kernel_rel=$(uname -r)
+echo "Kernel: $kernel_rel"
+echo "Loading basic modules..."
+load_module usb-storage loop squashfs overlay ext2 ahci vfat atl2 mii rfkill i2c-core i2c-algo-bit drm isofs ata-piix sr-mod sg cdrom
+#echo "Loading hardware modules..."
+#load_module scsi_wait_scan
+#rmmod scsi_wait_scan
+#is_module_loaded overlay && echo "AUFS enabled" || load_module unionfs
+is_module_loaded overlay || load_module aufs
+
+echo "Detecting host adapter device..."
+#pci_modules=$(/bin/pcimodules)
+#[ -z "$pci_modules" ] && echo "Error: No host adapter modules found"
+#[ -z "$pci_modules" ]
+
+#pci_modules=$(cat /proc/bus/pci/devices | while read junk1 id junk2; do
+#  v=0x0000${id%????}
+#  d=0x0000${id#????}
+#  cat /lib/modules/`uname -r`/modules.pcimap | grep "$v $d" | cut -d " " -f 1
+#done | sort -u)
+
+#[ -z "$pci_modules" ] && echo "Error: No host adapter modules found"
+
+#for module in $pci_modules
+#do
+#	load_module $module
+#done
+
+
+#echo 'Starting device daemon'
+/bin/mdev -s
+$_UDEV_DAEMON --daemon
+udevadm trigger --action=add
+
+#'starting bootsplash daemon'
+mknod /dev/fb0 c 29 0
+mknod /dev/ram0 b 1 0
+#plymouthd
+#plymouth --show-splash
+
+# Mounting tmpfs
+tmpfs_dir=/mnt/rootfs.rw
+device_mnt=/mnt/device
+live_root=/mnt/liveroot
+workd_dir=/mnt/rootfs.rw/work
+union_dir=/mnt/newroot
+ram_dir=/mnt/ram
+
+mkdir -p $tmpfs_dir
+
+# Mounting Block Devices and try to find LiveOS folder
+# See if Device is set in boot options if var is null set it
+if [ -z "$dev_path" ]; then
+	mnt_devices=$(list_block_devices | grep  "[0-9]")
+else
+#If var is not null, use it
+	mnt_devices=$dev_path
+fi
+
+# Do we have a device yet? If no maybe we were too fast for USB (CDROM) devices let's slow down and try again.
+if [ -z "$mnt_devices" ]; then
+   echo "Warning: Did not find any usable block devices Rescanning Hardware"
+   sleep 5
+   /bin/mdev -s
+   $_UDEV_DAEMON --daemon
+   udevadm trigger --action=add
+   mnt_devices=$(list_block_devices | grep  "[0-9]")
+fi
+
+# If we still don't have a device, let's just give up and let someone fix us
+[ -z "$mnt_devices" ] && echo "Error: After Multiple attempts we did not find any usable block devices" && run_debug_shell
+#echo "Detected Block devices: $mnt_devices"
+for device in $mnt_devices
+do
+	mount $device $device_mnt
+	echo "Mounted device: $device"
+	if [ -d "$device_mnt/LiveOS" ]; then
+		echo "Found LiveOS Folder on $device" 
+		break
+	else
+		umount $device_mnt
+	fi
+done
+
+#echo "Do we have a device mounted, ready to use?"
+if [ -d "$device_mnt/LiveOS" ]; then
+	echo "We do and we are attempting to use: $device"
+else
+	echo "Oh no!: Nothing is ready to use"
+	echo "Maybe you can fix this, dropping to limited shell"
+	run_debug_shell
+fi
+
+# Copying CD to ram if enabled
+if [ $live_toram -eq 1 ]; then
+	echo "Copying CD contents to RAM"
+	mkdir $ram_dir
+	mount -t tmpfs -o size=1G tmpfs $ram_dir
+	cp $device_mnt/LiveOS/squashfs.img $ram_dir
+	umount $device_mnt && echo "CD-ROM device unmounted, it's safe to eject it"
+	# binding to old $device_mnt to be as less invasive as possible
+	mount -o bind $ram_dir $device_mnt
+fi
+
+# Mounting writable fs, either physical (overlay) or tmpfs
+# If the overlay (changes) flag is not used or is null mount writable tmpfs
+if [ -z $changes ]; then
+
+	dd if=/dev/zero of=/dev/ram0 bs=256M
+	mke2fs /dev/ram0
+	busybox mount /dev/ram0 $tmpfs_dir
+	mkdir -p /mnt/rootfs.rw/upper
+	mkdir -p /mnt/rootfs.rw/work
+	#cp -ar /mnt/liveroot/* /mnt/rootfs.rw/upper/
+else
+
+        uuid_ov=$(echo $changes | cut -d '=' -f2)
+        mkdir -p $device_mnt/LiveOS/overlay
+        mount $device_mnt/LiveOS/overlay-*-$uuid_ov $tmpfs_dir || ( echo "Mounting live overlay to $tmpfs_dir failed" && run_debug_shell )
+        echo "Overlay mounted"
+fi
+
+# Mounting squashfs
+echo "Mounting live rootfs"
+mount $device_mnt/LiveOS/squashfs.img $live_root -o loop \
+	|| ( echo "Mounting live rootfs to $live_root failed" && run_debug_shell )
+
+# Mounting Union FileSystem
+is_module_loaded overlay &&
+(
+	echo "Mounting Union FS (using overlayfs module)"
+	#mount -t aufs -o noatime,br=$tmpfs_dir=rw:$live_root=ro none $union_dir
+	mount -t overlay -o rw,"lowerdir=/mnt/liveroot,upperdir=/mnt/rootfs.rw/upper,workdir=/mnt/rootfs.rw/work" overlay $union_dir
+
+) || (
+	echo "Mounting Union FS (using unionfs module)"
+	mount -t unionfs -o noatime,dirs=$tmpfs_dir=rw:$live_root=ro unionfs $union_dir
+)
+[ $? -ne 0 ] && echo "Error: Cannot mount filesystem" && run_debug_shell
+
+# Watches the udev event queue, and exits if all current events are handled
+udevadm settle --timeout=3 --quiet
+killall "${_UDEV_DAEMON##*/}" 2>/dev/null
+
+# moving tmpfs 
+mkdir -p $union_dir/$tmpfs_dir
+mkdir -p $union_dir/$device_mnt
+mkdir -p $union_dir/$live_root
+
+mkdir -p $union_dir/run/openrc
+
+# moving mount points
+mount --move $tmpfs_dir $union_dir/$tmpfs_dir
+mount --move $device_mnt $union_dir/$device_mnt
+mount --move $live_root $union_dir/$live_root
+
+mkdir $union_dir/dev
+mkdir $union_dir/proc
+mkdir $union_dir/sys
+
+mount --move /dev $union_dir/dev
+mount --move /proc $union_dir/proc
+mount --move /sys $union_dir/sys
+
+#What device are we using? Link to Live
+dev_name=$(mount | grep 'mnt/live' | cut -d '/' -f1-3 | cut -d ' ' -f1)
+#ln -s $union_dir/dev/$dev_name $union_dir/dev/live
+
+# Starting LiveCD
+echo "Switching to a new rootfs"
+[ ! -z "$debugmode" ] && run_debug_shell
+umount /proc
+umount /sys
+#plymouth --newroot=$union_dir
+exec switch_root $union_dir /sbin/init $systemd_cmd1 $systemd_cmd
+echo "Fatal: switch_root failed! That's all folks."
+run_debug_shell

@@ -191,6 +191,7 @@ rm -f %{buildroot}/usr/lib/*.la \
 /lib/*
 /usr/bin/*
 /usr/sbin/*
+/bin/*
 
 /%{_lib}/libfdisk.so.*
 /%{_lib}/libsmartcols.so.*

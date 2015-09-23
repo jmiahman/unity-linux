@@ -202,6 +202,7 @@ ln -s /proc/mounts %{buildroot}/etc/mtab
 /bin/
 /usr/bin
 /dev
+/etc/
 %dir /etc
 %dir /etc/crontabs
 %dir /etc/sysctl.d
@@ -217,6 +218,8 @@ ln -s /proc/mounts %{buildroot}/etc/mtab
 /usr
 /var
 /run
+%config(noreplace) /etc/group
+%config(noreplace) /etc/passwd
 %config(noreplace) /etc/shadow
 /etc/os-release
 /etc/issue

@@ -1,0 +1,380 @@
+#!/bin/bash
+#
+# This script will create LiveCD based on
+# The Synergy Linux distribution
+#
+
+prog_name=`basename "$0"`
+
+# check kernel release
+function get_src_kernel_rel 
+{
+	if [[ -n "$kernel_rel" ]]; then
+		rel=$(ls -1 $1/lib/modules/)
+		[ "$(echo $rel | wc -w )" -ne 1 ] && echo "Can't read kernel release in $1 (found: $rel)" && return 1
+		echo $rel
+	fi
+}
+# copy module with depends
+function copy_module
+{
+	for modname in $@
+	do
+		module_with_deps=$(grep -P "/$modname.ko(.gz)?:" $sys_source/lib/modules/$kernel_rel/modules.dep | sed -e s/:// )
+		[ -z  "$module_with_deps" ] && module_with_deps=$modname && echo "No entries found in modules.dep for $modname"
+		for modpath in $module_with_deps
+		do
+			dstdir=$(dirname $tmp_initrd/lib/modules/$kernel_rel/$modpath)
+			[ ! -d $dstdir ] && mkdir -p $dstdir
+			echo " - module: lib/modules/$kernel_rel/$modpath"
+			cp $sys_source/lib/modules/$kernel_rel/$modpath $dstdir
+		done
+	done
+}
+# copy directory of modules but not check depends
+function copy_modules_dir
+{
+	for moddirname in $@
+	do
+		[ ! -d $sys_source/lib/modules/$kernel_rel/$moddirname ] && die "Directory /lib/modules/$kernel_rel/$moddirname not found!"
+		dstdir=$(dirname $tmp_initrd/lib/modules/$kernel_rel/$moddirname)
+		[ ! -d $dstdir ] && mkdir -p $dstdir
+		echo " - modules: lib/modules/$kernel_rel/$moddirname"
+		cp -r $sys_source/lib/modules/$kernel_rel/$moddirname $dstdir
+	done
+
+}
+# find&copy firmware for modules copied into initrd skeleton
+function findAndCopyFirmwareFiles
+{
+	# copy firmware loader script
+	# cp $sys_source/lib/firmware/firmware-loader.sh 	$tmp_initrd/lib/firmware || return 1
+	# search for all modules
+	for modname in $(find $tmp_initrd/lib/modules/$kernel_rel/ -type f)
+	do
+		# get all firmware file names for this module
+		firmwareFiles=$(modinfo $modname | grep '^firmware:\ ' | sed 's/.*\ //') || return 1
+		for firmwareFile in $firmwareFiles
+		do
+			# find file path
+			firmwareDirs="lib/firmware lib/firmware/updates"
+			unset firmwareDir
+			for firmwareDir in $firmwareDirs
+			do
+				[ -f $sys_source/$firmwareDir/$firmwareFile ] && firmwareDirFound=$firmwareDir && continue
+			done
+			[ -z $firmwareDirFound ] && echo "No firmware: $firmwareFile found"
+			# copy files to initrd skeleton
+			dstFirmDir=$(dirname $tmp_initrd/$firmwareDirFound/$firmwareFile)
+			[ ! -d $dstFirmDir ] && mkdir -p $dstFirmDir
+			echo " - $firmwareDirFound/$firmwareFile"
+			cp $sys_source/$firmwareDirFound/$firmwareFile $dstFirmDir
+		done
+	done
+}
+# create dev nodes in the directory
+function createSpecialDevFiles
+{
+	[ ! -d "$1" ] && die "$ is not a directory"
+	echo "Creating devices in $1"
+	mknod $1/console c 5 1
+	mknod $1/null c 1 3
+	mknod $1/zero c 1 5
+	mknod $1/kmsg c 1 11
+	mknod $1/fb0 c 29 0
+	ln -s /proc/self/fd $1/fd
+	ln -s $/fd/0 $1/stdin
+	ln -s $/fd/1 $1/stdout
+	ln -s $/fd/2 $1/stderr
+
+}
+# copy from sys ($1) dynamic linked libraries of application ($2) to initrd skeleton
+function copy_libs
+{
+	echo "Copying libraries for $2:"
+	for liblink in $(get_app_libs $2)
+	do
+		[ -f $liblink ] && lib=$liblink || lib=$(stat -t -c %N $1/$liblink  | sed -e  s/.*\ // -e s/\'// -e s/\`// | sed "s/\'//g" | sed "s/\`//g") # get dst file name if symlink
+		echo " - copying $lib"
+		[ ! -f $tmp_initrd/$lib ] && cp -d $1/$libDir/$(basename $lib)* $tmp_initrd/lib
+		echo " - $liblink"
+		[ ! -f $tmp_initrd/$lib ] && cp -a $1/$liblink* $tmp_initrd/$libDir
+		[ -h $tmp_initrd/$liblink  ] && lib=$(stat -t -c %N $1/$liblink  | sed -e  s/.*\ // -e s/\'// -e s/\`//)  && cp -d $1/$libDir/$(basename $lib) $tmp_initrd/$libDir
+
+	done
+}
+function create_initrd
+{
+	#make root dirs
+	mkdir $tmp_initrd/{proc,sys,dev}
+	mkdir -p $tmp_initrd/usr/share
+	mkdir -p $tmp_initrd/var/udev
+	mkdir -p $tmp_initrd/run/udev
+
+	#make mnt dirs
+	mkdir -p $tmp_initrd/mnt/{device,liveroot,work,upper,newroot}
+
+	[ -d $sys_source/lib64 ] && libDir=lib64 || libDir=lib # guess 'lib' dir name for x86_64 arch
+	initrd_tools_dir=/usr/$libDir/initrd
+	
+	echo "Creating initrd skeleton: $tmp_initrd"
+	cp -r $mkroot/$templatesDir/initrd/* $tmp_initrd
+	# create devices
+	createSpecialDevFiles $tmp_initrd/dev
+	# demod in source sys if needed
+	[ ! -f $sys_source/lib/modules/$kernel_rel/modules.dep ] && echo "Running depmod..." && chroot $sys_source depmod -a -b / $kernel_rel
+
+	echo "Copying kernel modules to initrd skeleton..."
+	copy_module loop overlay ext2 squashfs vfat rfkill drm cdrom isofs ahci 
+	copy_module mii p4-clockmod usb-storage atl2 i2c-algo-bit i2c-core
+	copy_modules_dir kernel/drivers/scsi kernel/drivers/ata kernel/drivers/cpufreq kernel/drivers/cdrom kernel/drivers/net/ethernet/atheros/ kernel/drivers/i2c
+        copy_modules_dir kernel/drivers/gpu/drm kernel/fs/isofs
+
+	[ -d $sys_source/lib/modules/$kernel_rel/kernel/fs/aufs ] && echo "found aufs module" && aufs_module_found=1 && copy_module aufs
+	echo "Copying firmware files to initrd skeleton..."
+	findAndCopyFirmwareFiles || exit 1
+
+	# gunzip modules, we will compress whole initrd image
+	find $tmp_initrd/lib/modules/$kernel_rel -type f -name \*.gz -exec gunzip \{\} \;
+	depmod -a -b $tmp_initrd $kernel_rel
+
+	# Set Plymouth Theme ** We need a new option for this, hard coding no good **
+#	chroot $sys_source /usr/sbin/plymouth-set-default-theme synergy
+#        chroot $sys_source /usr/libexec/plymouth/plymouth-generate-initrd
+
+	echo "Adding binaries..."
+	cp -d $sys_source/sbin/kmod $tmp_initrd/bin/ || return 1
+	cp -d $sys_source/sbin/udevadm $tmp_initrd/bin/ || return 1
+	cp -d $sys_source/sbin/udevd $tmp_initrd/bin/ || return 1
+	cp -d $sys_source/bin/mount $tmp_initrd/bin/ || return 1
+	cp -d $sys_source/bin/umount $tmp_initrd/bin/ || return 1
+	cp -d $sys_source/usr/bin/killall $tmp_initrd/bin/ || return 1
+	cp -d $sys_source/usr/sbin/mke2fs $tmp_initrd/bin/ || return 1
+#        cp -d $sys_source/bin/plymouth $tmp_initrd/bin/ || return 1
+#        cp -d $sys_source/sbin/plymouthd $tmp_initrd/bin/ || return 1
+        cp $sys_source/bin/busybox $tmp_initrd/bin/ || return 1
+	ln -s kmod $tmp_initrd/bin/depmod
+	ln -s busybox $tmp_initrd/bin/losetup || return 1
+	ln -s busybox $tmp_initrd/bin/sh || return 1
+        ln -s busybox $tmp_initrd/bin/ls || return 1
+	ln -s busybox $tmp_initrd/bin/ln || return 1
+        ln -s busybox $tmp_initrd/bin/cp || return 1
+        ln -s busybox $tmp_initrd/bin/cat || return 1
+        ln -s busybox $tmp_initrd/bin/find || return 1
+        ln -s busybox $tmp_initrd/bin/modprobe || return 1
+	ln -s busybox $tmp_initrd/bin/dmesg || return 1
+	ln -s busybox $tmp_initrd/bin/grep || return 1
+	ln -s busybox $tmp_initrd/bin/sed || return 1
+	ln -s busybox $tmp_initrd/bin/uname || return 1
+	ln -s busybox $tmp_initrd/bin/rmmod || return 1
+	ln -s busybox $tmp_initrd/bin/lsmod || return 1
+	ln -s busybox $tmp_initrd/bin/mknod || return 1
+	ln -s busybox $tmp_initrd/bin/sort || return 1
+	ln -s busybox $tmp_initrd/bin/cut || return 1
+	ln -s busybox $tmp_initrd/bin/mkdir || return 1
+	ln -s busybox $tmp_initrd/bin/mdev || return 1
+	ln -s busybox $tmp_initrd/bin/sleep || return 1
+	ln -s busybox $tmp_initrd/bin/tail || return 1
+	ln -s busybox $tmp_initrd/bin/head || return 1
+	ln -s busybox $tmp_initrd/bin/awk || return 1
+	ln -s busybox $tmp_initrd/bin/switch_root || return 1
+        ln -s busybox $tmp_initrd/bin/pidof || return 1
+        ln -s busybox $tmp_initrd/bin/dd || return 1
+
+	#Purely for Troubleshooting and Awesomeness
+	ln -s busybox $tmp_initrd/bin/vi || return 1 	
+
+	echo "Adding libraries..."
+        copy_libs $sys_source /sbin/kmod
+	copy_libs $sys_source /sbin/udevadm
+	copy_libs $sys_source /bin/mount
+	copy_libs $sys_source /lib/udev/udevd
+	copy_libs $sys_source /usr/bin/killall
+	copy_libs $sys_source /usr/sbin/mke2fs
+#        copy_libs $sys_source /bin/plymouth
+#        copy_libs $sys_source /sbin/plymouthd
+        copy_libs $sys_source /bin/busybox
+ 	cp $sys_source/etc/ld.so.conf $tmp_initrd/etc
+#        cp -r $sys_source/etc/plymouth $tmp_initrd/etc/
+#        cp -r $sys_source/usr/share/plymouth $tmp_initrd/usr/share/
+
+        if [ $arch = 'x86_64' ]; then
+           mkdir -p $tmp_initrd/usr/lib64
+#	   cp -r $sys_source/usr/lib64/plymouth $tmp_initrd/usr/lib64/
+#           cp -rfd $sys_source/usr/lib64/libply* $tmp_initrd/usr/lib64/
+#           cp -rfd $sys_source/usr/lib64/libpng12* $tmp_initrd/usr/lib64/
+#           cp -rfd $sys_source/usr/lib64/libpng15* $tmp_initrd/usr/lib64/
+        else
+           mkdir -p $tmp_initrd/usr/lib
+#           cp -r $sys_source/usr/lib/plymouth $tmp_initrd/usr/lib/
+#           cp -rfd $sys_source/usr/lib/libply* $tmp_initrd/usr/lib/
+#           cp -rfd $sys_source/usr/lib/libpng12* $tmp_initrd/usr/lib/
+#           cp -rfd $sys_source/usr/lib/libpng15* $tmp_initrd/usr/lib/
+        fi
+
+        ldconfig -r $tmp_initrd
+	chown -R root:root $tmp_initrd/*
+	echo "Writing $VOLID LABEL into: $volid_file"
+	echo "$VOLID" > $volid_file
+	make_cleanup $tmp_initrd
+
+	# bootsplash
+	if [ $bootsplash_arg -eq 1 ]; then
+		echo "Creating bootsplash"
+		/bin/splash.bin -s -f $bootsplash > $tmp_initrd/bootsplash
+	fi
+	echo "Creating initramfs image: $1"
+	cd $tmp_initrd
+#	find . | cpio -H newc -o | $compr > $1
+	find . | cpio -H newc -o | gzip > $1
+	[ $? -eq 0 ] && echo "Image saved as $1 (size: $(stat -c %s $1))" || die "Creating image failed!"
+}
+# return application related libraries
+function get_app_libs
+{
+	[ ! -x "$1" ] && "Error: $1 is not executable file"
+	chroot $sys_source ldd $1 | grep '/lib' | sed -e 's/\ (.*//' -e 's/.*=>\ //' -e "s/[\ \t]//g"
+}
+function die 
+{
+	echo "Error: $@"
+	exit 1
+}
+function print_help
+{
+	echo "$prog_name usage: $prog_name /source_directory /image.iso [OPTIONS]"
+	echo "  -h|--help - print this message"
+	echo "  --lzma - use lzma compression instead gzip"
+	echo "  --gzip - use gzip compression (default)"
+	echo -e "  --tpl=tpl-dir - templates dir ("templates" by default)"
+	echo "  --bootsplash=config - enable bootsplash (default no)"
+	echo ""
+	echo "  $prog_name script creates a live cd/dvd system based on Synergy Linux"
+	echo "  installed into directory."
+	echo " example 1:"
+	echo "  # $prog_name /my-sys-dir /my-live.iso"
+	echo " example 2:"
+	echo "  # $prog_name /my-sys-dir /my-live.iso --tpl=templates-my --lzma"
+
+}
+function make_cleanup
+{
+        echo "Running cleanup of $1..."
+        find $1 -name \*~ -exec rm \{\} \;
+        find $1 -name .svn -type d -exec rm -rf \{\} \; 2> /dev/null
+}
+
+
+##### MAIN #####
+templatesDir=templates
+bootsplash_arg=0
+for arg in $@
+do
+        case $arg in
+                --lzma) compr=lzma; squashfscompr=xz  ;;
+                --kernel=*) kernel_rel=$(echo $arg | sed 's/.*kernel=//;s/--.*//') ;;
+                --label=*) VOLID=$(echo $arg | sed 's/.*VOLID=//;s/--.*//') ;;
+                --gzip) compr=gzip; squashfscompr=gzip ;;
+		--tpl=*) templatesDir=$(echo $arg | sed 's/.*tpl=//;s/--.*//') ;;
+		--bootsplash=*)
+			bootsplash_arg=1
+			bootsplash=$(echo $arg | sed 's/.*bootsplash=//;s/--.*//')
+			;;
+		-h|--help)
+			print_help
+			exit 0
+		;;
+                -*)
+			echo "Invalid option: $arg. Use -h to print help"
+			print_help
+			exit 1
+		;;
+                *)
+                        [ -z $sys_source ] && sys_source=$arg && continue
+                        [ -z $dst_iso ] && [ ! -z $sys_source ] && dst_iso=$arg        
+                ;;
+        esac
+done
+[ ! $(whoami) = 'root' ] && die "You need superuser privileges, try 'su' or 'sudo'"
+
+[ -z $sys_source ] && die "Missing arg: source directory. Use -h to print help."
+[ -z $dst_iso ] && die "Missing arg: iso image. Use -h to print help"
+[ -z $compr ] && compr=gzip # gzip is default compression method
+[ ! -d $sys_source ] && die "$sys_source is not a directory"
+mkroot=$(dirname $0)
+
+# read configuration from ~/.mkliverc
+[ -f ~/.mkliverc ] && . ~/.mkliverc
+
+# preparing temp dirs
+rm -rf /tmp/$0_tmp_*
+# Try and Guess arch
+[ -d $sys_source/lib64 ] && arch=x86_64 || arch=i686
+# If VOLID is not defined grep version from release rpm
+[ -z "$VOLID" ] && VOLID=`chroot $sys_source rpm -qf /etc/synergy-release | cut -d '.' -f1`-$arch # default VOLID
+tmp_iso_root=$(mktemp -d /tmp/$(basename $0)_tmp_iso__XXXXXX)
+tmp_initrd=$(mktemp -d /tmp/$(basename $0)_tmp_initrd__XXXXXX)
+volid_file=$tmp_initrd/DEV_LABEL
+live_rootfs_archive=squashfs.img
+kernel_rel=$(get_src_kernel_rel $1)
+[ $? -ne 0 ] && die "Kernel release not found: "$kernel_rel
+
+echo "::: $prog_name :::"	 
+echo "found kernel:         $kernel_rel"	 
+echo "compression method:   $compr"	 
+echo "initrd temporary dir: $tmp_initrd"	 
+echo "iso temporary dir:    $tmp_iso_root"	 
+echo "templates directory:  $mkroot/$templatesDir"
+echo "application:          $APPLICATION"
+echo "preparer:             $PREPARER"
+echo "volid:                $VOLID"
+echo ""
+
+# does templates exist
+[ ! -d $mkroot/$templatesDir ] && die "templates dir: $mkroot/$templatesDir does not exist."
+# does bootsplash configuration exist
+if [ $bootsplash_arg -eq 1 ]; then
+	[ ! -f $bootsplash ] && die "bootsplash configuration: $bootsplash does not exist."
+fi
+# is destination exists
+if [ -a $dst_iso ]
+then
+	echo "Warning: $dst_iso file already exists."
+	echo "Do you wish to overwrite? [N/y]"
+	read anykey
+	[ ! "$anykey" = 'y' ] && die "Interrupted." || rm -f $dst_iso
+fi
+
+# creating initrd: temp live root
+echo "Copying kernel and basic tools..."
+cp -r $mkroot/$templatesDir/isolinux $tmp_iso_root
+if [ -f $sys_source/boot/vmlinuz-$(echo $kernel_rel) ]; then
+       	cp $sys_source/boot/vmlinuz-$(echo $kernel_rel) $tmp_iso_root/isolinux/vmlinuz
+else
+     die "No Suitable vmlinuz found for kernel: "$kernel_rel
+fi
+make_cleanup $tmp_iso_root
+# create image
+create_initrd $tmp_iso_root/isolinux/initrd.img || die "Creating initrd image failed."
+
+# ceate live
+echo "Creating squashfs filesystem: $tmp_iso_root/$live_rootfs_archive..."
+mkdir -p $tmp_iso_root/LiveOS/
+
+# Test cli installer, so copy over
+cp -f $mkroot/$templatesDir/synergy-install-cli $sys_source/usr/sbin/
+cp -f $mkroot/$templatesDir/synergy-install-gui $sys_source/usr/sbin/
+cp -f $mkroot/$templatesDir/auto-part $sys_source/usr/sbin/
+
+mksquashfs  $sys_source $tmp_iso_root/LiveOS/$live_rootfs_archive -comp $squashfscompr -e /tmp -e /root/rpms -e /root/rpmbuild -e /root/packages -e /root/building -e /proc/ -e /sys/ -e /dev/ -e /run/ > /dev/null || die "Creating live rootfs failed"
+echo "Creating ISO image: $dst_iso ($VOLID)..."
+mkisofs -o $dst_iso --publisher "Synergy Linux" -b isolinux/isolinux.bin -c isolinux/boot.cat \
+	-no-emul-boot -boot-load-size 4 -boot-info-table -l -R \
+	-A "$APPLICATION" -V "$VOLID" -p "$PREPARER" \
+       	-r $tmp_iso_root \
+	|| die "Creating iso image failed."
+rm -rf $tmp_iso_root
+rm -rf $tmp_initrd
+echo "Image $dst_iso seems to be ready"
+
+
