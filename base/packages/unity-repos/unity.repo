@@ -1,0 +1,9 @@
+[unity]
+name=Unity 0.4 - x86_64
+failovermethod=priority
+baseurl=http://unity-linux.org/rpms/x86_64/
+enabled=0
+#metadata_expire=7d
+gpgcheck=0
+#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-unity-0.4-x86_64
+#skip_if_unavailable=False

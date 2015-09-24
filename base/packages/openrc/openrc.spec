@@ -67,6 +67,32 @@ install -D -m755 %{SOURCE8} %{buildroot}/etc/init.d/consolefont
 install -D -m644 %{SOURCE9} %{buildroot}/etc/conf.d/consolefont
 install -d %{buildroot}/etc/local.d %{buildroot}/run
 
+mkdir -p %{buildroot}/etc/runlevels
+mkdir -p %{buildroot}/etc/runlevels/boot
+mkdir -p %{buildroot}/etc/runlevels/default
+mkdir -p %{buildroot}/etc/runlevels/shutdown
+mkdir -p %{buildroot}/etc/runlevels/sysinit
+
+cd %{buildroot}/etc/runlevels/boot
+ln -sf /etc/init.d/bootmisc bootmisc
+ln -sf /etc/init.d/hostname hostname
+ln -sf /etc/init.d/hwclock hwclock
+ln -sf /etc/init.d/modules modules
+ln -sf /etc/init.d/sysctl sysctl
+ln -sf /etc/init.d/syslog syslog
+
+cd %{buildroot}/etc/runlevels/shutdown
+ln -sf /etc/init.d/killprocs killprocs
+ln -sf /etc/init.d/mount-ro mount-ro
+ln -sf /etc/init.d/savecache savecache
+
+cd %{buildroot}/etc/runlevels/sysinit
+ln -sf /etc/init.d/devfs devfs
+ln -sf /etc/init.d/dmesg dmesg
+ln -sf /etc/init.d/hwdrivers hwdrivers
+ln -sf /etc/init.d/mdev mdev
+ln -sf /etc/init.d/modloop modloop
+
 %files
 %doc
 /bin/rc-status
@@ -82,6 +108,15 @@ install -d %{buildroot}/etc/local.d %{buildroot}/run
 /lib/rc/bin/*
 /lib/rc/sh/*.sh
 /sbin/*
+/etc/runlevels/*
+/etc/runlevels/boot/*
+/etc/runlevels/shutdown/*
+/etc/runlevels/sysinit/*
+
+%dir /etc/runlevels
+%dir /etc/runlevels/boot
+%dir /etc/runlevels/shutdown
+%dir /etc/runlevels/sysinit
 
 %dir /etc/local.d
 %dir /lib/rc/bin
