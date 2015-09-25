@@ -99,7 +99,7 @@ rm -rf %{buildroot}
 make INSTALL_PREFIX=%{buildroot} MANDIR=/usr/share/man install
 
 cd %{buildroot}/usr/bin
-#%__ln -sf openssl c_rehash
+%__cp %{_builddir}/%{name}-%{version}/tools/c_rehash c_rehash
 cd ../../
 mkdir %{buildroot}/lib
 mv %{buildroot}/usr/lib/libcrypto.so.1.0.0 %{buildroot}/lib/libcrypto.so.1.0.0
