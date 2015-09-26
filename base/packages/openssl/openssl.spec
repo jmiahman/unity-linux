@@ -98,9 +98,7 @@ make build-shared
 rm -rf %{buildroot}
 make INSTALL_PREFIX=%{buildroot} MANDIR=/usr/share/man install
 
-cd %{buildroot}/usr/bin
-%__cp %{_builddir}/%{name}-%{version}/tools/c_rehash c_rehash
-cd ../../
+install -m755 %{_builddir}/%{name}-%{version}/tools/c_rehash %{buildroot}/usr/bin/
 mkdir %{buildroot}/lib
 mv %{buildroot}/usr/lib/libcrypto.so.1.0.0 %{buildroot}/lib/libcrypto.so.1.0.0
 mv %{buildroot}/usr/lib/libssl.so.1.0.0 %{buildroot}/lib/libssl.so.1.0.0

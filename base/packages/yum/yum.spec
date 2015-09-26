@@ -12,9 +12,9 @@
 
 # disable broken /usr/lib/rpm/brp-python-bytecompile
 %define __os_install_post %{nil}
-%define compdir %(pkg-config --variable=completionsdir bash-completion)
+#%define compdir %(pkg-config --variable=completionsdir bash-completion)
 %if "%{compdir}" == ""
-%define compdir "/etc/bash_completion.d"
+#%define compdir "/etc/bash_completion.d"
 %endif
 
 Summary: RPM package installer/updater/manager
@@ -29,6 +29,7 @@ Source1: yum.conf
 Patch0:	rpm5.patch
 Patch1: %{name}-pld.patch
 Patch3: rpm5-yum.patch
+Patch4: yum-missingok.patch
 #Patch1: yum-distro-configs.patch
 #Patch5: geode-arch.patch
 #Patch6: yum-HEAD.patch
@@ -149,8 +150,9 @@ This runs after yum-cron-daily, if that is installed.
 %patch0 -p1
 %patch1 -p1
 %patch3 -p1
+%patch4 -p1
 #%patch5 -p1
-#%patch6 -p1
+%patch6 -p1
 #%patch7 -p1
 #%patch20 -p1
 #%patch21 -p1
@@ -203,17 +205,17 @@ rm -f $RPM_BUILD_ROOT/%{_unitdir}/yum-cron.service
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
 
 
-%post updatesd
-/sbin/chkconfig --add yum-updatesd
-/sbin/service yum-updatesd condrestart >/dev/null 2>&1
-exit 0
+#%post updatesd
+#/sbin/chkconfig --add yum-updatesd
+#/sbin/service yum-updatesd condrestart >/dev/null 2>&1
+#exit 0
 
-%preun updatesd
-if [ $1 = 0 ]; then
- /sbin/chkconfig --del yum-updatesd
- /sbin/service yum-updatesd stop >/dev/null 2>&1
-fi
-exit 0
+#%preun updatesd
+#if [ $1 = 0 ]; then
+# /sbin/chkconfig --del yum-updatesd
+# /sbin/service yum-updatesd stop >/dev/null 2>&1
+#fi
+#exit 0
 
 %post cron
 

@@ -27,14 +27,14 @@ BuildArch:	noarch
 A set of utilities for generating a common metadata repository from a
 directory of RPM packages and maintaining it.
 
-%package -n bash-completion-%{name}
-Summary:	bash-completion for createrepo commands
-Group:		Applications/Shells
-Requires:	%{name} = %{version}-%{release}
-Requires:	bash-completion >= 2.0
+#%package -n bash-completion-%{name}
+#Summary:	bash-completion for createrepo commands
+#Group:		Applications/Shells
+#Requires:	%{name} = %{version}-%{release}
+#Requires:	bash-completion >= 2.0
 
-%description -n bash-completion-%{name}
-bash-completion for createrepo commands.
+#%description -n bash-completion-%{name}
+#bash-completion for createrepo commands.
 
 %prep
 %setup -q
@@ -77,8 +77,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{python_sitearch}/%{name}
 %{python_sitearch}/%{name}/*.py*
 
-%files -n bash-completion-%{name}
-%defattr(644,root,root,755)
+#%files -n bash-completion-%{name}
+#%defattr(644,root,root,755)
 #%{_datadir}/bash-completion/completions/createrepo
 #%{_datadir}/bash-completion/completions/genpkgmetadata.py
 #%{_datadir}/bash-completion/completions/mergerepo
