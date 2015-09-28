@@ -14,6 +14,8 @@ URL: 		http://kernel.org/pub/software/scm/git/
 Source: 	http://kernel.org/pub/software/scm/git/%{name}-%{version}.tar.gz
 BuildRequires:	zlib-devel >= 1.2, openssl-devel, curl-devel, expat-devel, gettext  %{!?_without_docs:, xmlto, asciidoc > 6.0.3}
 
+Patch0:		bb-tar.patch
+
 Requires:	perl-Git = %{version}-%{release}
 Requires:	zlib >= 1.2, rsync, openssh-client, expat
 Provides:	git-core = %{version}-%{release}
@@ -111,21 +113,26 @@ Perl interface to Git
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
-NO_GETTEXT=1
+export CFLAGS=' -Wall -lssl -lcrypto -lz -I/usr/include/openssl/ -L/usr/lib/'
+./configure --prefix=/usr --with-curl --with-expat
+
 make \
      prefix=/usr \
      NO_GETTEXT=YesPlease \
      NO_NSEC=YesPlease \
      NO_SVN_TESTS=YesPlease \
      USE_LIBPCRE=1 \
+     NEEDS_CRYPTO_WITH_SSL=1 \
      %{path_settings} \
      all %{!?_without_docs: doc}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make CFLAGS="$RPM_OPT_FLAGS" DESTDIR=$RPM_BUILD_ROOT \
+export CFLAGS=' -Wall -lssl -lcrypto -lz -I/usr/include/openssl/ -L/usr/lib/'
+make DESTDIR=$RPM_BUILD_ROOT \
      NO_GETTEXT=YesPlease \
      NO_NSEC=YesPlease \
      NO_SVN_TESTS=YesPlease \
@@ -155,8 +162,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{_bindir}/git
+%{_bindir}/*
+%exclude %{_bindir}/git-cvsserver
+%exclude %{_bindir}/*gitk*
+
 %{_datadir}/git-core/
+/usr/libexec/git-core/*
+/usr/libexec/git-core/mergetools/*
 %dir /usr/libexec/git-core
 %dir /usr/libexec/git-core/mergetools
 
@@ -223,6 +235,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n perl-Git
 %defattr(-,root,root)
+/usr/share/perl5/vendor_perl/Git/*
+%dir /usr/share/perl5/vendor_perl/Git/
+#/usr/lib/perl5/vendor_perl/auto/Git/*
+#%dir /usr/lib/perl5/vendor_perl/auto/Git
 
 %files all
 # No files for you!

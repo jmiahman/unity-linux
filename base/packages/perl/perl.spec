@@ -1,7 +1,7 @@
 
-%define _privlib /usr/share/perl5/core_perl
+%define _privlib %{_datadir}/perl5/core_perl
 %define _archlib %{_libdir}/perl5/core_perl
-%define _vendorlib /usr/share/perl5/vendor_perl
+%define _vendorlib %{_datadir}/perl5/vendor_perl
 %define _vendorarch %{_libdir}/perl5/vendor_perl
 
 Name:		perl
@@ -93,6 +93,11 @@ make install DESTDIR=%{buildroot}
 
 cp -f miniperl %{buildroot}/usr/bin
 
+#we need to own these
+mkdir -p %{buildroot}/%{_datadir}/perl5/vendor_perl
+mkdir -p %{buildroot}/%{_libdir}/perl5/vendor_perl
+mkdir -p %{buildroot}/%{_libdir}/perl5/vendor_perl/auto
+
 %files
 /usr/bin/*
 %exclude %{_bindir}/miniperl
@@ -104,6 +109,10 @@ cp -f miniperl %{buildroot}/usr/bin
 
 %dir %{_datadir}/perl5                                                      
 %dir %{_datadir}/perl5/core_perl 
+
+%dir %{_datadir}/perl5/vendor_perl
+%dir %{_libdir}/perl5/vendor_perl
+%dir %{_libdir}/perl5/vendor_perl/auto
 
 %files -n miniperl
 /usr/bin/miniperl
