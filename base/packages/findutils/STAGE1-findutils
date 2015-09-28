@@ -1,0 +1,9 @@
+srpm $1
+mcd $BUILDDIR/$1
+sed -i~ -e "s,locate/Makefile locate/testsuite/Makefile ,," $SRC/${1}-*/configure
+FINDLIBS="-lselinux -ldl" $SRC/${1}-*/configure $TCONFIGARGS
+sed -i~ -e "s/ locate / /" Makefile
+notparallel
+test -d tools/gnulib/lib && make $J V=1 -C tools/gnulib/lib
+make $J V=1
+make $J install DESTDIR=${ROOTFS}

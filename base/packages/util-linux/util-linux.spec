@@ -254,5 +254,6 @@ rm -f %{buildroot}/usr/lib/*.la \
 
 %files -n python-libmount
 %{_libdir}/python*/site-packages/libmount/*
+%dir %{_libdir}/python*/site-packages/libmount/
 
 %changelog

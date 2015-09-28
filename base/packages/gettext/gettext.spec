@@ -151,8 +151,8 @@ make -j1 DESTDIR=%{buildroot} install
 %{_datadir}/gettext/projects/GNOME/teams.url
 %{_datadir}/gettext/projects/GNOME/team-address
 %{_datadir}/gettext/projects/GNOME/teams.html
-%{_datadir}/gettext/projects/KDE/trigger
 %{_datadir}/gettext/projects/KDE/teams.url
+%{_datadir}/gettext/projects/KDE/trigger
 %{_datadir}/gettext/projects/KDE/team-address
 %{_datadir}/gettext/projects/KDE/teams.html
 %{_datadir}/gettext/projects/TP/trigger
@@ -211,6 +211,7 @@ make -j1 DESTDIR=%{buildroot} install
 %dir %{_datadir}/gettext
 %dir %{_datadir}/gettext/intl
 %dir %{_datadir}/gettext/po
+%dir %{_datadir}/gettext/projects/KDE
 %dir %{_datadir}/gettext/projects/GNOME
 %dir %{_datadir}/gettext/projects/TP
 %dir %{_datadir}/gettext/projects

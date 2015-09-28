@@ -189,8 +189,15 @@ BUG_REPORT_URL="http://bugs.unity-linux.org"
 EOF
 
 %post
-ln -s /etc/crontabs %{buildroot}/var/spool/cron/crontabs
-ln -s /proc/mounts %{buildroot}/etc/mtab
+if [ ! -L /var/spool/cron/crontabs ];
+then
+	ln -s /etc/crontabs /var/spool/cron/crontabs
+fi
+
+if [ ! -L /var/spool/cron/crontabs ];
+then
+	ln -s /proc/mounts /etc/mtab
+fi
 
 %files
 %dir /bin

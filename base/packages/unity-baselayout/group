@@ -54,3 +54,4 @@ abuild:x:300:
 utmp:x:406:
 nogroup:x:65533:
 nobody:x:65534:
+builduser:x:1003:
