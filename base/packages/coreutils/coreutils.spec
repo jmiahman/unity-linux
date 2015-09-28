@@ -29,6 +29,7 @@ CC=gcc \
 	--mandir=/usr/share/man \
 	--infodir=/usr/share/info \
 	--disable-nls \
+	--disable-utmp \
 	--without-gmp \
 	--with-openssl \
 	--enable-install-program=arch \

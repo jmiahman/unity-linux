@@ -1,0 +1,379 @@
+From 2056a9ef9e91996c294b5db0a3d01ed415e95e56 Mon Sep 17 00:00:00 2001
+From: nicm <nicm>
+Date: Mon, 21 Jul 2014 10:25:48 +0000
+Subject: [PATCH] Drop explicit support for F13-F20 and change to match the
+ xterm terminfo entry:
+
+        F13-F24 are S-F1 to S-F12
+        F25-F36 are C-F1 to C-F12
+        F37-F48 are C-S-F1 to C-S-F12
+        F49-F60 are M-F1 to M-F12
+and     F61-F63 are M-S-F1 to M-S-F3
+
+This should be no difference for applications inside tmux, but means
+that any key binding for F13 will need to be replaced by S-F1 and so on.
+---
+ input-keys.c |   16 +++++-----
+ key-string.c |    8 -----
+ tmux.h       |   91 ++++++++++++++++++++++++++++++++++++++++------------------
+ tty-keys.c   |   89 ++++++++++++++++++++++++++++++++++++--------------------
+ tty-term.c   |   43 +++++++++++++++++++++++++++
+ xterm-keys.c |    8 -----
+ 6 files changed, 171 insertions(+), 84 deletions(-)
+
+diff --git a/input-keys.c b/input-keys.c
+index 24566df..c75e28d 100644
+--- a/input-keys.c
++++ b/input-keys.c
+@@ -57,14 +57,14 @@ const struct input_key_ent input_keys[] = {
+ 	{ KEYC_F10,		"\033[21~",	0 },
+ 	{ KEYC_F11,		"\033[23~",	0 },
+ 	{ KEYC_F12,		"\033[24~",	0 },
+-	{ KEYC_F13,		"\033[25~",	0 },
+-	{ KEYC_F14,		"\033[26~",	0 },
+-	{ KEYC_F15,		"\033[28~",	0 },
+-	{ KEYC_F16,		"\033[29~",	0 },
+-	{ KEYC_F17,		"\033[31~",	0 },
+-	{ KEYC_F18,		"\033[32~",	0 },
+-	{ KEYC_F19,		"\033[33~",	0 },
+-	{ KEYC_F20,		"\033[34~",	0 },
++	{ KEYC_F1|KEYC_SHIFT,	"\033[25~",	0 },
++	{ KEYC_F2|KEYC_SHIFT,	"\033[26~",	0 },
++	{ KEYC_F3|KEYC_SHIFT,	"\033[28~",	0 },
++	{ KEYC_F4|KEYC_SHIFT,	"\033[29~",	0 },
++	{ KEYC_F5|KEYC_SHIFT,	"\033[31~",	0 },
++	{ KEYC_F6|KEYC_SHIFT,	"\033[32~",	0 },
++	{ KEYC_F7|KEYC_SHIFT,	"\033[33~",	0 },
++	{ KEYC_F8|KEYC_SHIFT,	"\033[34~",	0 },
+ 	{ KEYC_IC,		"\033[2~",	0 },
+ 	{ KEYC_DC,		"\033[3~",	0 },
+ 	{ KEYC_HOME,		"\033[1~",	0 },
+diff --git a/key-string.c b/key-string.c
+index 7aba190..db96827 100644
+--- a/key-string.c
++++ b/key-string.c
+@@ -42,14 +42,6 @@ const struct {
+ 	{ "F10",	KEYC_F10 },
+ 	{ "F11",	KEYC_F11 },
+ 	{ "F12",	KEYC_F12 },
+-	{ "F13",	KEYC_F13 },
+-	{ "F14",	KEYC_F14 },
+-	{ "F15",	KEYC_F15 },
+-	{ "F16",	KEYC_F16 },
+-	{ "F17",	KEYC_F17 },
+-	{ "F18",	KEYC_F18 },
+-	{ "F19",	KEYC_F19 },
+-	{ "F20",	KEYC_F20 },
+ 	{ "IC",		KEYC_IC },
+ 	{ "DC",		KEYC_DC },
+ 	{ "Home",	KEYC_HOME },
+diff --git a/tmux.h b/tmux.h
+index 4f937f3..bbf4e9d 100644
+--- a/tmux.h
++++ b/tmux.h
+@@ -195,14 +195,6 @@ enum key_code {
+ 	KEYC_F10,
+ 	KEYC_F11,
+ 	KEYC_F12,
+-	KEYC_F13,
+-	KEYC_F14,
+-	KEYC_F15,
+-	KEYC_F16,
+-	KEYC_F17,
+-	KEYC_F18,
+-	KEYC_F19,
+-	KEYC_F20,
+ 	KEYC_IC,
+ 	KEYC_DC,
+ 	KEYC_HOME,
+@@ -308,26 +300,69 @@ enum tty_code_code {
+ 	TTYC_KEND5,
+ 	TTYC_KEND6,
+ 	TTYC_KEND7,
+-	TTYC_KF1,	/* key_f1, k1 */
+-	TTYC_KF10,	/* key_f10, k; */
+-	TTYC_KF11,	/* key_f11, F1 */
+-	TTYC_KF12,	/* key_f12, F2 */
+-	TTYC_KF13,	/* key_f13, F3 */
+-	TTYC_KF14,	/* key_f14, F4 */
+-	TTYC_KF15,	/* key_f15, F5 */
+-	TTYC_KF16,	/* key_f16, F6 */
+-	TTYC_KF17,	/* key_f17, F7 */
+-	TTYC_KF18,	/* key_f18, F8 */
+-	TTYC_KF19,	/* key_f19, F9 */
+-	TTYC_KF2,	/* key_f2, k2 */
+-	TTYC_KF20,	/* key_f20, F10 */
+-	TTYC_KF3,	/* key_f3, k3 */
+-	TTYC_KF4,	/* key_f4, k4 */
+-	TTYC_KF5,	/* key_f5, k5 */
+-	TTYC_KF6,	/* key_f6, k6 */
+-	TTYC_KF7,	/* key_f7, k7 */
+-	TTYC_KF8,	/* key_f8, k8 */
+-	TTYC_KF9,	/* key_f9, k9 */
++	TTYC_KF1,
++	TTYC_KF10,
++	TTYC_KF11,
++	TTYC_KF12,
++	TTYC_KF13,
++	TTYC_KF14,
++	TTYC_KF15,
++	TTYC_KF16,
++	TTYC_KF17,
++	TTYC_KF18,
++	TTYC_KF19,
++	TTYC_KF2,
++	TTYC_KF20,
++	TTYC_KF21,
++	TTYC_KF22,
++	TTYC_KF23,
++	TTYC_KF24,
++	TTYC_KF25,
++	TTYC_KF26,
++	TTYC_KF27,
++	TTYC_KF28,
++	TTYC_KF29,
++	TTYC_KF3,
++	TTYC_KF30,
++	TTYC_KF31,
++	TTYC_KF32,
++	TTYC_KF33,
++	TTYC_KF34,
++	TTYC_KF35,
++	TTYC_KF36,
++	TTYC_KF37,
++	TTYC_KF38,
++	TTYC_KF39,
++	TTYC_KF4,
++	TTYC_KF40,
++	TTYC_KF41,
++	TTYC_KF42,
++	TTYC_KF43,
++	TTYC_KF44,
++	TTYC_KF45,
++	TTYC_KF46,
++	TTYC_KF47,
++	TTYC_KF48,
++	TTYC_KF49,
++	TTYC_KF5,
++	TTYC_KF50,
++	TTYC_KF51,
++	TTYC_KF52,
++	TTYC_KF53,
++	TTYC_KF54,
++	TTYC_KF55,
++	TTYC_KF56,
++	TTYC_KF57,
++	TTYC_KF58,
++	TTYC_KF59,
++	TTYC_KF6,
++	TTYC_KF60,
++	TTYC_KF61,
++	TTYC_KF62,
++	TTYC_KF63,
++	TTYC_KF7,
++	TTYC_KF8,
++	TTYC_KF9,
+ 	TTYC_KHOM2,
+ 	TTYC_KHOM3,
+ 	TTYC_KHOM4,
+diff --git a/tty-keys.c b/tty-keys.c
+index 932367e..967deca 100644
+--- a/tty-keys.c
++++ b/tty-keys.c
+@@ -113,14 +113,6 @@ const struct tty_default_key_raw tty_default_raw_keys[] = {
+ 	{ "\033[21^", KEYC_F10|KEYC_CTRL },
+ 	{ "\033[23^", KEYC_F11|KEYC_CTRL },
+ 	{ "\033[24^", KEYC_F12|KEYC_CTRL },
+-	{ "\033[25^", KEYC_F13|KEYC_CTRL },
+-	{ "\033[26^", KEYC_F14|KEYC_CTRL },
+-	{ "\033[28^", KEYC_F15|KEYC_CTRL },
+-	{ "\033[29^", KEYC_F16|KEYC_CTRL },
+-	{ "\033[31^", KEYC_F17|KEYC_CTRL },
+-	{ "\033[32^", KEYC_F18|KEYC_CTRL },
+-	{ "\033[33^", KEYC_F19|KEYC_CTRL },
+-	{ "\033[34^", KEYC_F20|KEYC_CTRL },
+ 	{ "\033[2^", KEYC_IC|KEYC_CTRL },
+ 	{ "\033[3^", KEYC_DC|KEYC_CTRL },
+ 	{ "\033[7^", KEYC_HOME|KEYC_CTRL },
+@@ -140,14 +132,6 @@ const struct tty_default_key_raw tty_default_raw_keys[] = {
+ 	{ "\033[21$", KEYC_F10|KEYC_SHIFT },
+ 	{ "\033[23$", KEYC_F11|KEYC_SHIFT },
+ 	{ "\033[24$", KEYC_F12|KEYC_SHIFT },
+-	{ "\033[25$", KEYC_F13|KEYC_SHIFT },
+-	{ "\033[26$", KEYC_F14|KEYC_SHIFT },
+-	{ "\033[28$", KEYC_F15|KEYC_SHIFT },
+-	{ "\033[29$", KEYC_F16|KEYC_SHIFT },
+-	{ "\033[31$", KEYC_F17|KEYC_SHIFT },
+-	{ "\033[32$", KEYC_F18|KEYC_SHIFT },
+-	{ "\033[33$", KEYC_F19|KEYC_SHIFT },
+-	{ "\033[34$", KEYC_F20|KEYC_SHIFT },
+ 	{ "\033[2$", KEYC_IC|KEYC_SHIFT },
+ 	{ "\033[3$", KEYC_DC|KEYC_SHIFT },
+ 	{ "\033[7$", KEYC_HOME|KEYC_SHIFT },
+@@ -167,14 +151,6 @@ const struct tty_default_key_raw tty_default_raw_keys[] = {
+ 	{ "\033[21@", KEYC_F10|KEYC_CTRL|KEYC_SHIFT },
+ 	{ "\033[23@", KEYC_F11|KEYC_CTRL|KEYC_SHIFT },
+ 	{ "\033[24@", KEYC_F12|KEYC_CTRL|KEYC_SHIFT },
+-	{ "\033[25@", KEYC_F13|KEYC_CTRL|KEYC_SHIFT },
+-	{ "\033[26@", KEYC_F14|KEYC_CTRL|KEYC_SHIFT },
+-	{ "\033[28@", KEYC_F15|KEYC_CTRL|KEYC_SHIFT },
+-	{ "\033[29@", KEYC_F16|KEYC_CTRL|KEYC_SHIFT },
+-	{ "\033[31@", KEYC_F17|KEYC_CTRL|KEYC_SHIFT },
+-	{ "\033[32@", KEYC_F18|KEYC_CTRL|KEYC_SHIFT },
+-	{ "\033[33@", KEYC_F19|KEYC_CTRL|KEYC_SHIFT },
+-	{ "\033[34@", KEYC_F20|KEYC_CTRL|KEYC_SHIFT },
+ 	{ "\033[2@", KEYC_IC|KEYC_CTRL|KEYC_SHIFT },
+ 	{ "\033[3@", KEYC_DC|KEYC_CTRL|KEYC_SHIFT },
+ 	{ "\033[7@", KEYC_HOME|KEYC_CTRL|KEYC_SHIFT },
+@@ -206,14 +182,63 @@ const struct tty_default_key_code tty_default_code_keys[] = {
+ 	{ TTYC_KF10, KEYC_F10 },
+ 	{ TTYC_KF11, KEYC_F11 },
+ 	{ TTYC_KF12, KEYC_F12 },
+-	{ TTYC_KF13, KEYC_F13 },
+-	{ TTYC_KF14, KEYC_F14 },
+-	{ TTYC_KF15, KEYC_F15 },
+-	{ TTYC_KF16, KEYC_F16 },
+-	{ TTYC_KF17, KEYC_F17 },
+-	{ TTYC_KF18, KEYC_F18 },
+-	{ TTYC_KF19, KEYC_F19 },
+-	{ TTYC_KF20, KEYC_F20 },
++
++	{ TTYC_KF13, KEYC_F1|KEYC_SHIFT },
++	{ TTYC_KF14, KEYC_F2|KEYC_SHIFT },
++	{ TTYC_KF15, KEYC_F3|KEYC_SHIFT },
++	{ TTYC_KF16, KEYC_F4|KEYC_SHIFT },
++	{ TTYC_KF17, KEYC_F5|KEYC_SHIFT },
++	{ TTYC_KF18, KEYC_F6|KEYC_SHIFT },
++	{ TTYC_KF19, KEYC_F7|KEYC_SHIFT },
++	{ TTYC_KF20, KEYC_F8|KEYC_SHIFT },
++	{ TTYC_KF21, KEYC_F9|KEYC_SHIFT },
++	{ TTYC_KF22, KEYC_F10|KEYC_SHIFT },
++	{ TTYC_KF23, KEYC_F11|KEYC_SHIFT },
++	{ TTYC_KF24, KEYC_F12|KEYC_SHIFT },
++
++	{ TTYC_KF25, KEYC_F1|KEYC_CTRL },
++	{ TTYC_KF26, KEYC_F2|KEYC_CTRL },
++	{ TTYC_KF27, KEYC_F3|KEYC_CTRL },
++	{ TTYC_KF28, KEYC_F4|KEYC_CTRL },
++	{ TTYC_KF29, KEYC_F5|KEYC_CTRL },
++	{ TTYC_KF30, KEYC_F6|KEYC_CTRL },
++	{ TTYC_KF31, KEYC_F7|KEYC_CTRL },
++	{ TTYC_KF32, KEYC_F8|KEYC_CTRL },
++	{ TTYC_KF33, KEYC_F9|KEYC_CTRL },
++	{ TTYC_KF34, KEYC_F10|KEYC_CTRL },
++	{ TTYC_KF35, KEYC_F11|KEYC_CTRL },
++	{ TTYC_KF36, KEYC_F12|KEYC_CTRL },
++
++	{ TTYC_KF37, KEYC_F1|KEYC_SHIFT|KEYC_CTRL },
++	{ TTYC_KF38, KEYC_F2|KEYC_SHIFT|KEYC_CTRL },
++	{ TTYC_KF39, KEYC_F3|KEYC_SHIFT|KEYC_CTRL },
++	{ TTYC_KF40, KEYC_F4|KEYC_SHIFT|KEYC_CTRL },
++	{ TTYC_KF41, KEYC_F5|KEYC_SHIFT|KEYC_CTRL },
++	{ TTYC_KF42, KEYC_F6|KEYC_SHIFT|KEYC_CTRL },
++	{ TTYC_KF43, KEYC_F7|KEYC_SHIFT|KEYC_CTRL },
++	{ TTYC_KF44, KEYC_F8|KEYC_SHIFT|KEYC_CTRL },
++	{ TTYC_KF45, KEYC_F9|KEYC_SHIFT|KEYC_CTRL },
++	{ TTYC_KF46, KEYC_F10|KEYC_SHIFT|KEYC_CTRL },
++	{ TTYC_KF47, KEYC_F11|KEYC_SHIFT|KEYC_CTRL },
++	{ TTYC_KF48, KEYC_F12|KEYC_SHIFT|KEYC_CTRL },
++
++	{ TTYC_KF49, KEYC_F1|KEYC_ESCAPE },
++	{ TTYC_KF50, KEYC_F2|KEYC_ESCAPE },
++	{ TTYC_KF51, KEYC_F3|KEYC_ESCAPE },
++	{ TTYC_KF52, KEYC_F4|KEYC_ESCAPE },
++	{ TTYC_KF53, KEYC_F5|KEYC_ESCAPE },
++	{ TTYC_KF54, KEYC_F6|KEYC_ESCAPE },
++	{ TTYC_KF55, KEYC_F7|KEYC_ESCAPE },
++	{ TTYC_KF56, KEYC_F8|KEYC_ESCAPE },
++	{ TTYC_KF57, KEYC_F9|KEYC_ESCAPE },
++	{ TTYC_KF58, KEYC_F10|KEYC_ESCAPE },
++	{ TTYC_KF59, KEYC_F11|KEYC_ESCAPE },
++	{ TTYC_KF60, KEYC_F12|KEYC_ESCAPE },
++
++	{ TTYC_KF61, KEYC_F1|KEYC_ESCAPE|KEYC_SHIFT },
++	{ TTYC_KF62, KEYC_F2|KEYC_ESCAPE|KEYC_SHIFT },
++	{ TTYC_KF63, KEYC_F3|KEYC_ESCAPE|KEYC_SHIFT },
++
+ 	{ TTYC_KICH1, KEYC_IC },
+ 	{ TTYC_KDCH1, KEYC_DC },
+ 	{ TTYC_KHOME, KEYC_HOME },
+diff --git a/tty-term.c b/tty-term.c
+index bedf0cf..f866a2d 100644
+--- a/tty-term.c
++++ b/tty-term.c
+@@ -113,10 +113,53 @@ const struct tty_term_code_entry tty_term_codes[NTTYCODE] = {
+ 	{ TTYC_KF19, TTYCODE_STRING, "kf19" },
+ 	{ TTYC_KF2, TTYCODE_STRING, "kf2" },
+ 	{ TTYC_KF20, TTYCODE_STRING, "kf20" },
++	{ TTYC_KF21, TTYCODE_STRING, "kf21" },
++	{ TTYC_KF22, TTYCODE_STRING, "kf22" },
++	{ TTYC_KF23, TTYCODE_STRING, "kf23" },
++	{ TTYC_KF24, TTYCODE_STRING, "kf24" },
++	{ TTYC_KF25, TTYCODE_STRING, "kf25" },
++	{ TTYC_KF26, TTYCODE_STRING, "kf26" },
++	{ TTYC_KF27, TTYCODE_STRING, "kf27" },
++	{ TTYC_KF28, TTYCODE_STRING, "kf28" },
++	{ TTYC_KF29, TTYCODE_STRING, "kf29" },
+ 	{ TTYC_KF3, TTYCODE_STRING, "kf3" },
++	{ TTYC_KF30, TTYCODE_STRING, "kf30" },
++	{ TTYC_KF31, TTYCODE_STRING, "kf31" },
++	{ TTYC_KF32, TTYCODE_STRING, "kf32" },
++	{ TTYC_KF33, TTYCODE_STRING, "kf33" },
++	{ TTYC_KF34, TTYCODE_STRING, "kf34" },
++	{ TTYC_KF35, TTYCODE_STRING, "kf35" },
++	{ TTYC_KF36, TTYCODE_STRING, "kf36" },
++	{ TTYC_KF37, TTYCODE_STRING, "kf37" },
++	{ TTYC_KF38, TTYCODE_STRING, "kf38" },
++	{ TTYC_KF39, TTYCODE_STRING, "kf39" },
+ 	{ TTYC_KF4, TTYCODE_STRING, "kf4" },
++	{ TTYC_KF40, TTYCODE_STRING, "kf40" },
++	{ TTYC_KF41, TTYCODE_STRING, "kf41" },
++	{ TTYC_KF42, TTYCODE_STRING, "kf42" },
++	{ TTYC_KF43, TTYCODE_STRING, "kf43" },
++	{ TTYC_KF44, TTYCODE_STRING, "kf44" },
++	{ TTYC_KF45, TTYCODE_STRING, "kf45" },
++	{ TTYC_KF46, TTYCODE_STRING, "kf46" },
++	{ TTYC_KF47, TTYCODE_STRING, "kf47" },
++	{ TTYC_KF48, TTYCODE_STRING, "kf48" },
++	{ TTYC_KF49, TTYCODE_STRING, "kf49" },
+ 	{ TTYC_KF5, TTYCODE_STRING, "kf5" },
++	{ TTYC_KF50, TTYCODE_STRING, "kf50" },
++	{ TTYC_KF51, TTYCODE_STRING, "kf51" },
++	{ TTYC_KF52, TTYCODE_STRING, "kf52" },
++	{ TTYC_KF53, TTYCODE_STRING, "kf53" },
++	{ TTYC_KF54, TTYCODE_STRING, "kf54" },
++	{ TTYC_KF55, TTYCODE_STRING, "kf55" },
++	{ TTYC_KF56, TTYCODE_STRING, "kf56" },
++	{ TTYC_KF57, TTYCODE_STRING, "kf57" },
++	{ TTYC_KF58, TTYCODE_STRING, "kf58" },
++	{ TTYC_KF59, TTYCODE_STRING, "kf59" },
+ 	{ TTYC_KF6, TTYCODE_STRING, "kf6" },
++	{ TTYC_KF60, TTYCODE_STRING, "kf60" },
++	{ TTYC_KF61, TTYCODE_STRING, "kf61" },
++	{ TTYC_KF62, TTYCODE_STRING, "kf62" },
++	{ TTYC_KF63, TTYCODE_STRING, "kf63" },
+ 	{ TTYC_KF7, TTYCODE_STRING, "kf7" },
+ 	{ TTYC_KF8, TTYCODE_STRING, "kf8" },
+ 	{ TTYC_KF9, TTYCODE_STRING, "kf9" },
+diff --git a/xterm-keys.c b/xterm-keys.c
+index a013cbd..5ca75d8 100644
+--- a/xterm-keys.c
++++ b/xterm-keys.c
+@@ -69,14 +69,6 @@ const struct xterm_keys_entry xterm_keys_table[] = {
+ 	{ KEYC_F10,	"\033[21;_~" },
+ 	{ KEYC_F11,	"\033[23;_~" },
+ 	{ KEYC_F12,	"\033[24;_~" },
+-	{ KEYC_F13,	"\033[25;_~" },
+-	{ KEYC_F14,	"\033[26;_~" },
+-	{ KEYC_F15,	"\033[28;_~" },
+-	{ KEYC_F16,	"\033[29;_~" },
+-	{ KEYC_F17,	"\033[31;_~" },
+-	{ KEYC_F18,	"\033[32;_~" },
+-	{ KEYC_F19,	"\033[33;_~" },
+-	{ KEYC_F20,	"\033[34;_~" },
+ 	{ KEYC_UP,	"\033[1;_A" },
+ 	{ KEYC_DOWN,	"\033[1;_B" },
+ 	{ KEYC_RIGHT,	"\033[1;_C" },
+-- 
+1.7.6.6.GIT
+

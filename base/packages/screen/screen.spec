@@ -1,6 +1,3 @@
-%bcond_with multiuser
-%global _hardened_build 1
-
 Summary:        A screen manager that supports multiple logins on one terminal
 Name:           screen
 Version:        4.3.1
@@ -16,6 +13,7 @@ Source0:        ftp://ftp.gnu.org/gnu/screen/screen-%{version}.tar.gz
 #Source1:        screen.pam
 
 #Patch1:         screen-4.3.1-screenrc.patch
+Patch1:         screen-utmp.patch
 
 %description
 The screen utility allows you to have multiple logins on just one
@@ -30,6 +28,7 @@ support multiple logins on one terminal.
 %prep
 %setup -q -n %{name}-%{version}
 #%patch1 -p1 -b .screenrc
+%patch1 -p1 
 
 
 %build
@@ -38,19 +37,14 @@ support multiple logins on one terminal.
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
-	--enable-colors256 \
-	--enable-rxvt_osc \
-	--enable-use-locale \
-	--enable-telnet \
-	--with-pty-mode=0620 \
-	--with-pty-group=$(getent group tty | cut -d : -f 3) \
 	--with-sys-screenrc="/etc/screenrc" \
-	--with-socket-dir="/var/run/screen"
+	--with-socket-dir="/run/screen"
 
 # fails with %{?_smp_mflags}
 make
 
 %install
+
 rm -rf $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -64,10 +58,13 @@ cat etc/screenrc >> $RPM_BUILD_ROOT/etc/screenrc
 #install -p -m 0644 %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/screen
 
 # Create the socket dir
-mkdir -p $RPM_BUILD_ROOT/var/run/screen
+mkdir -p $RPM_BUILD_ROOT/run/screen
 
 # Remove files from the buildroot which we don't want packaged
 rm -f $RPM_BUILD_ROOT%{_infodir}/dir
+
+find $RPM_BUILD_ROOT -type f -perm -u+s -print0 \
+	| xargs -0 chmod -s
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -83,6 +80,6 @@ rm -rf $RPM_BUILD_ROOT
 #%config(noreplace) /etc/pam.d/screen
 #%{_tmpfilesdir}/screen.conf
 %{_bindir}/*
-%dir /var/run/screen
+%dir /run/screen
 
 %changelog

@@ -33,13 +33,15 @@ used by the Debian infrastructure and those shipped with Mozilla's browsers.
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/bin
+mkdir -p %{buildroot}/etc/ssl
+install -m766 %{SOURCE0} %{buildroot}/etc/ssl/certdata.txt
 install -d %{buildroot}/usr/bin
 install -m755 %{SOURCE1} %{buildroot}/usr/bin
 install -m755 %{SOURCE2} %{buildroot}/usr/bin
 install -m755 %{SOURCE3} %{buildroot}/usr/bin
 
 %post
-cp %{SOURCE0} .
+cd /etc/ssl/
 make-ca
 remove-expired-certs certs
 install -d /etc/ssl/certs
@@ -47,9 +49,11 @@ cp -v certs/*.pem /etc/ssl/certs
 c_rehash
 install BLFS-ca-bundle*.crt /etc/ssl/ca-bundle.crt
 ln -sfv ../ca-bundle.crt /etc/ssl/certs/ca-certificates.crt
+rm BLFS*
 
 %files
 /usr/bin/*
+/etc/ssl/*
 
 %changelog
 

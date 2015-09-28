@@ -80,9 +80,10 @@ support various cryptographic algorithms and protocols.
 
 %build
 rm -rf %{_builddir}/apps/progs.h 
-LDFLAGS="-Wa,--noexecstack" \
+LDFLAGS=" -Wa,--noexecstack" \
 ./config \
 	--prefix=/usr \
+	--libdir=lib \
 	--openssldir=%{_sysconfdir}/ssl \
 	shared zlib enable-montasm enable-md2 \
 	%ifarch x86_64
@@ -90,6 +91,7 @@ LDFLAGS="-Wa,--noexecstack" \
 	%endif
 	-DOPENSSL_NO_BUF_FREELISTS
 
+make depend
 make 
 make build-shared
 
@@ -146,9 +148,9 @@ cd %{buildroot}/lib
 
 %files devel
 %dir /usr/include/openssl/
-%{_prefix}/include/openssl
-%attr(0755,root,root) %{_libdir}/*.so
-%attr(0644,root,root) %{_libdir}/pkgconfig/*.pc
-%attr(0644,root,root) %{_libdir}/*.a
+%{_prefix}/include/openssl/*.h
+%{_libdir}/*.so
+%{_libdir}/pkgconfig/*.pc
+%{_libdir}/*.a
 
 %changelog

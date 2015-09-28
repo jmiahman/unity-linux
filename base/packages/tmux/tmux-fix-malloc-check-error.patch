@@ -1,0 +1,12 @@
+--- cmd.c-orig	2014-02-26 09:57:06.441154327 -0300
++++ cmd.c	2014-02-26 09:58:00.631888951 -0300
+@@ -138,6 +138,9 @@
+ 	size_t	arglen;
+ 	int	i;
+ 
++	if (argc == 0)
++		return (0);
++
+ 	*buf = '\0';
+ 	for (i = 0; i < argc; i++) {
+ 		if (strlcpy(buf, argv[i], len) >= len)

@@ -1,0 +1,54 @@
+diff -Naur libevent-2.0.22-stable/configure.ac libevent-2.0.22-stable_chng/configure.ac
+--- libevent-2.0.22-stable/configure.ac	2015-01-05 14:30:02.000000000 +0000
++++ libevent-2.0.22-stable_chng/configure.ac	2015-09-28 04:13:55.009724918 +0000
+@@ -147,7 +147,7 @@
+ dnl Determine if we have zlib for regression tests
+ dnl Don't put this one in LIBS
+ save_LIBS="$LIBS"
+-LIBS=""
++LIBS="-lz"
+ ZLIB_LIBS=""
+ have_zlib=no
+ AC_SEARCH_LIBS([inflateEnd], [z],
+@@ -175,7 +175,7 @@
+ 
+ if test "$enable_openssl" = "yes"; then
+ save_LIBS="$LIBS"
+-LIBS=""
++LIBS="-lssl -lcrypto $ZLIB_LIBS"
+ OPENSSL_LIBS=""
+ have_openssl=no
+ AC_SEARCH_LIBS([SSL_new], [ssl],
+@@ -183,7 +183,7 @@
+ 	OPENSSL_LIBS="$LIBS -lcrypto $EV_LIB_GDI $EV_LIB_WS32 $OPENSSL_LIBADD"
+ 	AC_DEFINE(HAVE_OPENSSL, 1, [Define if the system has openssl])],
+ 	[have_openssl=no],
+-	[-lcrypto $EV_LIB_GDI $EV_LIB_WS32 $OPENSSL_LIBADD])
++	[$ZLIB_LIBS -lcrypto $EV_LIB_GDI $EV_LIB_WS32 $OPENSSL_LIBADD])
+ LIBS="$save_LIBS"
+ AC_SUBST(OPENSSL_LIBS)
+ fi
+diff -Naur libevent-2.0.22-stable/sample/Makefile.am libevent-2.0.22-stable_chng/sample/Makefile.am
+--- libevent-2.0.22-stable/sample/Makefile.am	2012-02-14 20:37:44.000000000 +0000
++++ libevent-2.0.22-stable_chng/sample/Makefile.am	2015-09-28 04:14:37.730801282 +0000
+@@ -21,7 +21,7 @@
+ if OPENSSL
+ noinst_PROGRAMS += le-proxy
+ le_proxy_SOURCES = le-proxy.c
+-le_proxy_LDADD = $(LDADD) ../libevent_openssl.la -lssl -lcrypto ${OPENSSL_LIBADD}
++le_proxy_LDADD = $(LDADD) ../libevent_openssl.la -lssl -lcrypto ${OPENSSL_LIBADD} $(ZLIB_LIBS)
+ endif
+ 
+ verify:
+diff -Naur libevent-2.0.22-stable/test/Makefile.am libevent-2.0.22-stable_chng/test/Makefile.am
+--- libevent-2.0.22-stable/test/Makefile.am	2013-02-14 19:10:11.000000000 +0000
++++ libevent-2.0.22-stable_chng/test/Makefile.am	2015-09-28 04:15:51.530478245 +0000
+@@ -72,7 +72,7 @@
+ 
+ if OPENSSL
+ regress_SOURCES += regress_ssl.c
+-regress_LDADD += ../libevent_openssl.la -lssl -lcrypto ${OPENSSL_LIBADD}
++regress_LDADD += ../libevent_openssl.la -lssl -lcrypto ${OPENSSL_LIBADD} $(ZLIB_LIBS)
+ endif
+ 
+ bench_SOURCES = bench.c
