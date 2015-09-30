@@ -1,7 +1,0 @@
-## Put here any modules that should be blacklisted
-
-# evbug module shouldn't be loaded by default:
-blacklist evbug
-
-# pc speaker
-blacklist snd-pcsp
