@@ -13,7 +13,5 @@ Currently Unity Linux is in it's very early stages. We have core packages that a
 
 ##Useful Links
 Website: http://unity-linux.org
-
-Wiki: http://wiki.unity-linux.org \n
-
-Webchat: http://webchat.freenode.net/?channels=unitylinux \n
+Wiki: http://wiki.unity-linux.org
+Webchat: http://webchat.freenode.net/?channels=unitylinux
