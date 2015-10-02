@@ -86,6 +86,18 @@ uninstall:
 		rm -f "$(DESTDIR)/$(PREFIX)/lib/$$i";\
 	done
 
+#---------------- make tar -----------------------------------------------------------------------------
+TD	= $(shell basename `pwd`)
+targz:
+	mkdir $(TD)-$(FULL_VERSION)
+	find . -name "*" -type f -exec cp -rf {} $(TD)-$(FULL_VERSION) \;
+	tar --create --verbose --gzip --file $(TD)-$(FULL_VERSION).tar.gz \
+	$(TD)-$(FULL_VERSION)
+	rm -rf $(TD)-$(FULL_VERSION)
+
+#-------------- end make tar ---------------------------------------------------------------------------
+
+
 clean:
 	rm -rf $(SCRIPTS) $(BIN_FILES)
 

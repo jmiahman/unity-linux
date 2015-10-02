@@ -57,8 +57,14 @@ setup_tz() {
 	ln -s "$zonepath" "${ROOT}"etc/localtime
 }
 
+if [ -d /usr/share/zoneinfo ]; then
 INSTALL_TZDATA=false
+KEEP_TZDATA=true
+else
+INSTALL_TZDATA=true
 KEEP_TZDATA=false
+fi
+
 while getopts "hikz:" opt; do
         case $opt in
                 h) usage;;
@@ -72,11 +78,11 @@ if $INSTALL_TZDATA; then
 	pkg=tzdata
 	apkdel=
 else
-	pkg="--force --virtual .setup-timezone tzdata"
-	apkdel=".setup-timezone"
+	pkg=""
+	apkdel=""
 fi
 
-yum install --quiet $pkg
+yum install -y $pkg
 
 if [ -L "${ROOT}"etc/zoneinfo/localtime ]; then
 	timezone=$(readlink "${ROOT}"etc/zoneinfo/localtime)
@@ -116,7 +122,7 @@ while true; do
 	echo "'$timezone' is not a valid timezone on this system"
 done
 
-if [ -n "$apkdel" ]; then
-	apk del --quiet $apkdel
+if [ -n "$yumdel" ]; then
+	yum remove -y $yumdel
 fi
 
