@@ -56,13 +56,13 @@ init_tmpdir() {
 }
 
 pkg_inst() {
-	eecho "WARNING: pkg_inst is deprecated. Use 'yum install --quiet' in script"
-	[ -z "$NOCOMMIT" ] && yum install --quiet $*
+	eecho "WARNING: pkg_inst is deprecated. Use 'yum install -y' in script"
+	[ -z "$NOCOMMIT" ] && yum install -y $*
 }
 
 pkg_deinst() {
-	eecho "WARNING: pkg_deinst is deprecated. Use 'apk del --quiet' in script"
-	[ -z "$NOCOMMIT" ] && apk del --quiet $*
+	eecho "WARNING: pkg_deinst is deprecated. Use 'yum remove -y' in script"
+	[ -z "$NOCOMMIT" ] && yum remove -y $*
 }
 
 default_read() {

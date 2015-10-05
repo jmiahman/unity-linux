@@ -469,7 +469,7 @@ prompt_for_interfaces() {
 	fi
 
 	if [ -n "$PKGS" ]; then
-		yum install --quiet $PKGS
+		yum install -y $PKGS
 	fi
 
 	mkdir -p $ROOT/etc/network
@@ -491,6 +491,8 @@ done
 mkdir -p $ROOT/etc/network
 if [ "$STDINPUT" = "1" ]; then
 	cat > $ROOT/etc/network/interfaces
+	rc-service networking restart
 else
 	prompt_for_interfaces
+	rc-service networking restart
 fi

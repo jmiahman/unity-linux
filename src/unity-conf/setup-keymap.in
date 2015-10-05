@@ -73,15 +73,15 @@ select_variant() {
 
 goodbye() {
 	if [ $was_installed -ne 0 ]; then
-		apk del --quiet bkeymaps
+		 yum remove -y bkeymaps
 	fi
 	exit $1
 }
 
-apk info --quiet --installed bkeymaps
+rpm -V bkeymaps
 was_installed=$?
 
-yum install --quiet bkeymaps
+yum install -y bkeymaps
 
 deflayout="$1"
 defvariant="$2"

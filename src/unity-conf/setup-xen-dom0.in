@@ -10,7 +10,7 @@ for mod in xen_netback xen_blkback xenfs xen_pciback xen_wdt tun; do
 done
 
 # install packages
-yum install --quiet xen
+yum install -y xen
 
 # setup and start services
 for svc in xenstored xenconsoled xenqemu; do

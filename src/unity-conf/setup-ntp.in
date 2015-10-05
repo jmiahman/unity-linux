@@ -40,7 +40,7 @@ busybox)
 	svc=ntpd
 	;;
 chrony)
-	if apk info --installed --quiet acf-core; then
+	if rpm -V acf-core; then
 		pkgs="$pkgs acf-chrony"
 	fi
 	svc=chronyd
@@ -50,7 +50,7 @@ openntpd)
 	;;
 esac
 
-[ -z "$pkgs" ] || yum install --quiet $pkgs
+[ -z "$pkgs" ] || yum install -y $pkgs
 rc-update add $svc default
 rc-service $svc start
 

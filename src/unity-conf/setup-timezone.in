@@ -57,12 +57,12 @@ setup_tz() {
 	ln -s "$zonepath" "${ROOT}"etc/localtime
 }
 
-if [ -d /usr/share/zoneinfo ]; then
-INSTALL_TZDATA=false
-KEEP_TZDATA=true
+if rpm -q --quiet tzdata ; then
+	INSTALL_TZDATA=false
+	KEEP_TZDATA=true
 else
-INSTALL_TZDATA=true
-KEEP_TZDATA=false
+	INSTALL_TZDATA=true
+	KEEP_TZDATA=false
 fi
 
 while getopts "hikz:" opt; do
@@ -77,12 +77,17 @@ done
 if $INSTALL_TZDATA; then
 	pkg=tzdata
 	apkdel=
+	yum install -y $pkg
 else
-	pkg=""
-	apkdel=""
+	if rpm -q --quiet tzdata ; then
+		echo "tzdata rpm is installed"	
+	else                                                       
+		echo "TZData is not installed, trying to install"
+		pkg=tzdata                                         
+        	apkdel=                                            
+		yum install -y $pkg     
+	fi	
 fi
-
-yum install -y $pkg
 
 if [ -L "${ROOT}"etc/zoneinfo/localtime ]; then
 	timezone=$(readlink "${ROOT}"etc/zoneinfo/localtime)

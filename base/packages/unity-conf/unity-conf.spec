@@ -1,9 +1,9 @@
 Name:		unity-conf	
-Version:	001
+Version:	0.0.4
 Release:	1%{?dist}
-Summary:	Some configure scripts
+Summary:	Unity CLI configuration management scripts
 
-Group:		None
+Group:		Applications/System
 License:	GPL
 URL:		http://www.url.com
 Source0:	%{name}-%{version}.tar.gz
@@ -12,8 +12,7 @@ Source0:	%{name}-%{version}.tar.gz
 #Requires:	
 
 %description
-Stuff
-
+Unity CLI configuration management scripts
 
 %prep
 %setup -q
@@ -28,8 +27,10 @@ make %{?_smp_mflags}
 
 
 %files
-%doc
-
+/bin/*
+/etc/*
+/lib/*
+/sbin/*
 
 
 %changelog

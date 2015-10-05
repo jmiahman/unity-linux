@@ -165,7 +165,7 @@ shift $(($OPTIND - 1))
 # main
 # install unity-mirrors if its not already there
 to_uninstall=
-if ! apk info --quiet --installed unity-mirrors; then
+if ! rpm -V unity-mirrors; then
 	yum install --force --quiet --virtual .setup-apkrepos unity-mirrors
 	to_uninstall=.setup-apkrepos
 fi

@@ -393,7 +393,7 @@ fi
 echo "Making $dest bootable..."
 
 if ! [ -x "$(which syslinux)" ]; then
-	yum install --quiet syslinux || die "Failed to install syslinux"
+	yum install -y syslinux || die "Failed to install syslinux"
 	uninstalls="syslinux"
 fi
 

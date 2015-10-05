@@ -34,11 +34,11 @@ if [ "$sshdchoice" = "none" ]; then
 fi
 
 pkgs="$sshdchoice"
-if [ "$sshdchoice" = "openssh" ] && apk info --quiet --installed acf-core; then
+if [ "$sshdchoice" = "openssh" ] && rpm -V acf-core; then
 	pkgs="$pkgs acf-openssh"
 fi
 
-yum install --quiet $pkgs
+yum install -y $pkgs
 
 svc=
 case "$sshdchoice" in
