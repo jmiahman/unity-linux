@@ -2,15 +2,20 @@
 
 load_module()
 {
-	for module in $@
-	do
+#	for module in $@
+#	do
 #		module_path=$(find /lib/modules -name $module.ko)
-		modprobe $module
+#		modprobe $module
 #		[ ! -z "$module_path" ] \
 #	       		&& modprobe $module_path \
 #		       	&& debug "loaded module: $module" \
 #		       	|| echo "Error: module $module not loaded!"
-	done
+#	done
+# Lets load all the drivers for now
+	for i in $(find /lib/modules/`uname -r`/ -name *.ko | grep -o '[^/]*$' | cut -d. -f1 | grep -v scsi_debug )
+	do
+		modprobe $i
+	done &> /dev/null
 }
 is_module_loaded()
 {
@@ -33,7 +38,7 @@ debug()
 }
 
 udev_daemon() {
-	OPTIONS="/sbin/udevd /lib/udev/udevd"
+	OPTIONS="/bin/udevd /lib/udev/udevd"
 
 	for o in $OPTIONS; do
 		if [ -x "$o" ]; then
@@ -111,6 +116,7 @@ for x in $(cat /proc/cmdline); do
                 splash=silent) silent=y; ;;
                 unionfs=no) dounionfs=n; ;;
                 copy2ram) live_toram=1; ;;
+		livecd) livecd=1; ;;
                 nocd) nocd=y; ;;
                 nohd) nohd=y; ;;
                 fromusb) usblive=y; ;;
@@ -164,7 +170,7 @@ echo "Detecting host adapter device..."
 
 #echo 'Starting device daemon'
 /bin/mdev -s
-$_UDEV_DAEMON --daemon
+/bin/udevd --daemon
 udevadm trigger --action=add
 
 #'starting bootsplash daemon'
@@ -197,7 +203,7 @@ if [ -z "$mnt_devices" ]; then
    echo "Warning: Did not find any usable block devices Rescanning Hardware"
    sleep 5
    /bin/mdev -s
-   $_UDEV_DAEMON --daemon
+   /bin/udevd --daemon
    udevadm trigger --action=add
    mnt_devices=$(list_block_devices | grep  "[0-9]")
 fi
@@ -205,89 +211,120 @@ fi
 # If we still don't have a device, let's just give up and let someone fix us
 [ -z "$mnt_devices" ] && echo "Error: After Multiple attempts we did not find any usable block devices" && run_debug_shell
 #echo "Detected Block devices: $mnt_devices"
-for device in $mnt_devices
-do
-	mount $device $device_mnt
-	echo "Mounted device: $device"
+
+if [ -z "$livecd" ]; then 
+	for device in $mnt_devices
+	do
+        	mount $device $union_dir
+        	echo "Mounted device: $device"
+        	if [ -f "$union_dir/etc/unity-release" ]; then
+                	echo "Found unity-release on $device"
+                	break
+        	else
+			echo "Not found on $device"
+                	umount $union_dir
+        	fi
+	done
+
+        #echo "Do we have a device mounted, ready to use?"                                                         
+        if [ -f "$union_dir/etc/unity-release" ]; then                                                                       
+                echo "We do and we are attempting to use: $device"                                                 
+        else                                                                                                       
+                echo "Oh no!: Nothing is ready to use"                                                             
+                echo "Maybe you can fix this, dropping to limited shell"                                           
+                run_debug_shell                                                                                    
+        fi     
+
+else
+	for device in $mnt_devices
+	do
+		mount $device $device_mnt
+		echo "Mounted device: $device"
+		if [ -d "$device_mnt/LiveOS" ]; then
+			echo "Found LiveOS Folder on $device" 
+			break
+		else
+			umount $device_mnt
+		fi
+	done
+
+	#echo "Do we have a device mounted, ready to use?"
 	if [ -d "$device_mnt/LiveOS" ]; then
-		echo "Found LiveOS Folder on $device" 
-		break
+		echo "We do and we are attempting to use: $device"
 	else
-		umount $device_mnt
+		echo "Oh no!: Nothing is ready to use"
+		echo "Maybe you can fix this, dropping to limited shell"
+		run_debug_shell
 	fi
-done
 
-#echo "Do we have a device mounted, ready to use?"
-if [ -d "$device_mnt/LiveOS" ]; then
-	echo "We do and we are attempting to use: $device"
-else
-	echo "Oh no!: Nothing is ready to use"
-	echo "Maybe you can fix this, dropping to limited shell"
-	run_debug_shell
-fi
+	# Copying CD to ram if enabled
+	if [ -n "$live_toram" ]; then
+		echo "Copying CD contents to RAM"
+		mkdir $ram_dir
+		mount -t tmpfs -o size=1G tmpfs $ram_dir
+		cp $device_mnt/LiveOS/squashfs.img $ram_dir
+		umount $device_mnt && echo "CD-ROM device unmounted, it's safe to eject it"
+		# binding to old $device_mnt to be as less invasive as possible
+		mount -o bind $ram_dir $device_mnt
+	fi
 
-# Copying CD to ram if enabled
-if [ $live_toram -eq 1 ]; then
-	echo "Copying CD contents to RAM"
-	mkdir $ram_dir
-	mount -t tmpfs -o size=1G tmpfs $ram_dir
-	cp $device_mnt/LiveOS/squashfs.img $ram_dir
-	umount $device_mnt && echo "CD-ROM device unmounted, it's safe to eject it"
-	# binding to old $device_mnt to be as less invasive as possible
-	mount -o bind $ram_dir $device_mnt
-fi
+	# Mounting writable fs, either physical (overlay) or tmpfs
+	# If the overlay (changes) flag is not used or is null mount writable tmpfs
+	if [ -z "$changes" ]; then
 
-# Mounting writable fs, either physical (overlay) or tmpfs
-# If the overlay (changes) flag is not used or is null mount writable tmpfs
-if [ -z $changes ]; then
+		dd if=/dev/zero of=/dev/ram0 bs=512M
+		mke2fs /dev/ram0
+		busybox mount /dev/ram0 $tmpfs_dir
+		mkdir -p /mnt/rootfs.rw/upper
+		mkdir -p /mnt/rootfs.rw/work
+		#cp -ar /mnt/liveroot/* /mnt/rootfs.rw/upper/
+	else
 
-	dd if=/dev/zero of=/dev/ram0 bs=256M
-	mke2fs /dev/ram0
-	busybox mount /dev/ram0 $tmpfs_dir
-	mkdir -p /mnt/rootfs.rw/upper
-	mkdir -p /mnt/rootfs.rw/work
-	#cp -ar /mnt/liveroot/* /mnt/rootfs.rw/upper/
-else
+	        uuid_ov=$(echo $changes | cut -d '=' -f2)
+        	mkdir -p $device_mnt/LiveOS/overlay
+	        mount $device_mnt/LiveOS/overlay-*-$uuid_ov $tmpfs_dir || ( echo "Mounting live overlay to $tmpfs_dir failed" && run_debug_shell )
+        	echo "Overlay mounted"
+	fi
 
-        uuid_ov=$(echo $changes | cut -d '=' -f2)
-        mkdir -p $device_mnt/LiveOS/overlay
-        mount $device_mnt/LiveOS/overlay-*-$uuid_ov $tmpfs_dir || ( echo "Mounting live overlay to $tmpfs_dir failed" && run_debug_shell )
-        echo "Overlay mounted"
-fi
+	# Mounting squashfs
+	echo "Mounting live rootfs"
+	mount $device_mnt/LiveOS/squashfs.img $live_root -o loop \
+		|| ( echo "Mounting live rootfs to $live_root failed" && run_debug_shell )
 
-# Mounting squashfs
-echo "Mounting live rootfs"
-mount $device_mnt/LiveOS/squashfs.img $live_root -o loop \
-	|| ( echo "Mounting live rootfs to $live_root failed" && run_debug_shell )
+	# Mounting Union FileSystem
+	is_module_loaded overlay &&
+	(
+		echo "Mounting Union FS (using overlayfs module)"
+		#mount -t aufs -o noatime,br=$tmpfs_dir=rw:$live_root=ro none $union_dir
+		mount -t overlay -o rw,"lowerdir=/mnt/liveroot,upperdir=/mnt/rootfs.rw/upper,workdir=/mnt/rootfs.rw/work" overlay $union_dir
 
-# Mounting Union FileSystem
-is_module_loaded overlay &&
-(
-	echo "Mounting Union FS (using overlayfs module)"
-	#mount -t aufs -o noatime,br=$tmpfs_dir=rw:$live_root=ro none $union_dir
-	mount -t overlay -o rw,"lowerdir=/mnt/liveroot,upperdir=/mnt/rootfs.rw/upper,workdir=/mnt/rootfs.rw/work" overlay $union_dir
+	) || (
+		echo "Mounting Union FS (using unionfs module)"
+		mount -t unionfs -o noatime,dirs=$tmpfs_dir=rw:$live_root=ro unionfs $union_dir
+	)
 
-) || (
-	echo "Mounting Union FS (using unionfs module)"
-	mount -t unionfs -o noatime,dirs=$tmpfs_dir=rw:$live_root=ro unionfs $union_dir
-)
-[ $? -ne 0 ] && echo "Error: Cannot mount filesystem" && run_debug_shell
+	[ $? -ne 0 ] && echo "Error: Cannot mount filesystem" && run_debug_shell
+
+fi # End of LiveCD
 
 # Watches the udev event queue, and exits if all current events are handled
 udevadm settle --timeout=3 --quiet
 killall "${_UDEV_DAEMON##*/}" 2>/dev/null
 
-# moving tmpfs 
-mkdir -p $union_dir/$tmpfs_dir
-mkdir -p $union_dir/$device_mnt
-mkdir -p $union_dir/$live_root
+
+if [ -n $livecd ]; then 
+	# moving tmpfs 
+	mkdir -p $union_dir/$tmpfs_dir
+	mkdir -p $union_dir/$device_mnt
+	mkdir -p $union_dir/$live_root
+
+	# moving mount points
+	mount --move $tmpfs_dir $union_dir/$tmpfs_dir
+	mount --move $device_mnt $union_dir/$device_mnt
+	mount --move $live_root $union_dir/$live_root
+fi
 
 mkdir -p $union_dir/run/openrc
-
-# moving mount points
-mount --move $tmpfs_dir $union_dir/$tmpfs_dir
-mount --move $device_mnt $union_dir/$device_mnt
-mount --move $live_root $union_dir/$live_root
 
 mkdir $union_dir/dev
 mkdir $union_dir/proc
@@ -304,8 +341,6 @@ dev_name=$(mount | grep 'mnt/live' | cut -d '/' -f1-3 | cut -d ' ' -f1)
 # Starting LiveCD
 echo "Switching to a new rootfs"
 [ ! -z "$debugmode" ] && run_debug_shell
-umount /proc
-umount /sys
 #plymouth --newroot=$union_dir
 exec switch_root $union_dir /sbin/init $systemd_cmd1 $systemd_cmd
 echo "Fatal: switch_root failed! That's all folks."
