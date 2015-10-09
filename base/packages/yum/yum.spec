@@ -29,7 +29,7 @@ Source1: yum.conf
 Patch0:	rpm5.patch
 Patch1: %{name}-pld.patch
 Patch3: rpm5-yum.patch
-Patch4: yum-missingok.patch
+Patch4: yum_ok_newline.patch
 #Patch1: yum-distro-configs.patch
 #Patch5: geode-arch.patch
 #Patch6: yum-HEAD.patch
@@ -152,7 +152,7 @@ This runs after yum-cron-daily, if that is installed.
 %patch3 -p1
 %patch4 -p1
 #%patch5 -p1
-%patch6 -p1
+#%patch6 -p1
 #%patch7 -p1
 #%patch20 -p1
 #%patch21 -p1

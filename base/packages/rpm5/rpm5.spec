@@ -15,6 +15,7 @@ Patch2:		rpm-musl-name.patch
 Patch3:		rpm-macro.patch
 Patch4:		rpm-5.4.10-fix-a-couple-of-debugedit-memleaks.patch
 Patch5:		rpm-fix-missing-types-in-headers.patch
+Patch6:		rpm-5.4.9-mire-fix-strings-lacking-null-terminator.patch
 
 
 BuildRequires: expat-devel, python-devel 
@@ -86,6 +87,7 @@ Development files and headers for %{name}.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 rm -rf %{builddir}

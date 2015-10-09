@@ -14,7 +14,8 @@ License:	GPL v2+
 Group:		Applications/System
 Source0:	https://www.kernel.org/pub/linux/utils/kernel/kmod/%{name}-%{version}.tar.xz
 # Source0-md5:	ee246fab2e1cba9fbdcad6a86ec31531
-Source1:	%{name}-blacklist
+#Blacklist in baselayout
+#Source1:	%{name}-blacklist
 Source2:	%{name}-usb
 Patch0:		%{name}-modprobe.d-kver.patch
 Patch1:		sed-ere.patch
@@ -81,6 +82,16 @@ Requires:	%{name}-libs = %{version}-%{release}
 %description -n python-kmod
 Python binding for kmod API.
 
+%package docs                                                     
+Summary:        Docs for kmod API              
+License:        LGPL v2.1+                                                       
+Group:          Applications/System                          
+Requires:       %{name} = %{version}-%{release}                             
+                                                                                 
+%description docs                                                
+Documentation files for the kmod API
+
+
 %prep
 %setup -q
 %patch0 -p1
@@ -122,7 +133,7 @@ done
 
 :> $RPM_BUILD_ROOT/etc/modprobe.d/modprobe.conf
 
-cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/modprobe.d/blacklist.conf
+#cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/modprobe.d/blacklist.conf
 cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/modprobe.d/usb.conf
 
 %clean
@@ -133,9 +144,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS README TODO
 %dir /etc/modprobe.d
-%config(noreplace) %verify(not md5 mtime size) /etc/modprobe.d/blacklist.conf
+#%config(noreplace) %verify(not md5 mtime size) /etc/modprobe.d/blacklist.conf
 %config(noreplace) %verify(not md5 mtime size) /etc/modprobe.d/modprobe.conf
 %config(noreplace) %verify(not md5 mtime size) /etc/modprobe.d/usb.conf
 
@@ -147,18 +157,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/modprobe
 %attr(755,root,root) %{_bindir}/depmod
 
-%{_mandir}/man5/depmod.d.5*
-%{_mandir}/man5/modprobe.d.5*
-%{_mandir}/man5/modules.dep.5*
-%{_mandir}/man5/modules.dep.bin.5*
-%{_mandir}/man8/depmod.8*
-%{_mandir}/man8/insmod.8*
-%{_mandir}/man8/kmod.8*
-%{_mandir}/man8/lsmod.8*
-%{_mandir}/man8/modinfo.8*
-%{_mandir}/man8/modprobe.8*
-%{_mandir}/man8/rmmod.8*
-
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) /%{_lib}/libkmod.so.*.*.*
@@ -166,7 +164,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%doc libkmod/README
 %attr(755,root,root) %{_libdir}/libkmod.so
 %{_includedir}/libkmod.h
 %{_pkgconfigdir}/libkmod.pc
@@ -180,4 +177,18 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{python_sitearch}/kmod
 %attr(755,root,root) %{python_sitearch}/kmod/*.so
 %{python_sitearch}/kmod/*.py*
+
+%files docs
+%doc libkmod/README NEWS README TODO
+%{_mandir}/man5/depmod.d.5*                                                      
+%{_mandir}/man5/modprobe.d.5*                                                    
+%{_mandir}/man5/modules.dep.5*                                                   
+%{_mandir}/man5/modules.dep.bin.5*                                               
+%{_mandir}/man8/depmod.8*                                                        
+%{_mandir}/man8/insmod.8*                                                        
+%{_mandir}/man8/kmod.8*                                                          
+%{_mandir}/man8/lsmod.8*                                                         
+%{_mandir}/man8/modinfo.8*                                                       
+%{_mandir}/man8/modprobe.8*                                                      
+%{_mandir}/man8/rmmod.8*
 

@@ -1,12 +1,12 @@
 Name:		linux-vanilla
-Version:	3.18.18	
+Version:	3.18.21
 Release:	1%{?dist}
 Summary:	The Linux kernel
 
 Group:		System Environment/Kernel		
 License:	GPLv2 and Redistributable, no modification permitted
 URL:		http://ftp.kernel.org
-Source0:	http://ftp.kernel.org/pub/linux/kernel/v3.x/linux-%{version}.tar.xz	
+Source0:	https://www.kernel.org/pub/linux/kernel/v3.x/linux-%{version}.tar.xz	
 
 Source1:	kernelconfig.armhf
 Source2:	kernelconfig.x86
@@ -92,10 +92,13 @@ install -p $RPM_BUILD_ROOT/build/vmlinux $RPM_BUILD_ROOT/boot/vmlinux-%{version}
 %doc
 /boot/
 %dir /lib/modules
+%dir /lib/modules/%{version}
 /lib/modules/%{version}/
 /usr/share/kernel/
+%exclude /lib/modules/%{version}/build
 
 %files devel
 /usr/src/
+/lib/modules/%{version}/build
 
 %changelog

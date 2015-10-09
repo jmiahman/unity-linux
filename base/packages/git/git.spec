@@ -177,27 +177,27 @@ rm -rf $RPM_BUILD_ROOT
 %{!?_without_docs: %doc Documentation/technical}
 %{_sysconfdir}/bash_completion.d
 
-%files svn
-%defattr(-,root,root)
-%{_libexecdir}/git-core/*svn*
-%doc Documentation/*svn*.txt
-%{!?_without_docs: %{_mandir}/man1/*svn*.1*}
-%{!?_without_docs: %doc Documentation/*svn*.html }
+#%files svn
+#%defattr(-,root,root)
+#%{_libexecdir}/git-core/*svn*
+#%doc Documentation/*svn*.txt
+#%{!?_without_docs: %{_mandir}/man1/*svn*.1*}
+#%{!?_without_docs: %doc Documentation/*svn*.html }
 
-%files cvs
-%defattr(-,root,root)
-%doc Documentation/*git-cvs*.txt
-%{_bindir}/git-cvsserver
-%{_libexecdir}/git-core/*cvs*
-%{!?_without_docs: %{_mandir}/man1/*cvs*.1*}
-%{!?_without_docs: %doc Documentation/*git-cvs*.html }
+#%files cvs
+#%defattr(-,root,root)
+#%doc Documentation/*git-cvs*.txt
+#%{_bindir}/git-cvsserver
+#%{_libexecdir}/git-core/*cvs*
+#%{!?_without_docs: %{_mandir}/man1/*cvs*.1*}
+#%{!?_without_docs: %doc Documentation/*git-cvs*.html }
 
-%files arch
-%defattr(-,root,root)
-%doc Documentation/git-archimport.txt
-%{_libexecdir}/git-core/git-archimport
-%{!?_without_docs: %{_mandir}/man1/git-archimport.1*}
-%{!?_without_docs: %doc Documentation/git-archimport.html }
+#%files arch
+#%defattr(-,root,root)
+#%doc Documentation/git-archimport.txt
+#%{_libexecdir}/git-core/git-archimport
+#%{!?_without_docs: %{_mandir}/man1/git-archimport.1*}
+#%{!?_without_docs: %doc Documentation/git-archimport.html }
 
 %files email
 %defattr(-,root,root)
@@ -206,24 +206,24 @@ rm -rf $RPM_BUILD_ROOT
 %{!?_without_docs: %{_mandir}/man1/*email*.1*}
 %{!?_without_docs: %doc Documentation/*email*.html }
 
-%files gui
-%defattr(-,root,root)
-%{_libexecdir}/git-core/git-gui
-%{_libexecdir}/git-core/git-citool
-%{_libexecdir}/git-core/git-gui--askpass
-%{_datadir}/git-gui/
-%{!?_without_docs: %{_mandir}/man1/git-gui.1*}
-%{!?_without_docs: %doc Documentation/git-gui.html}
-%{!?_without_docs: %{_mandir}/man1/git-citool.1*}
-%{!?_without_docs: %doc Documentation/git-citool.html}
+#%files gui
+#%defattr(-,root,root)
+#%{_libexecdir}/git-core/git-gui
+#%{_libexecdir}/git-core/git-citool
+#%{_libexecdir}/git-core/git-gui--askpass
+#%{_datadir}/git-gui/
+#%{!?_without_docs: %{_mandir}/man1/git-gui.1*}
+#%{!?_without_docs: %doc Documentation/git-gui.html}
+#%{!?_without_docs: %{_mandir}/man1/git-citool.1*}
+#%{!?_without_docs: %doc Documentation/git-citool.html}
 
-%files -n gitk
-%defattr(-,root,root)
-%doc Documentation/*gitk*.txt
-%{_bindir}/*gitk*
-%{_datadir}/gitk/
-%{!?_without_docs: %{_mandir}/man1/*gitk*.1*}
-%{!?_without_docs: %doc Documentation/*gitk*.html }
+#%files -n gitk
+#%defattr(-,root,root)
+#%doc Documentation/*gitk*.txt
+#%{_bindir}/*gitk*
+#%{_datadir}/gitk/
+#%{!?_without_docs: %{_mandir}/man1/*gitk*.1*}
+#%{!?_without_docs: %doc Documentation/*gitk*.html }
 
 %files -n gitweb
 %defattr(-,root,root)
@@ -240,7 +240,7 @@ rm -rf $RPM_BUILD_ROOT
 #/usr/lib/perl5/vendor_perl/auto/Git/*
 #%dir /usr/lib/perl5/vendor_perl/auto/Git
 
-%files all
-# No files for you!
+#%files all
+## No files for you!
 
 %changelog

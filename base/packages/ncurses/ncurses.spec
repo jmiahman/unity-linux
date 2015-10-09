@@ -10,6 +10,8 @@ Source0:	ftp://ftp.gnu.org/pub/gnu/%{name}/%{name}-%{version}.tar.gz
 
 Patch:		 ncurses-5.9-gcc-5.patch
 
+Requires:	%{name}-libs
+
 %description
 The curses library routines are a terminal-independent method of
 updating character screens with reasonable optimization.  The ncurses
@@ -211,6 +213,7 @@ done
 /usr/lib/libmenuw.so.5
 
 %files libs
+%dir /usr/lib/terminfo
 /usr/lib/terminfo
 /usr/lib/libform.so.5
 /usr/lib/libform.so.5.9

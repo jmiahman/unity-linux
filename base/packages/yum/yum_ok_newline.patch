@@ -1,0 +1,12 @@
+diff -Naur yum-3.4.3/output.py yum-3.4.3_old/output.py
+--- yum-3.4.3/output.py	2011-06-28 20:27:22.000000000 +0000
++++ yum-3.4.3_old/output.py	2015-09-30 04:58:55.438724231 +0000
+@@ -686,7 +686,7 @@
+         aui = (yui[0], yui[1], nui[0], nui[1])
+         while True:
+             try:
+-                choice = raw_input(_('Is this ok [y/N]: '))
++                choice = raw_input(_("Is this ok [y/N]: \n"))
+             except UnicodeEncodeError:
+                 raise
+             except UnicodeDecodeError:
