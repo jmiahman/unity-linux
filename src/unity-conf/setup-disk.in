@@ -447,9 +447,9 @@ init_progs() {
 	# 'failed to open /dev/btrfs-control'
 	btrfs) fstools=btrfs-progs; mkfs_args=""; modprobe btrfs;;
 	esac
-	if [ -n "$(rpm -V sfdisk e2fsprogs lvm2 $raidpkg syslinux $fstools $@ | awk '{print $2}')" ]; then 
-		yum install $(rpm -V sfdisk e2fsprogs lvm2 $raidpkg syslinux $fstools $@ | awk '{print $2}')
-	fi
+#	if [ -n "$(rpm -V sfdisk e2fsprogs lvm2 $raidpkg syslinux $fstools $@ | awk '{print $2}')" ]; then 
+#		yum install $(rpm -V sfdisk e2fsprogs lvm2 $raidpkg syslinux $fstools $@ | awk '{print $2}')
+#	fi
 }
 
 show_disk_info() {
