@@ -8,8 +8,8 @@ License:	GPLv3+
 URL:		http://www.gnu.org/software/tar/	
 Source0:	ftp://ftp.gnu.org/gnu/tar/%{name}-%{version}.tar.xz
 
-#BuildRequires: autoconf automake texinfo gettext libacl-devel rsh
-#Requires:	
+BuildRequires: libacl-devel
+Requires: libacl	
 
 %description
 The GNU tar program saves many files together in one archive and can

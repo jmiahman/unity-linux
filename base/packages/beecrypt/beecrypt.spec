@@ -10,7 +10,7 @@ URL:		http://beecrypt.sourceforge.net/
 Source0:	http://repository.timesys.com/buildsources/b/beecrypt/beecrypt-4.2.1/beecrypt-4.2.1.tar.gz	
 
 BuildRequires: libtool, m4	
-#Requires:	
+Requires:	libgomp5.1	
 
 %description
 BeeCrypt is an ongoing project to provide a strong and fast cryptography

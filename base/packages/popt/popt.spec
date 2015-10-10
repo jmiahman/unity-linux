@@ -9,7 +9,7 @@ URL:		http://www.rpm5.org/
 Source0:	http://rpm5.org/files/%{name}/%{name}-%{version}.tar.gz
 
 #BuildRequires:	
-#Requires:	
+Requires:	libintl
 
 %description
 Popt is a C library for parsing command line parameters. Popt was

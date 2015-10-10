@@ -319,25 +319,28 @@ EOF
 	extlinux $extlinux_raidopt --install "$mnt"/boot
 
 	# apk reads config from target root so we need to copy the config
-	mkdir -p "$mnt"/etc/apk/keys/
-	cp /etc/apk/keys/* "$mnt"/etc/apk/keys/
+#	mkdir -p "$mnt"/etc/apk/keys/
+#	cp /etc/apk/keys/* "$mnt"/etc/apk/keys/
 
-	local apkflags="--initdb --quiet --progress --update-cache --clean-protected"
-	local pkgs=$(cat "$mnt"/etc/apk/world "$mnt"/var/lib/apk/world 2>/dev/null)
+#	local apkflags="--initdb --quiet --progress --update-cache --clean-protected"
+#	local pkgs=$(cat "$mnt"/etc/apk/world "$mnt"/var/lib/apk/world 2>/dev/null)
 	pkgs="$pkgs acct linux-$KERNEL_FLAVOR unity-base"
 	if [ "$(rc --sys)" = "XEN0" ]; then
 		pkgs="$pkgs xen-hypervisor"
 	fi
-	local repos=$(sed -e 's/\#.*//' /etc/apk/repositories)
-	local repoflags=
-	for i in $repos; do
-		repoflags="$repoflags --repository $i"
-	done
+#	local repos=$(sed -e 's/\#.*//' /etc/apk/repositories)
+#	local repoflags=
+#	for i in $repos; do
+#		repoflags="$repoflags --repository $i"
+#	done
+
 	update-extlinux
 	cp /mnt/device/isolinux/initrd.img /boot/
 	chroot_caps=$(set_grsec chroot_caps 0)
 	init_chroot_mounts "$mnt"
-	(cd / && tar --exclude 'proc/*' --exclude 'dev/*' --exclude 'sys/*' --exclude 'mnt/*' -cf - .) | (cd $mnt && tar -xpf -)
+	echo "Installing root system"
+	(cd / && tar --exclude 'proc/*' --exclude 'dev/*' --exclude 'sys/*' --exclude 'mnt/*' --checkpoint=.1000 -cf - .) | (cd $mnt && tar -xpf -)
+	echo "done \n Finished Copying"
 #	yum install --root "$mnt" $apkflags --overlay-from-stdin \
 #		$repoflags $pkgs <$ovlfiles
 	local ret=$?

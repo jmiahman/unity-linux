@@ -62,6 +62,7 @@ Requires: yum-metadata-parser >= 1.1.0
 Requires: pygpgme
 Requires: python-pyliblzma
 Requires: pyxattr
+Requires: glib
 # Suggests, needed for yum fs diff
 Requires: diffutils
 Requires: cpio

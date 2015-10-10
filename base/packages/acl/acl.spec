@@ -19,6 +19,7 @@ manipulating access control lists.
 Summary: Dynamic library for access control list support
 License: LGPLv2+
 Group: System Environment/Libraries
+Requires: libattr
 
 %description -n libacl
 This package contains the libacl.so dynamic library which contains
