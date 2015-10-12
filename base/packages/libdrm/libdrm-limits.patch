@@ -1,0 +1,12 @@
+--- libdrm-2.4.65/xf86drm.c	2015-09-04 05:40:57.000000000 -0700
++++ libdrm-2.4.65_new/xf86drm.c	2015-10-11 20:21:36.654599181 -0700
+@@ -51,6 +51,9 @@
+ #define stat_t struct stat
+ #include <sys/ioctl.h>
+ #include <sys/time.h>
++
++#include <linux/limits.h>
++
+ #include <stdarg.h>
+ #ifdef HAVE_SYS_MKDEV_H
+ # include <sys/mkdev.h> /* defines major(), minor(), and makedev() on Solaris */

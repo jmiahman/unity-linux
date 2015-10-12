@@ -472,6 +472,20 @@ prompt_for_interfaces() {
 		yum install -y $PKGS
 	fi
 
+                                                                           
+        while [ "$netanswer" != "yes" ] && [ "$netanswer" != "no" ] ; do          
+                ask "Do you want networking to start on boot?" yes
+                case $netresp in                                               
+                        y) netanswer=yes;;                                     
+                        n) netanswer=no;;            
+                        *) netanswer=$netresp;;         
+                esac                                   
+        done
+
+	if yesno "$netanswer"; then
+		ln -s /etc/init.d/networking /etc/runlevels/boot/networking
+        fi
+
 	mkdir -p $ROOT/etc/network
 	cp interfaces $ROOT/etc/network/
 }

@@ -8,13 +8,24 @@ License:	GPLv2
 URL:		http://www.gentoo.org/proj/en/eudev
 Group:		Base/System
 Source0:	http://dev.gentoo.org/~blueness/eudev/eudev-3.1.2.tar.gz
-Patch0:		eudev-remove_gperf_dep.patch
+
+BuildRequires:	gperf glib-devel linux-headers kmod-devel
 
 %description
 The eudev package contains programs for dynamic creation of device nodes.
+
+%package devel                                                          
+Summary: Development tools for %{name}
+Group: Development/Libraries                                             
+Requires: %{name} = %{version}-%{release}                                
+                                                                         
+%description devel                                                       
+This package contains the header files and development documentation     
+for %{name}. If you like to develop programs using %{name}, you will need
+to install %{name}-devel. 
+
 %prep
 %setup -q
-#%patch0 -p1
 
 sed -r -i 's|/usr(/bin/test)|\1|'      test/udev-test.pl
 
@@ -22,52 +33,58 @@ sed -r -i 's|/usr(/bin/test)|\1|'      test/udev-test.pl
 aclocal
 automake --add-missing
 ./configure \
-	--prefix=%{_prefix} \
 	--bindir=/sbin \
 	--sbindir=/sbin \
-	--libdir=%{_libdir} \
-	--libexecdir=/%{_lib} \
-	--sysconfdir=%{_sysconfdir} \
+	--sysconfdir=/etc \
 	--with-rootprefix= \
-	--with-rootlibdir=/%{_lib} \
-	--enable-shared         \
-	--disable-static        \
-	--disable-selinux       \
-	--disable-introspection \
-	--disable-gudev         \
-	--disable-gtk-doc-html  \
-	--disable-silent-rules
+	--with-rootrundir=/run \
+	--with-rootlibexecdir=/lib/udev \
+	--libdir=/usr/lib \
+	--enable-split-usr \
+	--enable-manpages \
+	--disable-hwdb \
+	--enable-kmod \
+	--exec-prefix=/ \
+	--enable-gudev \
+	--enable-introspection \
+
+make
 
 make VERBOSE=1 %{?_smp_mflags}
 install -vdm 755 %{buildroot}%{_sysconfdir}/udev/rules.d
 %install
 rm -rf %{buildroot}
-install -vdm 755 %{buildroot}/%{_lib}/{firmware,udev/devices/pts}
-install -vdm 755 %{buildroot}/%{_lib}/udev/{devices/pts,rules.d}
-install -vdm 755 %{buildroot}%{_sysconfdir}/udev/{hwdb.d,rules.d}
+install -vdm 755 %{buildroot}/%{_lib}/firmware
+install -vdm 755 %{buildroot}/%{_lib}/udev/devices/pts
+install -vdm 755 %{buildroot}/%{_lib}/udev/rules.d
+install -vdm 755 %{buildroot}%{_sysconfdir}/udev/hwdb.d
+install -vdm 755 %{buildroot}%{_sysconfdir}/udev/rules.d
+
 make DESTDIR=%{buildroot} install
 # symlink udevd to /lib/udev/udevd
 ln -vs /sbin/udevd %{buildroot}/lib/udev/
 mv %{buildroot}/usr/share/pkgconfig/udev.pc %{buildroot}%{_libdir}/pkgconfig
 rmdir %{buildroot}/usr/share/pkgconfig
 find %{buildroot} -name '*.la' -delete
+
 %post
 /sbin/ldconfig
 /sbin/udevadm hwdb --update
 #bash /lib/udev/init-net-rules.sh || true
 %postun	-p /sbin/ldconfig
+
 %files 
 %defattr(-,root,root)
-%config %{_sysconfdir}/udev/hwdb.d/20-OUI.hwdb
-%config %{_sysconfdir}/udev/hwdb.d/20-acpi-vendor.hwdb
-%config %{_sysconfdir}/udev/hwdb.d/20-bluetooth-vendor-product.hwdb
-%config %{_sysconfdir}/udev/hwdb.d/20-pci-classes.hwdb
-%config %{_sysconfdir}/udev/hwdb.d/20-pci-vendor-model.hwdb
-%config %{_sysconfdir}/udev/hwdb.d/20-sdio-classes.hwdb
-%config %{_sysconfdir}/udev/hwdb.d/20-sdio-vendor-model.hwdb
-%config %{_sysconfdir}/udev/hwdb.d/20-usb-classes.hwdb
-%config %{_sysconfdir}/udev/hwdb.d/20-usb-vendor-model.hwdb
-%config %{_sysconfdir}/udev/udev.conf
+#%config %{_sysconfdir}/udev/hwdb.d/20-OUI.hwdb
+#%config %{_sysconfdir}/udev/hwdb.d/20-acpi-vendor.hwdb
+#%config %{_sysconfdir}/udev/hwdb.d/20-bluetooth-vendor-product.hwdb
+#%config %{_sysconfdir}/udev/hwdb.d/20-pci-classes.hwdb
+#%config %{_sysconfdir}/udev/hwdb.d/20-pci-vendor-model.hwdb
+#%config %{_sysconfdir}/udev/hwdb.d/20-sdio-classes.hwdb
+#%config %{_sysconfdir}/udev/hwdb.d/20-sdio-vendor-model.hwdb
+#%config %{_sysconfdir}/udev/hwdb.d/20-usb-classes.hwdb
+#%config %{_sysconfdir}/udev/hwdb.d/20-usb-vendor-model.hwdb
+#%config %{_sysconfdir}/udev/udev.conf
 /lib/udev/accelerometer
 /lib/udev/ata_id
 /lib/udev/cdrom_id
@@ -96,18 +113,27 @@ find %{buildroot} -name '*.la' -delete
 /lib/udev/scsi_id
 /lib/udev/udevd
 /lib/udev/v4l_id
-/%{_lib}/libudev.so.1
-/%{_lib}/libudev.so.1.*
+%{_libdir}/libudev.so.1
+%{_libdir}/libudev.so.1.*
+%{_libdir}/libgudev-1.0.so.*.*.*
 /sbin/udevadm
 /sbin/udevd
-%{_includedir}/libudev.h
-%{_includedir}/udev.h
-%{_libdir}/libudev.so
-%{_libdir}/pkgconfig/libudev.pc
-%{_libdir}/pkgconfig/udev.pc
 %dir /%{_lib}/udev
 %dir /etc/udev
 %dir /etc/udev/hwdb.d
 %dir /%{_lib}/udev/rules.d
+
+%files devel
+%{_libdir}/libudev.a
+%{_libdir}/libudev.so
+%{_libdir}/pkgconfig/*.pc
+%{_libdir}/libgudev-1.0.so
+%{_libdir}/libgudev-1.0.a
+%dir %{_datadir}/gir-1.0/
+%{_datadir}/gir-1.0/GUdev-1.0.gir
+%{_includedir}/*.h
+%dir %{_includedir}/gudev-1.0/
+%dir %{_includedir}/gudev-1.0/gudev/
+%{_includedir}/gudev-1.0/gudev/*.h
 
 %changelog

@@ -9,7 +9,7 @@ URL:		http://www.url.com
 Source0:	%{name}-%{version}.tar.gz
 
 #BuildRequires:	
-#Requires:	
+Requires:	blkid syslinux-extlinux tzdata	
 
 %description
 Unity CLI configuration management scripts

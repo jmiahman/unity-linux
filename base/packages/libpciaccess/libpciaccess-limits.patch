@@ -1,0 +1,11 @@
+--- libpciaccess-0.13.4/src/linux_sysfs.c	2015-10-11 16:12:54.331200391 -0700
++++ libpciaccess-0.13.4_new/src/linux_sysfs.c	2015-10-11 15:52:02.600061478 -0700
+@@ -49,6 +49,8 @@
+ #include <dirent.h>
+ #include <errno.h>
+ 
++#include <linux/limits.h>
++
+ #if defined(__i386__) || defined(__x86_64__)
+ #include <sys/io.h>
+ #else

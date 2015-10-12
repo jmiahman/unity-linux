@@ -136,6 +136,9 @@ done
 #cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/modprobe.d/blacklist.conf
 cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/modprobe.d/usb.conf
 
+mkdir -p %{buildroot}/%{_libdir}/pkgconfig
+cp %{_builddir}/%{name}-%{version}/libkmod/libkmod.pc %{buildroot}/%{_libdir}/pkgconfig/
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -159,14 +162,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) /%{_lib}/libkmod.so.*.*.*
-%attr(755,root,root) %ghost /%{_lib}/libkmod.so.2
+/%{_lib}/libkmod.so.*.*.*
+/%{_lib}/libkmod.so.2
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libkmod.so
+%{_libdir}/libkmod.so
 %{_includedir}/libkmod.h
-%{_pkgconfigdir}/libkmod.pc
+%{_libdir}/pkgconfig/*.pc
 
 #%files -n bash-completion-kmod
 #%defattr(644,root,root,755)

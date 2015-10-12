@@ -90,6 +90,15 @@ Group: System/Boot
 SYSLINUX binaries and modules for 64-bit UEFI systems
 %endif
 
+%package docs                                                         
+Summary:        Docs for %{name}                                      
+License:        GPL v2                                            
+Group:          Applications/System                                   
+Requires:       %{name} = %{version}-%{release}                       
+                                                                      
+%description docs                                                     
+Documentation files for the %{name} package
+
 %prep
 %setup -q -n syslinux-%{version}
 
@@ -143,16 +152,8 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
-#%{!?_licensedir:%global license %%doc}
-#%license COPYING
-#%doc NEWS README*
-#%doc doc/* 
-#%doc sample
-#%{_mandir}/man1/gethostip*
-#%{_mandir}/man1/syslinux*
-#%{_mandir}/man1/extlinux*
-#%{_mandir}/man1/isohybrid*
-#%{_mandir}/man1/memdiskfind*
+%{!?_licensedir:%global license %%doc}
+%license COPYING
 %{_bindir}/gethostip
 %{_bindir}/isohybrid
 %{_bindir}/memdiskfind
@@ -170,11 +171,8 @@ rm -rf %{buildroot}
 
 %files perl
 %defattr(-,root,root)
-#%{!?_licensedir:%global license %%doc}
-#%license COPYING
-#%{_mandir}/man1/lss16toppm*
-#%{_mandir}/man1/ppmtolss16*
-#%{_mandir}/man1/syslinux2ansi*
+%{!?_licensedir:%global license %%doc}
+%license COPYING
 %{_bindir}/keytab-lilo
 %{_bindir}/lss16toppm
 %{_bindir}/md5pass
@@ -187,8 +185,8 @@ rm -rf %{buildroot}
 
 %files devel
 %defattr(-,root,root)
-#%{!?_licensedir:%global license %%doc}
-#%license COPYING
+%{!?_licensedir:%global license %%doc}
+%license COPYING
 %dir %{_datadir}/syslinux/com32
 %{_datadir}/syslinux/com32
 
@@ -216,6 +214,20 @@ rm -rf %{buildroot}
 %dir %{_datadir}/syslinux/efi64
 %{_datadir}/syslinux/efi64
 %endif
+
+%files docs
+#%doc NEWS README*
+#%doc doc/* 
+#%doc sample
+#%{_mandir}/man1/gethostip*
+#%{_mandir}/man1/syslinux*
+#%{_mandir}/man1/extlinux*
+#%{_mandir}/man1/isohybrid*
+#%{_mandir}/man1/memdiskfind*
+#%{_mandir}/man1/lss16toppm*
+#%{_mandir}/man1/ppmtolss16*
+#%{_mandir}/man1/syslinux2ansi*
+
 
 %post extlinux
 # If we have a /boot/extlinux.conf file, assume extlinux is our bootloader
