@@ -69,6 +69,7 @@ install -m 0755 -d \
 	etc/periodic/hourly \
 	etc/periodic/monthly \
 	etc/periodic/weekly \
+	etc/skel \
 	etc/sysctl.d \
 	home \
 	media/cdrom \
@@ -212,6 +213,7 @@ fi
 /etc/
 %dir /etc
 %dir /etc/crontabs
+%dir /etc/skel
 %dir /etc/sysctl.d
 /home
 /lib

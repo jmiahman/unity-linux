@@ -1,29 +1,29 @@
-Name:       libxext
-Version:    1.3.3
+Name:       libxxf86dga
+Version:    1.1.4
 Release:    1%{?dist}
-Summary:    X.Org miscellaneous extensions library.
+Summary:    X.Org Direct Graphics Access extension library.
 Group:      Development/Libraries
 License:    MIT
-URL:        http://xcb.freedesktop.org/
-Source0:    http://xorg.freedesktop.org/releases/individual/lib/libXext-%{version}.tar.bz2
+URL:        http://xorg.freedesktop.org/
+Source0:    http://xorg.freedesktop.org/releases/individual/lib/libXxf86dga-%{version}.tar.bz2
 
-BuildRequires: libx11-devel libxau-devel xproto
+BuildRequires: xf86dgaproto libxext-devel libx11-devel
 
 %description
-X.Org miscellaneous extensions library.
+X.Org Direct Graphics Access extension library.
 
 %package devel                                                          
-Summary: Development tools for libXext.
+Summary: Development tools for %{name}.
 Group: Development/Libraries                                             
 Requires: %{name} = %{version}-%{release}                                
                                                                          
 %description devel                                                       
 This package contains the header files and development documentation     
-for libXext. If you like to develop programs using libXext, you will need
-to install libXext-devel. 
+for %{name}. If you like to develop programs using %{name}, you will need
+to install %{name}-devel. 
 
 %prep
-%setup -q -n libXext-%{version}
+%setup -q -n libXxf86dga-%{version}
 
 %build
 #Remove OLD config.sub                                                         
@@ -46,13 +46,13 @@ mkdir -p %{buildroot}/%{_libdir}/pkgconfig/
 %postun -p /sbin/ldconfig
 
 %files
-%{_libdir}/libXext.so.*
-%{_libdir}/libXext.so.*.*.*
+%{_libdir}/libXxf86dga.so.*
+%{_libdir}/libXxf86dga.so.*.*.*
 
 %files devel
 %{_includedir}/X11/extensions/*.h
 %{_libdir}/pkgconfig/*.pc
-%{_libdir}/libXext.so
-%{_libdir}/libXext.a
+%{_libdir}/libXxf86dga.so
+%{_libdir}/libXxf86dga.a
 
 %changelog

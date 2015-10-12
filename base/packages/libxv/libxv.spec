@@ -1,29 +1,29 @@
-Name:       libxext
-Version:    1.3.3
+Name:       libxv
+Version:    1.0.10
 Release:    1%{?dist}
-Summary:    X.Org miscellaneous extensions library.
+Summary:    X.Org Video extension library.
 Group:      Development/Libraries
 License:    MIT
-URL:        http://xcb.freedesktop.org/
-Source0:    http://xorg.freedesktop.org/releases/individual/lib/libXext-%{version}.tar.bz2
+URL:        http://xorg.freedesktop.org/
+Source0:    http://xorg.freedesktop.org/releases/individual/lib/libXv-%{version}.tar.bz2
 
-BuildRequires: libx11-devel libxau-devel xproto
+BuildRequires: xproto videoproto libx11-devel libxext-devel
 
 %description
-X.Org miscellaneous extensions library.
+X.Org Video extension library.
 
 %package devel                                                          
-Summary: Development tools for libXext.
+Summary: Development tools for libXv.
 Group: Development/Libraries                                             
 Requires: %{name} = %{version}-%{release}                                
                                                                          
 %description devel                                                       
 This package contains the header files and development documentation     
-for libXext. If you like to develop programs using libXext, you will need
-to install libXext-devel. 
+for libXv. If you like to develop programs using libXv, you will need
+to install libXv-devel. 
 
 %prep
-%setup -q -n libXext-%{version}
+%setup -q -n libXv-%{version} 
 
 %build
 #Remove OLD config.sub                                                         
@@ -46,13 +46,13 @@ mkdir -p %{buildroot}/%{_libdir}/pkgconfig/
 %postun -p /sbin/ldconfig
 
 %files
-%{_libdir}/libXext.so.*
-%{_libdir}/libXext.so.*.*.*
+%{_libdir}/libXv.so.*
+%{_libdir}/libXv.so.*.*.*
 
 %files devel
 %{_includedir}/X11/extensions/*.h
 %{_libdir}/pkgconfig/*.pc
-%{_libdir}/libXext.so
-%{_libdir}/libXext.a
+%{_libdir}/libXv.so
+%{_libdir}/libXv.a
 
 %changelog

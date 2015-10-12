@@ -1,29 +1,33 @@
-Name:       libxext
-Version:    1.3.3
+Name:       pixman
+Version:    0.32.8
 Release:    1%{?dist}
-Summary:    X.Org miscellaneous extensions library.
+Summary:    The X.Org Pixman library.
 Group:      Development/Libraries
 License:    MIT
-URL:        http://xcb.freedesktop.org/
-Source0:    http://xorg.freedesktop.org/releases/individual/lib/libXext-%{version}.tar.bz2
+URL:        http://xorg.freedesktop.org/
+Source0:    http://xorg.freedesktop.org/releases/individual/lib/%{name}-%{version}.tar.bz2
 
-BuildRequires: libx11-devel libxau-devel xproto
+Patch0:     float-header-fix.patch
+
+BuildRequires: perl
 
 %description
-X.Org miscellaneous extensions library.
+Pixman is a low-level software library for pixel manipulation, 
+providing features such as image compositing and trapezoid rasterization.
 
 %package devel                                                          
-Summary: Development tools for libXext.
+Summary: Development tools for %{name}.
 Group: Development/Libraries                                             
 Requires: %{name} = %{version}-%{release}                                
                                                                          
 %description devel                                                       
 This package contains the header files and development documentation     
-for libXext. If you like to develop programs using libXext, you will need
-to install libXext-devel. 
+for %{name}. If you like to develop programs using %{name}, you will need
+to install %{name}-devel. 
 
 %prep
-%setup -q -n libXext-%{version}
+%setup -q -n %{name}-%{version} 
+%patch0 -p1
 
 %build
 #Remove OLD config.sub                                                         
@@ -46,13 +50,13 @@ mkdir -p %{buildroot}/%{_libdir}/pkgconfig/
 %postun -p /sbin/ldconfig
 
 %files
-%{_libdir}/libXext.so.*
-%{_libdir}/libXext.so.*.*.*
+%{_libdir}/lib%{name}-1.so.*
+%{_libdir}/lib%{name}-1.so.*.*.*
 
 %files devel
-%{_includedir}/X11/extensions/*.h
+%dir %{_includedir}/pixman-1/
+%{_includedir}/pixman-1/*.h
 %{_libdir}/pkgconfig/*.pc
-%{_libdir}/libXext.so
-%{_libdir}/libXext.a
+%{_libdir}/lib%{name}-1.so
 
 %changelog

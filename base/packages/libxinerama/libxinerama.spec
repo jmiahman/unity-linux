@@ -1,29 +1,29 @@
-Name:       libxext
-Version:    1.3.3
+Name:       libxinerama
+Version:    1.1.3
 Release:    1%{?dist}
-Summary:    X.Org miscellaneous extensions library.
+Summary:    X.Org Xinerama extension library.
 Group:      Development/Libraries
 License:    MIT
-URL:        http://xcb.freedesktop.org/
-Source0:    http://xorg.freedesktop.org/releases/individual/lib/libXext-%{version}.tar.bz2
+URL:        http://xorg.freedesktop.org/
+Source0:    http://xorg.freedesktop.org/releases/individual/lib/libXinerama-%{version}.tar.bz2
 
-BuildRequires: libx11-devel libxau-devel xproto
+BuildRequires: xineramaproto libx11-devel libxext-devel
 
 %description
-X.Org miscellaneous extensions library.
+The X.Org Xinerama extension library.
 
 %package devel                                                          
-Summary: Development tools for libXext.
+Summary: Development tools for libXinerama.
 Group: Development/Libraries                                             
 Requires: %{name} = %{version}-%{release}                                
                                                                          
 %description devel                                                       
 This package contains the header files and development documentation     
-for libXext. If you like to develop programs using libXext, you will need
-to install libXext-devel. 
+for libXinerama. If you like to develop programs using libXinerama, you will need
+to install libXinerama-devel. 
 
 %prep
-%setup -q -n libXext-%{version}
+%setup -q -n libXinerama-%{version} 
 
 %build
 #Remove OLD config.sub                                                         
@@ -46,13 +46,13 @@ mkdir -p %{buildroot}/%{_libdir}/pkgconfig/
 %postun -p /sbin/ldconfig
 
 %files
-%{_libdir}/libXext.so.*
-%{_libdir}/libXext.so.*.*.*
+%{_libdir}/libXinerama.so.*
+%{_libdir}/libXinerama.so.*.*.*
 
 %files devel
 %{_includedir}/X11/extensions/*.h
 %{_libdir}/pkgconfig/*.pc
-%{_libdir}/libXext.so
-%{_libdir}/libXext.a
+%{_libdir}/libXinerama.so
+%{_libdir}/libXinerama.a
 
 %changelog
