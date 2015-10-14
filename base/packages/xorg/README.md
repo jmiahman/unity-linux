@@ -31,7 +31,7 @@ Wayland
 mesa  
 xbitmaps  
 
-- apps
+- apps  
 bdftopcf  
 iceauth  
 luit  
