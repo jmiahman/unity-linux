@@ -40,6 +40,17 @@ for the FreeType font rendering engine.
 Install freetype-devel if you want to develop programs which will use
 FreeType.
 
+%package docs
+Summary: FreeType documentation
+Group: Development/Libraries
+Requires: %{name} = %{version}-%{release}
+
+%description docs
+Documentation for Freetype
+
+Install freetype-devel if you want to develop programs which will use
+FreeType.
+
 %prep
 %setup -q
 
@@ -66,9 +77,7 @@ ln -s freetype2 %{buildroot}/usr/include/freetype
 %files
 %defattr(-,root,root)
 %{_libdir}/libfreetype.so.*
-#%doc README
-#%doc docs/LICENSE.TXT docs/FTL.TXT docs/GPLv2.TXT
-#%doc docs/CHANGES docs/VERSION.DLL docs/formats.txt docs/ft2faq.html
+%doc docs/LICENSE.TXT docs/FTL.TXT docs/GPLv2.TXT
 
 %files devel
 %defattr(-,root,root)
@@ -78,11 +87,15 @@ ln -s freetype2 %{buildroot}/usr/include/freetype
 %{_libdir}/libfreetype.so
 %{_bindir}/freetype-config
 %{_libdir}/pkgconfig/freetype2.pc
-#%doc docs/design
-#%doc docs/glyphs
-#%doc docs/reference
-#%doc docs/tutorial
-#%{_mandir}/man1/*
+
+%files docs
+%doc README
+%doc docs/CHANGES docs/VERSION.DLL docs/formats.txt docs/ft2faq.html
+%doc docs/design
+%doc docs/glyphs
+%doc docs/reference
+%doc docs/tutorial
+%{_mandir}/man1/*
 
 %changelog
 
