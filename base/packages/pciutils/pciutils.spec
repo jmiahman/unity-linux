@@ -44,6 +44,14 @@ Group: System Environment/Libraries
 This package contains a library for inspecting and setting
 devices connected to the PCI bus.
 
+%package docs
+Summary: Documentation for the Linux PCI library
+Group: System Environment/Libraries
+
+%description docs
+This package contains Documentation for the
+Linux PCI library
+
 #%package devel-static
 #Summary: Linux PCI static library
 #Group: System Environment/Libraries
@@ -67,14 +75,14 @@ sed -i -e "106s/^/\#/" Makefile
 	make ZLIB=no \
 		SHARED=yes \
 		PREFIX=/usr \
-		SHAREDIR=/usr/share/hwdata \
+		SHAREDIR=%{_datadir} \
 		MANDIR=/usr/share/man \
 		all
 make clean
 
 	make PREFIX=/usr \
 		SHARED=yes \
-		SHAREDIR=/usr/share/hwdata \
+		SHAREDIR=%{_datadir} \
 		MANDIR=/usr/share/man \
 		install
 
@@ -85,7 +93,13 @@ make clean
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT/{sbin,%{_sbindir},%{_lib},%{_mandir}/man8,%{_libdir},%{_libdir}/pkgconfig,%{_includedir}/pci}
+install -d $RPM_BUILD_ROOT/sbin 
+install -d $RPM_BUILD_ROOT/%{_sbindir}
+install -d $RPM_BUILD_ROOT/%{_lib}
+install -d $RPM_BUILD_ROOT/%{_mandir}/man8
+install -d $RPM_BUILD_ROOT/%{_libdir}
+install -d $RPM_BUILD_ROOT/%{_libdir}/pkgconfig
+install -d $RPM_BUILD_ROOT/%{_includedir}/pci
 
 install -p lspci setpci $RPM_BUILD_ROOT/sbin
 install -p update-pciids $RPM_BUILD_ROOT/%{_sbindir}
@@ -109,11 +123,9 @@ install -p lib/libpci.pc $RPM_BUILD_ROOT%{_libdir}/pkgconfig
 
 %files
 %defattr(-,root,root,-)
-%doc README ChangeLog pciutils.lsm COPYING
 /sbin/lspci
 /sbin/setpci
 %{_sbindir}/update-pciids
-%{_mandir}/man8/*
 
 %files libs
 %doc COPYING
@@ -129,6 +141,11 @@ install -p lib/libpci.pc $RPM_BUILD_ROOT%{_libdir}/pkgconfig
 %{_libdir}/pkgconfig/libpci.pc
 %{_libdir}/libpci.so
 %{_includedir}/pci
+
+%files docs
+%defattr(0644, root, root, 0755)
+%doc README ChangeLog pciutils.lsm COPYING
+%{_mandir}/man8/*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
