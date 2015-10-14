@@ -1,11 +1,5 @@
 -- Current todo for Xorg --
 
-- protos  
-compositeproto  
-dmxproto  
-dri3proto  
-xf86vidmodeproto  
-
 - libs  
 libFS  
 libXScrnSaver  
