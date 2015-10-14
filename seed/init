@@ -312,7 +312,7 @@ udevadm settle --timeout=3 --quiet
 killall "${_UDEV_DAEMON##*/}" 2>/dev/null
 
 
-if [ -n $livecd ]; then 
+if [ -n "$livecd" ]; then 
 	# moving tmpfs 
 	mkdir -p $union_dir/$tmpfs_dir
 	mkdir -p $union_dir/$device_mnt
