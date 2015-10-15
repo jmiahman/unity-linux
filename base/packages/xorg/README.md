@@ -48,7 +48,6 @@ xev
 xgamma  
 xhost  
 xinput  
-xkbcomp  
 xkbevd  
 xkbutils  
 xkill  
@@ -69,6 +68,5 @@ xwud
 - programs  
 xcursor-themes  
 Xorg Fonts (various packages)  
-XKeyboardConfig  
 Xorg-Server  
 Xorg Drivers (various Packages)  
