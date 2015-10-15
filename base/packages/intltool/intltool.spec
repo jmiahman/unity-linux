@@ -12,8 +12,8 @@ Requires: patch
 # for /usr/share/aclocal
 Requires: automake
 Requires: gettext-devel
-Requires: perl(XML::Parser)
-BuildRequires: perl(XML::Parser)
+Requires: perl-xml-parser
+BuildRequires: perl-xml-parser
 BuildRequires: gettext
 # http://bugzilla.gnome.org/show_bug.cgi?id=568845
 # Dropping this patch per the last comment on that thread:
