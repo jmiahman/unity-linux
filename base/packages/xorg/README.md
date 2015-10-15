@@ -6,7 +6,6 @@ libXScrnSaver
 libXpm  
 libXaw  
 libXcomposite  
-libXrender  
 libXcursor  
 libXfont  
 libXft  
@@ -27,7 +26,6 @@ xcb-util-wm
 elfutils  
 libvdpau  
 LLVM  
-Wayland  
 mesa  
 xbitmaps  
 
