@@ -91,8 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-,root,root,-)
-%{exclude} %{_libdir}/*%{version}.so
+%exclude %{_libdir}/*%{version}.so
 %{_includedir}/*.h
+%dir %{_includedir}/libiberty
 %{_includedir}/libiberty/*.h
 
 %changelog
