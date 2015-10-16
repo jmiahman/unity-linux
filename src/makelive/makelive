@@ -118,7 +118,28 @@ function create_initrd
 	initrd_tools_dir=/usr/$libDir/initrd
 	
 	echo "Creating initrd skeleton: $tmp_initrd"
-	cp -r $mkroot/$templatesDir/initrd/* $tmp_initrd
+	#cp -r $mkroot/$templatesDir/initrd/* $tmp_initrd
+	echo "Creating Folders"
+	mkdir $tmp_initrd/bin
+	mkdir $tmp_initrd/dev
+	mkdir -p $tmp_initrd/etc/udev
+	mkdir -p $tmp_initrd/lib/firmware
+	mkdir -p $tmp_initrd/lib/modules
+        mkdir -p $tmp_initrd/lib64/firmware
+        mkdir -p $tmp_initrd/lib64/modules
+	mkdir -p $tmp_initrd/mnt/device
+	mkdir -p $tmp_initrd/mnt/liveroot
+	mkdir -p $tmp_initrd/mnt/newroot
+	mkdir -p $tmp_initrd/mnt/tmpfs
+	mkdir $tmp_initrd/proc
+	mkdir $tmp_initrd/sys
+	mkdir -p $tmp_initrd/usr/share
+	echo "Copying files from /usr/share/makelive"
+	cp /usr/share/makelive/pcimodules $tmp_initrd/bin/
+	cp /usr/share/makelive/ld.so.conf $tmp_initrd/etc/
+	cp /usr/share/makelive/udev.conf $tmp_initrd/etc/udev/
+	cp /usr/share/makelive/init $tmp_initrd/
+
 	# create devices
 	createSpecialDevFiles $tmp_initrd/dev
 	# demod in source sys if needed
@@ -331,7 +352,7 @@ echo "volid:                $VOLID"
 echo ""
 
 # does templates exist
-[ ! -d $mkroot/$templatesDir ] && die "templates dir: $mkroot/$templatesDir does not exist."
+#[ ! -d $mkroot/$templatesDir ] && die "templates dir: $mkroot/$templatesDir does not exist."
 # does bootsplash configuration exist
 if [ $bootsplash_arg -eq 1 ]; then
 	[ ! -f $bootsplash ] && die "bootsplash configuration: $bootsplash does not exist."
@@ -347,7 +368,23 @@ fi
 
 # creating initrd: temp live root
 echo "Copying kernel and basic tools..."
-cp -r $mkroot/$templatesDir/isolinux $tmp_iso_root
+#cp -r $mkroot/$templatesDir/isolinux $tmp_iso_root
+mkdir -p $tmp_iso_root/isolinux
+cp /usr/share/syslinux/ldlinux.c32 $tmp_iso_root/isolinux/
+cp /usr/share/syslinux/libcom32.c32 $tmp_iso_root/isolinux/
+cp /usr/share/syslinux/libutil.c32 $tmp_iso_root/isolinux/
+cp /usr/share/syslinux/chain.c32 $tmp_iso_root/isolinux/
+cp /usr/share/syslinux/hdt.c32 $tmp_iso_root/isolinux/
+cp /usr/share/syslinux/isolinux.bin $tmp_iso_root/isolinux/
+cp /usr/share/syslinux/reboot.c32 $tmp_iso_root/isolinux/
+cp /usr/share/syslinux/vesamenu.c32 $tmp_iso_root/isolinux/
+cp /usr/share/makelive/isolinux.cfg $tmp_iso_root/isolinux/
+cp /usr/share/makelive/splash.jpg $tmp_iso_root/isolinux/
+cp /usr/share/makelive/help.msg $tmp_iso_root/isolinux/
+cp /usr/share/makelive/memtest86 $tmp_iso_root/isolinux/
+cp /usr/share/hwdata/pci.ids $tmp_iso_root/isolinux
+
+
 if [ -f $sys_source/boot/vmlinuz-$(echo $kernel_rel) ]; then
        	cp $sys_source/boot/vmlinuz-$(echo $kernel_rel) $tmp_iso_root/isolinux/vmlinuz
 else

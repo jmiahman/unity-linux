@@ -37,12 +37,11 @@ Common headers for weston
 %build
 %configure \
 	--disable-egl \
-	--disable-xwayland \
 	--disable-x11-compositor \
 	--disable-drm-compositor \
 	--enable-demo-clients-install \
 	--disable-weston-launch \
-	WESTON_NATIVE_BACKEND="rpi-backend.so" \
+	WESTON_NATIVE_BACKEND="fbdev-backend.so" \
 
 make %{?_smp_mflags}
 

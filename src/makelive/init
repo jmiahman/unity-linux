@@ -212,7 +212,7 @@ fi
 [ -z "$mnt_devices" ] && echo "Error: After Multiple attempts we did not find any usable block devices" && run_debug_shell
 #echo "Detected Block devices: $mnt_devices"
 
-if [ -n "$livecd" ]; then 
+if [ -z "$livecd" ]; then 
 	for device in $mnt_devices
 	do
         	mount $device $union_dir

@@ -123,6 +123,7 @@ config_iface() {
 	local bridge
 	local conf=$prefix$iface.conf
 	local answer=
+	local netanswer=
 
 	while [ -n "$ask_bridge" ] && ! is_bridge $iface; do
 		ask "Do you want to bridge the interface $iface?" yes
@@ -475,10 +476,10 @@ prompt_for_interfaces() {
                                                                            
         while [ "$netanswer" != "yes" ] && [ "$netanswer" != "no" ] ; do          
                 ask "Do you want networking to start on boot?" yes
-                case $netresp in                                               
+                case $resp in                                               
                         y) netanswer=yes;;                                     
                         n) netanswer=no;;            
-                        *) netanswer=$netresp;;         
+                        *) netanswer=$resp;;         
                 esac                                   
         done
 
