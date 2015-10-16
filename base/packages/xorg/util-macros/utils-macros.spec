@@ -7,7 +7,7 @@ Group: Development/System
 URL: http://www.x.org
 BuildArch: noarch
 Source0:  ftp://ftp.x.org/pub/individual/util/%{name}-%{version}.tar.bz2
-Requires: autoconf automake libtool pkgconfig
+Requires: autoconf automake libtool 
 
 %description
 X.Org X11 autotools macros required for building the various packages that

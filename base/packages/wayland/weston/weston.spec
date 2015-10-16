@@ -38,10 +38,11 @@ Common headers for weston
 %configure \
 	--disable-egl \
 	--disable-x11-compositor \
-	--disable-drm-compositor \
 	--enable-demo-clients-install \
 	--disable-weston-launch \
 	WESTON_NATIVE_BACKEND="fbdev-backend.so" \
+
+#--disable-drm-compositor \
 
 make %{?_smp_mflags}
 
