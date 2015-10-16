@@ -6,7 +6,6 @@ libXScrnSaver
 libXpm  
 libXaw  
 libXcomposite  
-libXcursor  
 libXfont  
 libXft  
 libXi  
@@ -14,7 +13,6 @@ libXrandr
 libXres  
 libXtst  
 libXvMC  
-libXxf86vm  
 libdmx  
 libxshmfence  
 
