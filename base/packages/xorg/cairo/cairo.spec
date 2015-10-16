@@ -83,6 +83,7 @@ This package contains tools for working with the cairo graphics library.
 %build
 %configure --disable-static \
 	--enable-ft \
+	--enable-directfb \
 	--enable-gobject \
 	--enable-pdf \
 	--enable-png \

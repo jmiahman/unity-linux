@@ -18,9 +18,11 @@ Source4:	http://llvm.org/releases/%{version}/polly-%{version}.src.tar.xz
 Patch0:		llvm-0001-fix-shared-build.patch
 Patch1:		llvm-0002-musl-triple.patch
 Patch2:		llvm-0003-musl-hacks.patch
+
 Patch3:		compiler-rt-0001-musl-no-dlvsym.patch
 Patch4:		compiler-rt-0002-musl-no-sanitizers.patch
 Patch5:		compiler-rt-0003-off_t.patch
+
 Patch6:		clang-0001-fix-stdint.h.patch
 Patch7:		clang-0002-fix-unwind-header.patch
 Patch8:	 	clang-0003-add-unity-linux-distro.patch
@@ -191,9 +193,16 @@ mv lldb-*/ tools/lldb
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+
+cd projects/compiler-rt/
+
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+
+cd ../../
+cd tools/clang/
+
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
@@ -206,6 +215,8 @@ mv lldb-*/ tools/lldb
 %patch15 -p1
 %patch16 -p1
 
+cd ../../
+
 %if %{with lldb}
 cd tools/lldb
 # careful when recreating this patch...
@@ -214,6 +225,8 @@ cd tools/lldb
 sed -i s/@lib@/%{_lib}/g scripts/Python/modules/readline/Makefile
 cd ../../
 %endif
+
+
 
 # fix library paths
 sed -i 's|/lib /usr/lib $lt_ld_extra|%{_libdir} $lt_ld_extra|' configure

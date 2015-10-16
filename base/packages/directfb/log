@@ -1,0 +1,2326 @@
+Executing(%prep): /bin/sh -e /var/tmp/rpm-tmp.1557
++ umask 022
++ cd /root/rpmbuild/BUILD
++ cd /root/rpmbuild/BUILD
++ rm -rf DirectFB-1.7.7
++ /bin/gzip -dc /root/rpmbuild/SOURCES/DirectFB-1.7.7.tar.gz
++ /bin/tar -xf -
++ STATUS=0
++ [ 0 -ne 0 ]
++ cd DirectFB-1.7.7
++ /bin/chmod -Rf a+rX,u+w,g-w,o-w .
++ echo Patch #0 (DirectFB-1.7.5-flags.patch):
+Patch #0 (DirectFB-1.7.5-flags.patch):
++ /usr/bin/patch -p1 -s
++ echo Patch #1 (DirectFB-1.6.3-pkgconfig.patch):
+Patch #1 (DirectFB-1.6.3-pkgconfig.patch):
++ /usr/bin/patch -p1 -s
++ echo Patch #2 (DirectFB-1.7.1-build.patch):
+Patch #2 (DirectFB-1.7.1-build.patch):
++ /usr/bin/patch -p1 -s
++ echo Patch #3 (DirectFB-1.6.3-setregion.patch):
+Patch #3 (DirectFB-1.6.3-setregion.patch):
++ /usr/bin/patch -p0 -s
++ echo Patch #4 (DirectFB-1.6.3-atomic-fix-compiler-error-when-building-for-thumb2.patch):
+Patch #4 (DirectFB-1.6.3-atomic-fix-compiler-error-when-building-for-thumb2.patch):
++ /usr/bin/patch -p1 -s
++ echo Patch #5 (DirectFB-1.7.6-cle266.patch):
+Patch #5 (DirectFB-1.7.6-cle266.patch):
++ /usr/bin/patch -p1 -s
++ echo Patch #6 (DirectFB-1.7.6-uint32_t.patch):
+Patch #6 (DirectFB-1.7.6-uint32_t.patch):
++ /usr/bin/patch -p1 -s
++ echo Patch #7 (DirectFB-1.7.6-union-sigval.patch):
+Patch #7 (DirectFB-1.7.6-union-sigval.patch):
++ /usr/bin/patch -p1 -s
++ echo Patch #8 (DirectFB-1.7.6-use-PTHREAD_MUTEX_RECURSIVE.patch):
+Patch #8 (DirectFB-1.7.6-use-PTHREAD_MUTEX_RECURSIVE.patch):
++ /usr/bin/patch -p1 -s
++ perl -pi -es,/usr/X11R6/lib ,/usr/X11R6/lib , configure directfb-config.in
+Can't open configure: No such file or directory.
++ sed -i -e /^CXXFLAGS=.*-Werror-implicit-function-declaration/d configure.in
++ exit 0
+Executing(%build): /bin/sh -e /var/tmp/rpm-tmp.1557
++ umask 022
++ cd /root/rpmbuild/BUILD
++ cd DirectFB-1.7.7
++ autoreconf -vif
+autoreconf: Entering directory `.'
+autoreconf: configure.in: not using Gettext
+autoreconf: running: aclocal --force -I m4
+aclocal: warning: autoconf input should be named 'configure.ac', not 'configure.in'
+autoreconf: configure.in: tracing
+autoreconf: running: libtoolize --copy --force
+libtoolize: putting auxiliary files in '.'.
+libtoolize: copying file './ltmain.sh'
+libtoolize: putting macros in 'm4'.
+libtoolize: copying file 'm4/libtool.m4'
+libtoolize: copying file 'm4/ltoptions.m4'
+libtoolize: copying file 'm4/ltsugar.m4'
+libtoolize: copying file 'm4/ltversion.m4'
+libtoolize: copying file 'm4/lt~obsolete.m4'
+libtoolize: Consider adding 'AC_CONFIG_MACRO_DIRS([m4])' to configure.in,
+libtoolize: and rerunning libtoolize and aclocal.
+aclocal: warning: autoconf input should be named 'configure.ac', not 'configure.in'
+autoreconf: running: /usr/bin/autoconf --force
+autoreconf: running: /usr/bin/autoheader --force
+autoreconf: running: automake --add-missing --copy --force-missing
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/\${ <-- HERE ([^ \t=:+{}]+)}/ at /usr/bin/automake line 3936.
+automake: warning: autoconf input should be named 'configure.ac', not 'configure.in'
+configure.in:70: warning: AM_INIT_AUTOMAKE: two- and three-arguments forms are deprecated.  For more info, see:
+configure.in:70: http://www.gnu.org/software/automake/manual/automake.html#Modernize-AM_005fINIT_005fAUTOMAKE-invocation
+configure.in:96: installing './compile'
+configure.in:67: installing './config.guess'
+configure.in:67: installing './config.sub'
+configure.in:70: installing './install-sh'
+configure.in:70: installing './missing'
+Makefile.am: installing './INSTALL'
+automake: warning: autoconf input should be named 'configure.ac', not 'configure.in'
+docs/Makefile.am:14: warning: patsubst %,%.html,$(man_MANS: non-POSIX variable name
+docs/Makefile.am:14: (probably a GNU make extension)
+docs/Makefile.am:24: warning: '%'-style pattern rules are a GNU make extension
+examples/++dfb/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+examples/++dfb/Makefile.am: installing './depcomp'
+examples/++dfb/tests/Makefile.am:9: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+examples/fusiondale/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+examples/fusionsound/Makefile.am:2: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/ati128/Makefile.am:40:   'rules/libobject.make' included from here
+gfxdrivers/ati128/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/cle266/Makefile.am:46:   'rules/libobject.make' included from here
+gfxdrivers/cle266/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/cyber5k/Makefile.am:40:   'rules/libobject.make' included from here
+gfxdrivers/cyber5k/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/davinci/Makefile.am:69:   'rules/libobject.make' included from here
+gfxdrivers/davinci/Makefile.am:12: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/ep9x/Makefile.am:32:   'rules/libobject.make' included from here
+gfxdrivers/ep9x/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/gl/Makefile.am:35:   'rules/libobject.make' included from here
+gfxdrivers/gl/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/gles2/Makefile.am:37:   'rules/libobject.make' included from here
+gfxdrivers/gles2/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/gp2d/Makefile.am:41:   'rules/libobject.make' included from here
+gfxdrivers/gp2d/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/i810/Makefile.am:34:   'rules/libobject.make' included from here
+gfxdrivers/i810/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/i830/Makefile.am:34:   'rules/libobject.make' included from here
+gfxdrivers/i830/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/mach64/Makefile.am:38:   'rules/libobject.make' included from here
+gfxdrivers/mach64/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/matrox/Makefile.am:46:   'rules/libobject.make' included from here
+gfxdrivers/matrox/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/neomagic/Makefile.am:34:   'rules/libobject.make' included from here
+gfxdrivers/neomagic/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/nsc/Makefile.am:39:   'rules/libobject.make' included from here
+gfxdrivers/nsc/Makefile.am:5: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/nvidia/Makefile.am:45:   'rules/libobject.make' included from here
+gfxdrivers/nvidia/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/omap/Makefile.am:34:   'rules/libobject.make' included from here
+gfxdrivers/omap/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/pvr2d/Makefile.am:35:   'rules/libobject.make' included from here
+gfxdrivers/pvr2d/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/pxa3xx/Makefile.am:45:   'rules/libobject.make' included from here
+gfxdrivers/pxa3xx/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/radeon/Makefile.am:51:   'rules/libobject.make' included from here
+gfxdrivers/radeon/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/savage/Makefile.am:44:   'rules/libobject.make' included from here
+gfxdrivers/savage/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/sh772x/Makefile.am:70:   'rules/libobject.make' included from here
+gfxdrivers/sh772x/Makefile.am:16: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/sis315/Makefile.am:41:   'rules/libobject.make' included from here
+gfxdrivers/sis315/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/tdfx/Makefile.am:33:   'rules/libobject.make' included from here
+gfxdrivers/tdfx/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/unichrome/Makefile.am:49:   'rules/libobject.make' included from here
+gfxdrivers/unichrome/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/vdpau/Makefile.am:35:   'rules/libobject.make' included from here
+gfxdrivers/vdpau/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/vmware/Makefile.am:35:   'rules/libobject.make' included from here
+gfxdrivers/vmware/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+gfxdrivers/vsp1/Makefile.am:45:   'rules/libobject.make' included from here
+gfxdrivers/vsp1/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+gfxdrivers/vsp1/Makefile.am:22: warning: source file 'media-ctl/libmediactl.c' is in a subdirectory,
+gfxdrivers/vsp1/Makefile.am:22: but option 'subdir-objects' is disabled
+automake: warning: possible forward-incompatibility.
+automake: At least a source file is in a subdirectory, but the 'subdir-objects'
+automake: automake option hasn't been enabled.  For now, the corresponding output
+automake: object file(s) will be placed in the top-level directory.  However,
+automake: this behaviour will change in future Automake versions: they will
+automake: unconditionally cause object files to be placed in the same subdirectory
+automake: of the corresponding sources.
+automake: You are advised to start using 'subdir-objects' option throughout your
+automake: project, to avoid future incompatibilities.
+gfxdrivers/vsp1/Makefile.am:22: warning: source file 'media-ctl/libv4l2subdev.c' is in a subdirectory,
+gfxdrivers/vsp1/Makefile.am:22: but option 'subdir-objects' is disabled
+include/++dfb/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/dbox2remote/Makefile.am:31:   'rules/libobject.make' included from here
+inputdrivers/dbox2remote/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/divine/Makefile.am:31:   'rules/libobject.make' included from here
+inputdrivers/divine/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/dreamboxremote/Makefile.am:31:   'rules/libobject.make' included from here
+inputdrivers/dreamboxremote/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/dynapro/Makefile.am:30:   'rules/libobject.make' included from here
+inputdrivers/dynapro/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/elo/Makefile.am:31:   'rules/libobject.make' included from here
+inputdrivers/elo/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/gunze/Makefile.am:30:   'rules/libobject.make' included from here
+inputdrivers/gunze/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/h3600_ts/Makefile.am:31:   'rules/libobject.make' included from here
+inputdrivers/h3600_ts/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/input_hub/Makefile.am:32:   'rules/libobject.make' included from here
+inputdrivers/input_hub/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/joystick/Makefile.am:31:   'rules/libobject.make' included from here
+inputdrivers/joystick/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/keyboard/Makefile.am:32:   'rules/libobject.make' included from here
+inputdrivers/keyboard/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/linux_input/Makefile.am:33:   'rules/libobject.make' included from here
+inputdrivers/linux_input/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/lirc/Makefile.am:31:   'rules/libobject.make' included from here
+inputdrivers/lirc/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/mutouch/Makefile.am:30:   'rules/libobject.make' included from here
+inputdrivers/mutouch/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/penmount/Makefile.am:29:   'rules/libobject.make' included from here
+inputdrivers/penmount/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/ps2mouse/Makefile.am:31:   'rules/libobject.make' included from here
+inputdrivers/ps2mouse/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/serialmouse/Makefile.am:30:   'rules/libobject.make' included from here
+inputdrivers/serialmouse/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/sonypi/Makefile.am:31:   'rules/libobject.make' included from here
+inputdrivers/sonypi/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/tslib/Makefile.am:34:   'rules/libobject.make' included from here
+inputdrivers/tslib/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/ucb1x00_ts/Makefile.am:31:   'rules/libobject.make' included from here
+inputdrivers/ucb1x00_ts/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/wm97xx_ts/Makefile.am:31:   'rules/libobject.make' included from here
+inputdrivers/wm97xx_ts/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+inputdrivers/zytronic/Makefile.am:30:   'rules/libobject.make' included from here
+inputdrivers/zytronic/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+interfaces/ICoreResourceManager/Makefile.am:36:   'rules/libobject.make' included from here
+interfaces/ICoreResourceManager/Makefile.am:6: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+interfaces/IDirectFBFont/Makefile.am:69:   'rules/libobject.make' included from here
+interfaces/IDirectFBFont/Makefile.am:17: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+interfaces/IDirectFBGL/EGL/Makefile.am:40:   'rules/libobject.make' included from here
+interfaces/IDirectFBGL/EGL/Makefile.am:9: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+interfaces/IDirectFBImageProvider/Makefile.am:164:   'rules/libobject.make' included from here
+interfaces/IDirectFBImageProvider/mpeg2/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+interfaces/IDirectFBVideoProvider/Makefile.am:259:   'rules/libobject.make' included from here
+interfaces/IDirectFBVideoProvider/Makefile.am:96: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+interfaces/IDirectFBVideoProvider/video_out_dfb/Makefile.am:5: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+interfaces/IDirectFBWindows/Makefile.am:63:   'rules/libobject.make' included from here
+interfaces/IDirectFBWindows/Makefile.am:6: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+interfaces/IFusionSound/Makefile.am:5: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+interfaces/IFusionSoundMusicProvider/Makefile.am:5: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+interfaces/IWater/Makefile.am:41:   'rules/libobject.make' included from here
+interfaces/IWater/Makefile.am:6: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/++dfb/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/One/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/direct/Makefile.am:5: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/direct/os/linux/glibc/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/divine/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/dvc/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+lib/egl/EGLCoreSDL/Makefile.am:38:   'rules/libobject.make' included from here
+lib/egl/EGLCoreSDL/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+lib/egl/EGLCoreWayland/Makefile.am:41:   'rules/libobject.make' included from here
+lib/egl/EGLCoreWayland/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/egl/Makefile.am:16: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/fusion/Makefile.am:6: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/fusion/shm/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/fusiondale/Makefile.am:5: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/fusiondale/coma/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/fusiondale/core/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/fusiondale/messenger/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/fusiondale/misc/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+lib/fusiondale/one/Makefile.am:56:   'rules/libobject.make' included from here
+lib/fusiondale/one/Makefile.am:10: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/fusionsound/Makefile.am:5: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/fusionsound/core/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/fusionsound/drivers/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/fusionsound/media/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/fusionsound/misc/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/sawman/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/voodoo/Makefile.am:6: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/voodoo/unix/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/wayland-dfb/Makefile.am:40: warning: '%'-style pattern rules are a GNU make extension
+lib/wayland-dfb/Makefile.am:43: warning: '%'-style pattern rules are a GNU make extension
+lib/wayland-dfb/Makefile.am:46: warning: '%'-style pattern rules are a GNU make extension
+lib/wayland-dfb/Makefile.am:4: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+lib/wayland-egl/Makefile.am:4: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+proxy/compressor/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+proxy/dispatcher/Makefile.am:218:   'rules/libobject.make' included from here
+proxy/dispatcher/Makefile.am:30: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+proxy/requestor/Makefile.am:218:   'rules/libobject.make' included from here
+proxy/requestor/Makefile.am:29: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+src/Makefile.am:16: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+src/core/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+src/core/Makefile.am:124: warning: source file '$(builddir)/CoreDFB.cpp' is in a subdirectory,
+src/core/Makefile.am:124: but option 'subdir-objects' is disabled
+src/core/Makefile.am:124: warning: source file '$(builddir)/CoreSlave.cpp' is in a subdirectory,
+src/core/Makefile.am:124: but option 'subdir-objects' is disabled
+src/core/Makefile.am:124: warning: source file '$(builddir)/CoreGraphicsState.cpp' is in a subdirectory,
+src/core/Makefile.am:124: but option 'subdir-objects' is disabled
+src/core/Makefile.am:124: warning: source file '$(builddir)/CoreInputDevice.cpp' is in a subdirectory,
+src/core/Makefile.am:124: but option 'subdir-objects' is disabled
+src/core/Makefile.am:124: warning: source file '$(builddir)/CoreLayer.cpp' is in a subdirectory,
+src/core/Makefile.am:124: but option 'subdir-objects' is disabled
+src/core/Makefile.am:124: warning: source file '$(builddir)/CoreLayerContext.cpp' is in a subdirectory,
+src/core/Makefile.am:124: but option 'subdir-objects' is disabled
+src/core/Makefile.am:124: warning: source file '$(builddir)/CoreLayerRegion.cpp' is in a subdirectory,
+src/core/Makefile.am:124: but option 'subdir-objects' is disabled
+src/core/Makefile.am:124: warning: source file '$(builddir)/CorePalette.cpp' is in a subdirectory,
+src/core/Makefile.am:124: but option 'subdir-objects' is disabled
+src/core/Makefile.am:124: warning: source file '$(builddir)/CoreScreen.cpp' is in a subdirectory,
+src/core/Makefile.am:124: but option 'subdir-objects' is disabled
+src/core/Makefile.am:124: warning: source file '$(builddir)/CoreSurface.cpp' is in a subdirectory,
+src/core/Makefile.am:124: but option 'subdir-objects' is disabled
+src/core/Makefile.am:124: warning: source file '$(builddir)/CoreSurfaceAllocation.cpp' is in a subdirectory,
+src/core/Makefile.am:124: but option 'subdir-objects' is disabled
+src/core/Makefile.am:124: warning: source file '$(builddir)/CoreSurfaceClient.cpp' is in a subdirectory,
+src/core/Makefile.am:124: but option 'subdir-objects' is disabled
+src/core/Makefile.am:124: warning: source file '$(builddir)/CoreWindow.cpp' is in a subdirectory,
+src/core/Makefile.am:124: but option 'subdir-objects' is disabled
+src/core/Makefile.am:124: warning: source file '$(builddir)/CoreWindowStack.cpp' is in a subdirectory,
+src/core/Makefile.am:124: but option 'subdir-objects' is disabled
+src/display/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+src/gfx/Makefile.am:15: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+src/gfx/generic/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+src/input/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+src/media/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+src/misc/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+src/windows/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+systems/devmem/Makefile.am:40:   'rules/libobject.make' included from here
+systems/devmem/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+systems/drmkms/Makefile.am:80:   'rules/libobject.make' included from here
+systems/drmkms/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+systems/dummy/Makefile.am:37:   'rules/libobject.make' included from here
+systems/dummy/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+systems/egl/Makefile.am:41:   'rules/libobject.make' included from here
+systems/egl/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+systems/fbdev/Makefile.am:47:   'rules/libobject.make' included from here
+systems/fbdev/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+systems/mesa/Makefile.am:45:   'rules/libobject.make' included from here
+systems/mesa/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+systems/osx/Makefile.am:58:   'rules/libobject.make' included from here
+systems/osx/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+systems/pvr2d/Makefile.am:41:   'rules/libobject.make' included from here
+systems/pvr2d/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+systems/sdl/Makefile.am:85:   'rules/libobject.make' included from here
+systems/sdl/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+systems/vnc/Makefile.am:37:   'rules/libobject.make' included from here
+systems/vnc/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+systems/x11/Makefile.am:122:   'rules/libobject.make' included from here
+systems/x11/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+systems/x11vdpau/Makefile.am:45:   'rules/libobject.make' included from here
+systems/x11vdpau/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+tests/Makefile.am:46: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+tests/Makefile.am:229: warning: source file '../examples/++dfb/dfbapp.cpp' is in a subdirectory,
+tests/Makefile.am:229: but option 'subdir-objects' is disabled
+tests/Makefile.am:200: warning: source file '../examples/++dfb/dfbapp.cpp' is in a subdirectory,
+tests/Makefile.am:200: but option 'subdir-objects' is disabled
+tests/voodoo/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+tools/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+wm/default/Makefile.am:33:   'rules/libobject.make' included from here
+wm/default/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+wm/sawman/Makefile.am:35:   'rules/libobject.make' included from here
+wm/sawman/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+rules/libobject.make:1: warning: '%'-style pattern rules are a GNU make extension
+wm/unique/Makefile.am:124:   'rules/libobject.make' included from here
+wm/unique/Makefile.am:5: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+wm/unique/classes/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+wm/unique/devices/Makefile.am:3: warning: 'INCLUDES' is the old name for 'AM_CPPFLAGS' (or '*_CPPFLAGS')
+autoreconf: Leaving directory `.'
++ CFLAGS=-O2 -g
++ export CFLAGS
++ CXXFLAGS=-O2 -g
++ export CXXFLAGS
++ FFLAGS=-O2 -g
++ export FFLAGS
++ ./configure --host=x86_64-unknown-linux-gnu --build=x86_64-unknown-linux-gnu --program-prefix= --disable-dependency-tracking --prefix=/usr --exec-prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --sysconfdir=/usr/etc --datadir=/usr/share --includedir=/usr/include --libdir=/usr/lib --libexecdir=/usr/libexec --localstatedir=/usr/var --sharedstatedir=/usr/com --mandir=/usr/share/man --infodir=/usr/share/info --docdir=/usr/doc/directfb-1.7.7 --enable-static --enable-shared --enable-x11 --disable-multi --enable-sse --enable-fbdev --enable-jpeg --enable-zlib --enable-png --enable-gif --enable-freetype --with-gfxdrivers=all --with-inputdrivers=keyboard,linuxinput --with-tests
+checking build system type... x86_64-unknown-linux-gnu
+checking host system type... x86_64-unknown-linux-gnu
+checking target system type... x86_64-unknown-linux-gnu
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking whether make supports nested variables... yes
+checking whether make supports nested variables... (cached) yes
+checking for x86_64-unknown-linux-gnu-pkg-config... no
+checking for pkg-config... /usr/bin/pkg-config
+checking pkg-config is at least version 0.9.0... yes
+checking whether to enable maintainer-specific portions of Makefiles... no
+checking for x86_64-unknown-linux-gnu-gcc... no
+checking for gcc... gcc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ISO C89... none needed
+checking whether gcc understands -c and -o together... yes
+checking for style of include used by make... GNU
+checking dependency style of gcc... none
+checking for x86_64-unknown-linux-gnu-g++... no
+checking for x86_64-unknown-linux-gnu-c++... no
+checking for x86_64-unknown-linux-gnu-gpp... no
+checking for x86_64-unknown-linux-gnu-aCC... no
+checking for x86_64-unknown-linux-gnu-CC... no
+checking for x86_64-unknown-linux-gnu-cxx... no
+checking for x86_64-unknown-linux-gnu-cc++... no
+checking for x86_64-unknown-linux-gnu-cl.exe... no
+checking for x86_64-unknown-linux-gnu-FCC... no
+checking for x86_64-unknown-linux-gnu-KCC... no
+checking for x86_64-unknown-linux-gnu-RCC... no
+checking for x86_64-unknown-linux-gnu-xlC_r... no
+checking for x86_64-unknown-linux-gnu-xlC... no
+checking for g++... g++
+checking whether we are using the GNU C++ compiler... yes
+checking whether g++ accepts -g... yes
+checking dependency style of g++... none
+checking whether we are using the GNU C++ compiler... (cached) yes
+checking whether g++ accepts -g... (cached) yes
+checking dependency style of g++... (cached) none
+checking dependency style of gcc... none
+checking how to print strings... printf
+checking for a sed that does not truncate output... /bin/sed
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for fgrep... /bin/grep -F
+checking for ld used by gcc... /usr/x86_64-unity-linux-musl/bin/ld
+checking if the linker (/usr/x86_64-unity-linux-musl/bin/ld) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /usr/bin/nm -B
+checking the name lister (/usr/bin/nm -B) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 98304
+checking how to convert x86_64-unknown-linux-gnu file names to x86_64-unknown-linux-gnu format... func_convert_file_noop
+checking how to convert x86_64-unknown-linux-gnu file names to toolchain format... func_convert_file_noop
+checking for /usr/x86_64-unity-linux-musl/bin/ld option to reload object files... -r
+checking for x86_64-unknown-linux-gnu-objdump... no
+checking for objdump... objdump
+checking how to recognize dependent libraries... pass_all
+checking for x86_64-unknown-linux-gnu-dlltool... no
+checking for dlltool... no
+checking how to associate runtime and link libraries... printf %s\n
+checking for x86_64-unknown-linux-gnu-ar... no
+checking for ar... ar
+checking for archiver @FILE support... @
+checking for x86_64-unknown-linux-gnu-strip... no
+checking for strip... strip
+checking for x86_64-unknown-linux-gnu-ranlib... no
+checking for ranlib... ranlib
+checking command to parse /usr/bin/nm -B output from gcc object... ok
+checking for sysroot... no
+checking for a working dd... /bin/dd
+checking how to truncate binary pipes... /bin/dd bs=4096 count=1
+checking for x86_64-unknown-linux-gnu-mt... no
+checking for mt... no
+checking if : is a manifest tool... no
+checking how to run the C preprocessor... gcc -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking for dlfcn.h... yes
+checking for objdir... .libs
+checking if gcc supports -fno-rtti -fno-exceptions... no
+checking for gcc option to produce PIC... -fPIC -DPIC
+checking if gcc PIC flag -fPIC -DPIC works... yes
+checking if gcc static flag -static works... yes
+checking if gcc supports -c -o file.o... yes
+checking if gcc supports -c -o file.o... (cached) yes
+checking whether the gcc linker (/usr/x86_64-unity-linux-musl/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... no
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... yes
+checking how to run the C++ preprocessor... g++ -E
+checking for ld used by g++... /usr/x86_64-unity-linux-musl/bin/ld -m elf_x86_64
+checking if the linker (/usr/x86_64-unity-linux-musl/bin/ld -m elf_x86_64) is GNU ld... yes
+checking whether the g++ linker (/usr/x86_64-unity-linux-musl/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking for g++ option to produce PIC... -fPIC -DPIC
+checking if g++ PIC flag -fPIC -DPIC works... yes
+checking if g++ static flag -static works... yes
+checking if g++ supports -c -o file.o... yes
+checking if g++ supports -c -o file.o... (cached) yes
+checking whether the g++ linker (/usr/x86_64-unity-linux-musl/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking dynamic linker characteristics... (cached) GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking whether build environment is sane... yes
+checking for library containing strerror... none required
+checking whether make sets $(MAKE)... (cached) yes
+checking for ANSI C header files... (cached) yes
+checking whether byte ordering is bigendian... no
+checking size of int... 4
+checking size of long... 8
+checking size of long long... 8
+checking for fork... yes
+checking for perl5... no
+checking for perl... /usr/bin/perl
+checking for man2html... no
+checking for x86_64-unknown-linux-gnu-fluxcomp... no
+checking for fluxcomp... /usr/bin/fluxcomp
+checking for x86_64-unknown-linux-gnu-wayland-scanner... no
+checking for wayland-scanner... /usr/bin/wayland-scanner
+checking Carbon/Carbon.h usability... no
+checking Carbon/Carbon.h presence... no
+checking for Carbon/Carbon.h... no
+configure: WARNING:
+*** no Carbon/Carbon.h found -- building without Mac OS X support.
+checking for X11... yes
+checking for X11VDPAU... no
+configure: WARNING: *** no X11/VDPAU found -- building without X11/VDPAU support
+checking linux/compiler.h usability... no
+checking linux/compiler.h presence... no
+checking for linux/compiler.h... no
+checking linux/unistd.h usability... yes
+checking linux/unistd.h presence... yes
+checking for linux/unistd.h... yes
+checking asm/page.h usability... no
+checking asm/page.h presence... no
+checking for asm/page.h... no
+checking signal.h usability... yes
+checking signal.h presence... yes
+checking for signal.h... yes
+checking execinfo.h usability... no
+checking execinfo.h presence... no
+checking for execinfo.h... no
+checking for pthread_attr_init in -lpthread... yes
+checking whether PTHREAD_MUTEX_RECURSIVE is declared... yes
+checking whether PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP is declared... no
+configure: WARNING:
+*** PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP is not defined! Dead locks might occur!
+checking for clock_gettime in -lrt... yes
+checking for dlopen in -ldl... yes
+checking for sys/io.h... yes
+checking stdbool.h usability... yes
+checking stdbool.h presence... yes
+checking for stdbool.h... yes
+checking which fusionsound drivers should be built... all
+checking sys/soundcard.h usability... yes
+checking sys/soundcard.h presence... yes
+checking for sys/soundcard.h... yes
+checking for alsa >= 0.9... no
+checking for libtimidity >= 0.1.0... no
+configure: WARNING:
+*** libtimidity is required - Timidity music provider will not be built.
+checking for vorbisfile >= 1.0.0... no
+configure: WARNING:
+*** vorbisfile 1.0.0 or newer is required - Ogg/Vorbis music provider will not be built.
+checking for mad_timer_add in -lmad... no
+configure: WARNING:
+*** MAD library not found - MAD music provider will not be built.
+configure: WARNING:
+*** libcddb 1.0.0 or newer not found - CD-DA Music Provider will be built without CDDB support.
+checking for library containing sqrt... none required
+checking whether the binutils support MMX... yes
+checking whether the binutils support SSE... yes
+checking for libvncserver-config... no
+configure: WARNING:
+*** libvncserver-config not found -- building without VNC support. See http://libvncserver.sourceforge.net
+checking for GBM... no
+configure: WARNING:
+*** gbm packages not found -- Building without GBM support.
+checking for MESA... no
+configure: WARNING:
+*** glesv2 egl libdrm gbm packages not found -- Building without MESA support.
+checking for DRMKMS... no
+configure: WARNING:
+*** libdrm gbm packages not found -- Building without DRM/KMS support.
+checking for WAYLAND... yes
+checking for jpeg_destroy_decompress in -ljpeg... yes
+checking jpeglib.h usability... yes
+checking jpeglib.h presence... yes
+checking for jpeglib.h... yes
+checking for gzsetparams in -lz... yes
+checking zlib.h usability... yes
+checking zlib.h presence... yes
+checking for zlib.h... yes
+checking for LIBPNG... yes
+checking for LIBTIFF... yes
+checking for jas_image_decode in -ljasper... no
+configure: WARNING:
+*** Jasper not found. JPEG2000 image provider will not be built.
+checking for FREETYPE... yes
+checking for LINOTYPE... no
+configure: WARNING: *** no linotype -- LinoType font provider will not be built.
+checking for LIBWEBP... no
+configure: WARNING: *** WebP library not found. WEBP image provider will not be built.
+checking which gfxdrivers should be built... all
+checking GL/gl.h usability... no
+checking GL/gl.h presence... no
+checking for GL/gl.h... no
+checking GL/glx.h usability... no
+checking GL/glx.h presence... no
+checking for GL/glx.h... no
+checking which inputdrivers should be built... keyboard linuxinput
+checking linux/input.h usability... yes
+checking linux/input.h presence... yes
+checking for linux/input.h... yes
+checking for struct input_absinfo in linux/input.h... yes
+checking that generated files are newer than configure... done
+checking that generated files are newer than configure... done
+configure: creating ./config.status
+config.status: creating build-android/Makefile
+config.status: creating directfb-config
+config.status: creating directfb.pc
+config.status: creating directfb-internal.pc
+config.status: creating directfb.spec
+config.status: creating Makefile
+config.status: creating include/Makefile
+config.status: creating include/directfb_build.h
+config.status: creating include/directfb_version.h
+config.status: creating include/++dfb/Makefile
+config.status: creating lib/Makefile
+config.status: creating lib/direct/Makefile
+config.status: creating lib/direct/build.h
+config.status: creating lib/direct/direct.pc
+config.status: creating lib/direct/os/Makefile
+config.status: creating lib/direct/os/linux/glibc/Makefile
+config.status: creating lib/egl/Makefile
+config.status: creating lib/egl/build.h
+config.status: creating lib/egl/dfbegl.pc
+config.status: creating lib/egl/egl.pc
+config.status: creating lib/egl/EGL/Makefile
+config.status: creating lib/egl/GLES2/Makefile
+config.status: creating lib/egl/KHR/Makefile
+config.status: creating lib/egl/EGLCoreSDL/Makefile
+config.status: creating lib/egl/EGLCoreWayland/Makefile
+config.status: creating lib/fusion/Makefile
+config.status: creating lib/fusion/build.h
+config.status: creating lib/fusion/fusion.pc
+config.status: creating lib/fusion/shm/Makefile
+config.status: creating lib/One/Makefile
+config.status: creating lib/One/one.pc
+config.status: creating lib/voodoo/Makefile
+config.status: creating lib/voodoo/build.h
+config.status: creating lib/voodoo/unix/Makefile
+config.status: creating lib/voodoo/voodoo.pc
+config.status: creating lib/wayland-dfb/Makefile
+config.status: creating lib/wayland-dfb/wayland-dfb.pc
+config.status: creating lib/wayland-egl/Makefile
+config.status: creating lib/wayland-egl/wayland-egl.pc
+config.status: creating lib/sawman/Makefile
+config.status: creating lib/sawman/sawman.pc
+config.status: creating lib/fusiondale/Makefile
+config.status: creating lib/fusiondale/coma/Makefile
+config.status: creating lib/fusiondale/core/Makefile
+config.status: creating lib/fusiondale/messenger/Makefile
+config.status: creating lib/fusiondale/misc/Makefile
+config.status: creating lib/fusiondale/one/Makefile
+config.status: creating lib/fusiondale/fusiondale.pc
+config.status: creating lib/fusiondale/fusiondale_version.h
+config.status: creating lib/fusionsound/Makefile
+config.status: creating lib/fusionsound/core/Makefile
+config.status: creating lib/fusionsound/drivers/Makefile
+config.status: creating lib/fusionsound/media/Makefile
+config.status: creating lib/fusionsound/misc/Makefile
+config.status: creating lib/fusionsound/fusionsound.pc
+config.status: creating lib/fusionsound/fusionsound-internal.pc
+config.status: creating lib/fusionsound/fusionsound_limits.h
+config.status: creating lib/fusionsound/fusionsound_version.h
+config.status: creating lib/divine/Makefile
+config.status: creating lib/divine/divine.pc
+config.status: creating lib/dvc/Makefile
+config.status: creating lib/++dfb/Makefile
+config.status: creating lib/++dfb/++dfb.pc
+config.status: creating patches/Makefile
+config.status: creating proxy/Makefile
+config.status: creating proxy/compressor/Makefile
+config.status: creating proxy/dispatcher/Makefile
+config.status: creating proxy/requestor/Makefile
+config.status: creating rules/Makefile
+config.status: creating src/Makefile
+config.status: creating src/core/Makefile
+config.status: creating src/display/Makefile
+config.status: creating src/gfx/Makefile
+config.status: creating src/gfx/generic/Makefile
+config.status: creating src/input/Makefile
+config.status: creating src/media/Makefile
+config.status: creating src/misc/Makefile
+config.status: creating src/windows/Makefile
+config.status: creating systems/Makefile
+config.status: creating systems/android/Makefile
+config.status: creating systems/devmem/Makefile
+config.status: creating systems/dummy/Makefile
+config.status: creating systems/fbdev/Makefile
+config.status: creating systems/mesa/Makefile
+config.status: creating systems/drmkms/Makefile
+config.status: creating systems/pvr2d/Makefile
+config.status: creating systems/egl/Makefile
+config.status: creating systems/x11/Makefile
+config.status: creating systems/x11vdpau/Makefile
+config.status: creating systems/osx/Makefile
+config.status: creating systems/sdl/Makefile
+config.status: creating systems/vnc/Makefile
+config.status: creating wm/Makefile
+config.status: creating wm/default/Makefile
+config.status: creating wm/unique/Makefile
+config.status: creating wm/unique/classes/Makefile
+config.status: creating wm/unique/data/Makefile
+config.status: creating wm/unique/devices/Makefile
+config.status: creating wm/sawman/Makefile
+config.status: creating gfxdrivers/Makefile
+config.status: creating gfxdrivers/ati128/Makefile
+config.status: creating gfxdrivers/cle266/Makefile
+config.status: creating gfxdrivers/cyber5k/Makefile
+config.status: creating gfxdrivers/davinci/Makefile
+config.status: creating gfxdrivers/ep9x/Makefile
+config.status: creating gfxdrivers/gp2d/Makefile
+config.status: creating gfxdrivers/gl/Makefile
+config.status: creating gfxdrivers/gles2/Makefile
+config.status: creating gfxdrivers/i810/Makefile
+config.status: creating gfxdrivers/i830/Makefile
+config.status: creating gfxdrivers/mach64/Makefile
+config.status: creating gfxdrivers/matrox/Makefile
+config.status: creating gfxdrivers/neomagic/Makefile
+config.status: creating gfxdrivers/nsc/Makefile
+config.status: creating gfxdrivers/nsc/include/Makefile
+config.status: creating gfxdrivers/nvidia/Makefile
+config.status: creating gfxdrivers/omap/Makefile
+config.status: creating gfxdrivers/pvr2d/Makefile
+config.status: creating gfxdrivers/pxa3xx/Makefile
+config.status: creating gfxdrivers/radeon/Makefile
+config.status: creating gfxdrivers/savage/Makefile
+config.status: creating gfxdrivers/sh772x/Makefile
+config.status: creating gfxdrivers/sis315/Makefile
+config.status: creating gfxdrivers/tdfx/Makefile
+config.status: creating gfxdrivers/unichrome/Makefile
+config.status: creating gfxdrivers/vdpau/Makefile
+config.status: creating gfxdrivers/vmware/Makefile
+config.status: creating gfxdrivers/vsp1/Makefile
+config.status: creating inputdrivers/Makefile
+config.status: creating inputdrivers/dbox2remote/Makefile
+config.status: creating inputdrivers/divine/Makefile
+config.status: creating inputdrivers/dreamboxremote/Makefile
+config.status: creating inputdrivers/dynapro/Makefile
+config.status: creating inputdrivers/elo/Makefile
+config.status: creating inputdrivers/gunze/Makefile
+config.status: creating inputdrivers/h3600_ts/Makefile
+config.status: creating inputdrivers/input_hub/Makefile
+config.status: creating inputdrivers/joystick/Makefile
+config.status: creating inputdrivers/keyboard/Makefile
+config.status: creating inputdrivers/linux_input/Makefile
+config.status: creating inputdrivers/lirc/Makefile
+config.status: creating inputdrivers/mutouch/Makefile
+config.status: creating inputdrivers/zytronic/Makefile
+config.status: creating inputdrivers/penmount/Makefile
+config.status: creating inputdrivers/ps2mouse/Makefile
+config.status: creating inputdrivers/serialmouse/Makefile
+config.status: creating inputdrivers/sonypi/Makefile
+config.status: creating inputdrivers/tslib/Makefile
+config.status: creating inputdrivers/ucb1x00_ts/Makefile
+config.status: creating inputdrivers/wm97xx_ts/Makefile
+config.status: creating interfaces/Makefile
+config.status: creating interfaces/ICoreResourceManager/Makefile
+config.status: creating interfaces/IDirectFBFont/Makefile
+config.status: creating interfaces/IDirectFBGL/Makefile
+config.status: creating interfaces/IDirectFBGL/EGL/Makefile
+config.status: creating interfaces/IDirectFBImageProvider/Makefile
+config.status: creating interfaces/IDirectFBImageProvider/mpeg2/Makefile
+config.status: creating interfaces/IDirectFBVideoProvider/Makefile
+config.status: creating interfaces/IDirectFBVideoProvider/video_out_dfb/Makefile
+config.status: creating interfaces/IDirectFBWindows/Makefile
+config.status: creating interfaces/IFusionSound/Makefile
+config.status: creating interfaces/IFusionSoundMusicProvider/Makefile
+config.status: creating interfaces/IWater/Makefile
+config.status: creating data/Makefile
+config.status: creating tests/Makefile
+config.status: creating tests/voodoo/Makefile
+config.status: creating tools/Makefile
+config.status: creating examples/fusiondale/Makefile
+config.status: creating examples/fusionsound/Makefile
+config.status: creating examples/++dfb/Makefile
+config.status: creating examples/++dfb/tests/Makefile
+config.status: creating examples/++dfb/tests/data/Makefile
+config.status: creating docs/Makefile
+config.status: creating docs/dfbg.1
+config.status: creating docs/directfb-csource.1
+config.status: creating docs/directfbrc.5
+config.status: creating docs/html/Makefile
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing libtool commands
+config.status: executing default commands
+
+Build options:
+  Version                   1.8.0
+  Linux powered             yes
+  Install prefix            /usr
+  Config files in           /usr/etc
+  Build shared libs         yes
+  Build static libs         yes
+  Module directory          /usr/lib/directfb-1.8-0
+  CC                        gcc
+  CXX                       g++
+  LD                        /usr/x86_64-unity-linux-musl/bin/ld -m elf_x86_64
+  CPPFLAGS                  -D_REENTRANT 
+  CFLAGS                    -Wall -Wstrict-prototypes -Wmissing-prototypes -Wno-strict-aliasing -ffast-math -O2 -g -D_GNU_SOURCE  -std=gnu99
+  CXXFLAGS                  -Wall -Wno-strict-aliasing -std=c++0x -O2 -g
+  LDFLAGS                   
+  LIBS                      -ldl -lrt -lpthread 
+  DYNLIB                    -ldl
+  RTLIB                     -lrt
+  THREADFLAGS               -D_REENTRANT
+  THREADLIB                 -lpthread
+
+Misc options:
+  Multi Application Core    no
+  Fusion Kernel Device      yes
+  Fusion message size       16384
+  Fluxed args size          1024
+  One (IPC)                 no
+  Voodoo (network support)  no
+  Pure Voodoo (net only)    no
+  DiVine (virtual input)    no
+  FusionDale                no
+  Debug supported           yes
+  Debug enabled             no
+  Trace support             no
+  MMX support               yes
+  SSE support               yes
+  GCC Atomics usage         no
+  Network support           yes
+  Include all strings       yes
+  Software Rendering        yes
+  Smooth SW Scaling         no
+  Dithering                 none
+  Dithering 565             none
+  zlib compression          yes                 -lz
+  Using setsockopt          yes
+  c++ compiler standard     c++0x
+  OpenCL                    no
+
+Building Tests              yes
+Building Tools              yes
+
+Building System Modules:
+  Linux FBDev support       yes
+  Generic /dev/mem support  yes
+  Mesa/DRM/KMS support      no                 
+  DRM/KMS support           no               
+  PVR2D                     no                
+  EGL                       no                  
+  X11 support               yes                   -lX11 -lXext  
+  X11/VDPAU support         no             
+  OSX support               no                  
+  SDL support               no                  
+  VNC support               no                  
+
+Building Window Manager Modules:
+  Default                   yes
+  UniQuE                    no
+  SaWMan                    no
+
+Building Image Provider Modules:
+  GIF                       yes
+  JPEG                      yes                 -ljpeg
+  PNG                       yes                  -I/usr/include/libpng16   -lpng16  
+  Imlib2                    no                
+  PNM                       yes
+  SVG                       no                   
+  BMP                       yes
+  WEBP                      no                  
+  JPEG2000                  no             
+  MPEG2                     yes
+  TIFF                      yes                   -ltiff  
+
+
+
+Building Video Provider Modules:
+  GIF                       yes
+  Video4Linux               yes (v2: no)
+  MNG                       no                  
+  Gstreamer                 no (v1: no)        
+    with FusionSound        no
+  AviFile                   no
+  Flash                     no
+  Libmpeg3                  no
+  OpenQuicktime             no
+  Xine                      no
+  Xine/VDPAU                no
+  Swfdec                    no
+  FFmpeg                    no
+
+Building Font Modules:
+  FreeType2                 yes                 -I/usr/include/freetype2 -I/usr/include/libpng16   -lfreetype  
+  LinoType                  no                  
+  Default font              yes
+
+Building FusionSound        no
+
+Building EGL United:        yes
+Building EGL United Modules:
+  Wayland                   yes                   -lwayland-client -lwayland-server  
+  X11                       yes                   -lX11 -lXext  
+
+
+Building Graphics Drivers:
+  3Dfx Voodoo               yes
+  ATI Mach64                yes
+  ATI Rage 128              yes
+  ATI Radeon                no
+  Cirrus EP9X               yes
+  Intel i810                yes
+  Intel i830                yes
+  Matrox                    yes
+  NeoMagic                  yes
+  NSC Geode                 yes
+  nVidia                    yes
+  PVR2D                     no
+  PXA 3xx                   yes
+  Renesas R-Car GP2D        no                   
+  Renesas SH7722/SH7723     no
+  S3 Savage                 no
+  SiS 315                   yes
+  TI Davinci                no
+  TI OMAP                   no
+  TVIA CyberPro             no
+  VIA CLE266                no
+  VIA UniChrome             no
+  VMWare                    no
+  VDPAU                     no
+  VSP1                      no                   
+  --
+  OpenGL                    no (GLX: no)
+  OpenGL ES 2.0             no (Mesa:  no, PVR2D: no)
+                                        
+
+  IDirectFBGL-EGL           no        
+
+Building Input Drivers:
+  DBox2 Remote              no
+  DreamBox Remote           no
+  Dynapro Touchscreen       no
+  ELO Touchscreen           no
+  Gunze Touchscreen         no
+  H3600 Touchscreen         no
+  Input Hub                 no
+  Joystick                  no
+  Keyboard                  yes
+  Linux Input               yes
+  LiRC                      no
+  MuTouch touchscreen       no
+  Zytronic touchscreen      no
+  PS/2 Mouse                no
+  Serial Mouse              no
+  SonyPI Jogdial            no
+  tslib                     no                  
+  ucb1x00 Touchscreen       no
+  WM97xx Touchscreen        no
+  
+
++ echo #undef HAVE_ASM_PAGE_H
++ make
+make  all-recursive
+make[1]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7'
+Making all in data
+make[2]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/data'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/data'
+Making all in docs
+make[2]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/docs'
+Making all in html
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/docs/html'
+rootme=`pwd`; \
+/usr/bin/perl ../../tools/gendoc.pl DirectFB 1.8.0 ../../include/directfb.h ../../include/directfb_keyboard.h ../../include/directfbgl.h ../../include/directfbgl2.h ../../include/directfb_water.h ../../include/directfb_windows.h \
+&& echo timestamp > $rootme/stamp-docs
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/docs/html'
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/docs'
+make[3]: Nothing to be done for 'all-am'.
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/docs'
+make[2]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/docs'
+Making all in include
+make[2]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/include'
+FIXME: Use DIMCAPS prefix for DFBImageCapabilities
+make[2]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/include'
+Making all in include/++dfb
+make[2]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/include/++dfb'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/include/++dfb'
+Making all in lib
+make[2]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib'
+Making all in direct
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/direct'
+Making all in os
+make[4]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/direct/os'
+Making all in linux/glibc
+make[5]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/direct/os/linux/glibc'
+  CC       clock.lo
+  CC       deprecated.lo
+  CC       filesystem.lo
+  CC       log.lo
+  CC       mem.lo
+  CC       mutex.lo
+  CC       signals.lo
+  CC       system.lo
+  CC       thread.lo
+In file included from ../../../../../lib/direct/util.h:38:0,
+                 from ../../../../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../../../../lib/direct/os/types.h:55,
+                 from ../../../../../lib/direct/os/mutex.h:36,
+                 from ../../../../../lib/direct/os/log.h:36,
+                 from ../../../../../lib/direct/log.h:36,
+                 from ../../../../../lib/direct/debug.h:40,
+                 from thread.c:42:
+thread.c: In function 'direct_thread_self':
+../../../../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+thread.c:218:16: note: in expansion of macro 'D_OOM'
+                D_OOM();
+                ^
+thread.c: In function 'direct_thread_set_name':
+../../../../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+thread.c:270:11: note: in expansion of macro 'D_OOM'
+           D_OOM();
+           ^
+  CC       util.lo
+  CCLD     libdirect_os_linux_glibc.la
+make[5]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/direct/os/linux/glibc'
+make[5]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/direct/os'
+make[5]: Nothing to be done for 'all-am'.
+make[5]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/direct/os'
+make[4]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/direct/os'
+make[4]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/direct'
+  CXX      Base.lo
+  CXX      EvLog.lo
+  CXX      String.lo
+  CXX      ToString.lo
+  CXX      Utils.lo
+  CXX      plusplus.lo
+  CC       clock.lo
+  CC       conf.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from conf.c:36:
+conf.c: In function 'config_option_value_add':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+conf.c:164:11: note: in expansion of macro 'D_OOM'
+           D_OOM();
+           ^
+conf.c: In function 'config_option_create':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+conf.c:180:11: note: in expansion of macro 'D_OOM'
+           D_OOM();
+           ^
+  CC       debug.lo
+  CC       direct.lo
+  CC       direct_result.lo
+  CC       fastlz.lo
+In file included from fastlz.c:36:0:
+fastlz.c: In function 'direct_fastlz_compress_multi':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+fastlz.c:83:11: note: in expansion of macro 'D_OOM'
+           D_OOM();
+           ^
+  CC       fifo.lo
+  CC       flz.lo
+  CC       hash.lo
+  CC       init.lo
+  CC       interface.lo
+  CC       list.lo
+  CC       log.lo
+  CC       log_domain.lo
+  CC       map.lo
+  CC       mem.lo
+  CC       memcpy.lo
+  CC       messages.lo
+  CC       modules.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from modules.c:40:
+modules.c: In function 'direct_modules_register':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+modules.c:127:16: note: in expansion of macro 'D_OOM'
+                D_OOM();
+                ^
+  CC       perf.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from perf.c:35:
+perf.c: In function 'direct_perf_count':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+perf.c:102:16: note: in expansion of macro 'D_OOM'
+                D_OOM();
+                ^
+  CC       print.lo
+  CC       processor.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from processor.c:35:
+processor.c: In function 'direct_processor_allocate':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+processor.c:247:16: note: in expansion of macro 'D_OOM'
+                D_OOM();
+                ^
+  CC       result.lo
+  CC       serial.lo
+  CC       signals.lo
+  CC       stream.lo
+  CC       system.lo
+  CC       trace.lo
+In file included from ../../lib/direct/os/types.h:55:0,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/list.h:36,
+                 from trace.c:36:
+../../lib/direct/os/linux/glibc/mutex.h:49:51: warning: missing braces around initializer [-Wmissing-braces]
+ #define DIRECT_RECURSIVE_MUTEX_INITIALIZER(name)  { PTHREAD_MUTEX_RECURSIVE }
+                                                   ^
+trace.c:164:35: note: in expansion of macro 'DIRECT_RECURSIVE_MUTEX_INITIALIZER'
+ static DirectMutex  tables_lock = DIRECT_RECURSIVE_MUTEX_INITIALIZER(tables_lock);
+                                   ^
+../../lib/direct/os/linux/glibc/mutex.h:49:51: note: (near initialization for 'tables_lock')
+ #define DIRECT_RECURSIVE_MUTEX_INITIALIZER(name)  { PTHREAD_MUTEX_RECURSIVE }
+                                                   ^
+trace.c:164:35: note: in expansion of macro 'DIRECT_RECURSIVE_MUTEX_INITIALIZER'
+ static DirectMutex  tables_lock = DIRECT_RECURSIVE_MUTEX_INITIALIZER(tables_lock);
+                                   ^
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/list.h:36,
+                 from trace.c:36:
+trace.c: In function 'load_symbols':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+trace.c:311:11: note: in expansion of macro 'D_OOM'
+           D_OOM();
+           ^
+  CC       tree.lo
+  CC       thread.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from thread.c:35:
+thread.c: In function 'direct_thread_create':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+thread.c:155:11: note: in expansion of macro 'D_OOM'
+           D_OOM();
+           ^
+  CC       utf8.lo
+  CC       util.lo
+  CC       uuid.lo
+  CXXLD    libdirect.la
+copying selected object files to avoid basename conflicts...
+rm -f libdirect_fixed.a
+ar cru libdirect_fixed.a `find . -name "*.o" | grep -v '.libs' | grep -v dtest`
+ranlib libdirect_fixed.a
+cp -pf libdirect_fixed.a .libs/libdirect.a
+make[4]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/direct'
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/direct'
+Making all in fusion
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/fusion'
+Making all in shm
+make[4]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/fusion/shm'
+  CC       fake.lo
+  CCLD     libfusion_shm.la
+make[4]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/fusion/shm'
+make[4]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/fusion'
+  CXX      Debug.lo
+  CC       arena.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from arena.c:44:
+arena.c: In function 'create_arena':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/fusion/shmalloc.h:49:26: note: in expansion of macro 'D_OOM'
+ #define D_OOSHM()        D_OOM()
+                          ^
+arena.c:360:11: note: in expansion of macro 'D_OOSHM'
+           D_OOSHM();
+           ^
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/fusion/shmalloc.h:49:26: note: in expansion of macro 'D_OOM'
+ #define D_OOSHM()        D_OOM()
+                          ^
+arena.c:384:11: note: in expansion of macro 'D_OOSHM'
+           D_OOSHM();
+           ^
+  CC       call.lo
+  CC       fusion.lo
+  CC       lock.lo
+  CXX      object.lo
+  CC       property.lo
+  CC       reactor.lo
+  CC       ref.lo
+  CC       conf.lo
+  CC       hash.lo
+  CC       init.lo
+  CC       shmalloc.lo
+  CC       vector.lo
+  CXXLD    libfusion.la
+rm -f libfusion_fixed.a
+ar cru libfusion_fixed.a `find . -name "*.o" | grep -v '.libs'`
+ranlib libfusion_fixed.a
+cp -pf libfusion_fixed.a .libs/libfusion.a
+make[4]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/fusion'
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/fusion'
+Making all in wayland-egl
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/wayland-egl'
+  CC       wayland-egl.lo
+  CCLD     libwayland-egl.la
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/wayland-egl'
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib'
+make[3]: Nothing to be done for 'all-am'.
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib'
+make[2]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib'
+Making all in src
+make[2]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src'
+Making all in core
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/core'
+/usr/bin/fluxcomp -i --include-prefix=core --call-mode --object-ptrs --static-args-bytes=FLUXED_ARGS_BYTES --dispatch-error-abort CoreDFB.flux
+  CXX      CoreDFB.lo
+/usr/bin/fluxcomp -i --include-prefix=core --call-mode --object-ptrs --static-args-bytes=FLUXED_ARGS_BYTES --dispatch-error-abort CoreSurface.flux
+/usr/bin/fluxcomp -i --include-prefix=core --call-mode --object-ptrs --static-args-bytes=FLUXED_ARGS_BYTES --dispatch-error-abort CoreGraphicsState.flux
+  CXX      CoreDFB_real.lo
+/usr/bin/fluxcomp -i --include-prefix=core --call-mode --object-ptrs --static-args-bytes=FLUXED_ARGS_BYTES --dispatch-error-abort CoreSlave.flux
+  CXX      CoreSlave.lo
+  CXX      CoreSlave_real.lo
+  CXX      CoreGraphicsState.lo
+  CXX      CoreGraphicsState_real.lo
+  CXX      CoreGraphicsStateClient.lo
+/usr/bin/fluxcomp -i --include-prefix=core --call-mode --object-ptrs --static-args-bytes=FLUXED_ARGS_BYTES --dispatch-error-abort CoreInputDevice.flux
+  CXX      CoreInputDevice.lo
+  CXX      CoreInputDevice_real.lo
+/usr/bin/fluxcomp -i --include-prefix=core --call-mode --object-ptrs --static-args-bytes=FLUXED_ARGS_BYTES --dispatch-error-abort CoreLayer.flux
+  CXX      CoreLayer.lo
+  CXX      CoreLayer_real.lo
+/usr/bin/fluxcomp -i --include-prefix=core --call-mode --object-ptrs --static-args-bytes=FLUXED_ARGS_BYTES --dispatch-error-abort CoreLayerContext.flux
+  CXX      CoreLayerContext.lo
+  CXX      CoreLayerContext_real.lo
+/usr/bin/fluxcomp -i --include-prefix=core --call-mode --object-ptrs --static-args-bytes=FLUXED_ARGS_BYTES --dispatch-error-abort CoreLayerRegion.flux
+  CXX      CoreLayerRegion.lo
+  CXX      CoreLayerRegion_real.lo
+/usr/bin/fluxcomp -i --include-prefix=core --call-mode --object-ptrs --static-args-bytes=FLUXED_ARGS_BYTES --dispatch-error-abort CorePalette.flux
+  CXX      CorePalette.lo
+  CXX      CorePalette_real.lo
+/usr/bin/fluxcomp -i --include-prefix=core --call-mode --object-ptrs --static-args-bytes=FLUXED_ARGS_BYTES --dispatch-error-abort CoreScreen.flux
+  CXX      CoreScreen.lo
+  CXX      CoreScreen_real.lo
+  CXX      CoreSurface.lo
+  CXX      CoreSurface_real.lo
+/usr/bin/fluxcomp -i --include-prefix=core --call-mode --object-ptrs --static-args-bytes=FLUXED_ARGS_BYTES --dispatch-error-abort CoreSurfaceAllocation.flux
+  CXX      CoreSurfaceAllocation.lo
+  CXX      CoreSurfaceAllocation_real.lo
+/usr/bin/fluxcomp -i --include-prefix=core --call-mode --object-ptrs --static-args-bytes=FLUXED_ARGS_BYTES --dispatch-error-abort CoreSurfaceClient.flux
+  CXX      CoreSurfaceClient.lo
+  CXX      CoreSurfaceClient_real.lo
+/usr/bin/fluxcomp -i --include-prefix=core --call-mode --object-ptrs --static-args-bytes=FLUXED_ARGS_BYTES --dispatch-error-abort CoreWindow.flux
+  CXX      CoreWindow.lo
+  CXX      CoreWindow_real.lo
+/usr/bin/fluxcomp -i --include-prefix=core --call-mode --object-ptrs --static-args-bytes=FLUXED_ARGS_BYTES --dispatch-error-abort CoreWindowStack.flux
+  CXX      CoreWindowStack.lo
+  CXX      CoreWindowStack_real.lo
+  CXX      Debug.lo
+  CXX      DisplayTask.lo
+  CXX      Graphics.lo
+  CXX      Interface.lo
+  CXX      Renderer.lo
+  CXX      SurfaceTask.lo
+  CXX      Task.lo
+  CXX      TaskManager.lo
+  CXX      TaskThreadsQ.lo
+  CXX      Util.lo
+  CC       clipboard.lo
+  CC       colorhash.lo
+  CC       core.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/list.h:36,
+                 from core.c:45:
+core.c: In function 'Core_GetTLS':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+core.c:2114:16: note: in expansion of macro 'D_OOM'
+                D_OOM();
+                ^
+  CC       core_parts.lo
+  CC       fonts.lo
+  CC       gfxcard.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/interface.h:36,
+                 from ../../include/directfb.h:49,
+                 from gfxcard.c:40:
+gfxcard.c: In function 'dfb_gfxcard_fillspans':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+gfxcard.c:1953:31: note: in expansion of macro 'D_OOM'
+                               D_OOM();
+                               ^
+gfxcard.c: In function 'dfb_gfxcard_batchblit':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+gfxcard.c:2977:31: note: in expansion of macro 'D_OOM'
+                               D_OOM();
+                               ^
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+gfxcard.c:2982:36: note: in expansion of macro 'D_OOM'
+                                    D_OOM();
+                                    ^
+  CC       graphics_state.lo
+  CC       input.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/interface.h:36,
+                 from ../../include/directfb.h:49,
+                 from input.c:44:
+input.c: In function 'dfb_input_core_join':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+input.c:540:16: note: in expansion of macro 'D_OOM'
+                D_OOM();
+                ^
+input.c: In function 'allocate_device_keymap':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/fusion/shmalloc.h:49:26: note: in expansion of macro 'D_OOM'
+ #define D_OOSHM()        D_OOM()
+                          ^
+input.c:1283:11: note: in expansion of macro 'D_OOSHM'
+           D_OOSHM();
+           ^
+input.c: In function 'init_devices':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+input.c:1422:16: note: in expansion of macro 'D_OOM'
+                D_OOM();
+                ^
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+input.c:1469:21: note: in expansion of macro 'D_OOM'
+                     D_OOM();
+                     ^
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/fusion/shmalloc.h:49:26: note: in expansion of macro 'D_OOM'
+ #define D_OOSHM()        D_OOM()
+                          ^
+input.c:1475:21: note: in expansion of macro 'D_OOSHM'
+                     D_OOSHM();
+                     ^
+input.c: In function 'dfb_input_create_device':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+input.c:1614:11: note: in expansion of macro 'D_OOM'
+           D_OOM();
+           ^
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+input.c:1619:11: note: in expansion of macro 'D_OOM'
+           D_OOM();
+           ^
+  CC       input_hub.lo
+  CC       layer_context.lo
+  CC       layer_control.lo
+  CC       layer_region.lo
+  CC       layers.lo
+  CC       local_surface_pool.lo
+  CC       palette.lo
+  CC       prealloc_surface_pool.lo
+  CC       prealloc_surface_pool_bridge.lo
+  CC       screen.lo
+  CC       screens.lo
+  CC       shared_secure_surface_pool.lo
+  CC       shared_surface_pool.lo
+  CC       state.lo
+  CC       surface.lo
+  CXX      surface_allocation.lo
+  CC       surface_buffer.lo
+  CC       surface_client.lo
+  CC       surface_core.lo
+  CC       surface_pool.lo
+  CC       surface_pool_bridge.lo
+  CC       system.lo
+  CC       windows.lo
+  CC       windowstack.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/interface.h:36,
+                 from ../../include/directfb.h:49,
+                 from windowstack.c:37:
+windowstack.c: In function 'dfb_windowstack_create':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/fusion/shmalloc.h:49:26: note: in expansion of macro 'D_OOM'
+ #define D_OOSHM()        D_OOM()
+                          ^
+windowstack.c:207:11: note: in expansion of macro 'D_OOSHM'
+           D_OOSHM();
+           ^
+  CC       wm.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/interface.h:36,
+                 from ../../include/directfb.h:49,
+                 from wm.c:38:
+wm.c: In function 'dfb_wm_core_initialize':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/fusion/shmalloc.h:49:26: note: in expansion of macro 'D_OOM'
+ #define D_OOSHM()        D_OOM()
+                          ^
+wm.c:155:11: note: in expansion of macro 'D_OOSHM'
+           D_OOSHM();
+           ^
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/fusion/shmalloc.h:49:26: note: in expansion of macro 'D_OOM'
+ #define D_OOSHM()        D_OOM()
+                          ^
+wm.c:163:16: note: in expansion of macro 'D_OOSHM'
+                D_OOSHM();
+                ^
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+wm.c:174:16: note: in expansion of macro 'D_OOM'
+                D_OOM();
+                ^
+  CXXLD    libdirectfb_core.la
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/core'
+Making all in display
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/display'
+  CC       idirectfbpalette.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/interface.h:36,
+                 from ../../include/directfb.h:49,
+                 from idirectfbpalette.c:43:
+idirectfbpalette.c: In function 'IDirectFBPalette_CreateCopy':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbpalette.c:225:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( iface, IDirectFBPalette );
+      ^
+  CC       idirectfbsurface.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/interface.h:36,
+                 from ../../include/directfb.h:49,
+                 from idirectfbsurface.c:44:
+idirectfbsurface.c: In function 'IDirectFBSurface_GetPalette':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbsurface.c:485:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( palette, IDirectFBPalette );
+      ^
+idirectfbsurface.c: In function 'IDirectFBSurface_GetSubSurface':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbsurface.c:2884:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( *surface, IDirectFBSurface );
+      ^
+idirectfbsurface.c: In function 'IDirectFBSurface_CreateEventBuffer':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbsurface.c:3534:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( buffer, IDirectFBEventBuffer );
+      ^
+idirectfbsurface.c: In function 'IDirectFBSurface_Allocate':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbsurface.c:3734:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( interface_ptr, IDirectFBSurfaceAllocation );
+      ^
+idirectfbsurface.c: In function 'IDirectFBSurface_GetAllocation':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbsurface.c:3769:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( interface_ptr, IDirectFBSurfaceAllocation );
+      ^
+  CC       idirectfbsurfaceallocation.lo
+  CC       idirectfbsurface_layer.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/interface.h:36,
+                 from ../../include/directfb.h:49,
+                 from idirectfbsurface_layer.c:41:
+idirectfbsurface_layer.c: In function 'IDirectFBSurface_Layer_GetSubSurface':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbsurface_layer.c:140:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( *surface, IDirectFBSurface );
+      ^
+  CC       idirectfbsurface_window.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/interface.h:36,
+                 from ../../include/directfb.h:49,
+                 from idirectfbsurface_window.c:41:
+idirectfbsurface_window.c: In function 'IDirectFBSurface_Window_GetSubSurface':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbsurface_window.c:226:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( *surface, IDirectFBSurface );
+      ^
+  CC       idirectfbdisplaylayer.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/interface.h:36,
+                 from ../../include/directfb.h:49,
+                 from idirectfbdisplaylayer.c:41:
+idirectfbdisplaylayer.c: In function 'IDirectFBDisplayLayer_GetSurface':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbdisplaylayer.c:206:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( surface, IDirectFBSurface );
+      ^
+idirectfbdisplaylayer.c: In function 'IDirectFBDisplayLayer_GetScreen':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbdisplaylayer.c:253:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( screen, IDirectFBScreen );
+      ^
+idirectfbdisplaylayer.c: In function 'IDirectFBDisplayLayer_CreateWindow':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbdisplaylayer.c:793:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( *window, IDirectFBWindow );
+      ^
+idirectfbdisplaylayer.c: In function 'IDirectFBDisplayLayer_GetWindow':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbdisplaylayer.c:818:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( *window, IDirectFBWindow );
+      ^
+idirectfbdisplaylayer.c: In function 'IDirectFBDisplayLayer_GetWindowByResourceID':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbdisplaylayer.c:1162:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( *ret_window, IDirectFBWindow );
+      ^
+  CC       idirectfbscreen.lo
+  CCLD     libdirectfb_display.la
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/display'
+Making all in windows
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/windows'
+  CC       idirectfbwindow.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/interface.h:36,
+                 from ../../include/directfb.h:49,
+                 from idirectfbwindow.c:47:
+idirectfbwindow.c: In function 'IDirectFBWindow_CreateEventBuffer':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbwindow.c:186:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( b, IDirectFBEventBuffer );
+      ^
+idirectfbwindow.c: In function 'IDirectFBWindow_GetSurface':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbwindow.c:356:11: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+           DIRECT_ALLOCATE_INTERFACE( *surface, IDirectFBSurface );
+           ^
+  CCLD     libdirectfb_windows.la
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/windows'
+Making all in gfx
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/gfx'
+Making all in generic
+make[4]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/gfx/generic'
+  CXX      GenefxEngine.lo
+  CC       generic.lo
+  CC       generic_fill_rectangle.lo
+  CC       generic_draw_line.lo
+  CC       generic_blit.lo
+  CC       generic_stretch_blit.lo
+  CC       generic_texture_triangles.lo
+  CC       generic_util.lo
+  CXXLD    libdirectfb_generic.la
+make[4]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/gfx/generic'
+make[4]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/gfx'
+  CC       clip.lo
+  CXX      util.lo
+  CC       convert.lo
+  CXXLD    libdirectfb_gfx.la
+make[4]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/gfx'
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/gfx'
+Making all in input
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/input'
+  CC       idirectfbinputdevice.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/list.h:36,
+                 from ../../lib/fusion/reactor.h:36,
+                 from idirectfbinputdevice.c:41:
+idirectfbinputdevice.c: In function 'IDirectFBInputDevice_CreateEventBuffer':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbinputdevice.c:147:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( b, IDirectFBEventBuffer );
+      ^
+  CC       idirectfbinputbuffer.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/interface.h:36,
+                 from ../../include/directfb.h:49,
+                 from idirectfbinputbuffer.c:47:
+idirectfbinputbuffer.c: In function 'IDirectFBEventBuffer_AttachSurface':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+idirectfbinputbuffer.c:935:16: note: in expansion of macro 'D_OOM'
+                D_OOM();
+                ^
+  CCLD     libdirectfb_input.la
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/input'
+Making all in media
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/media'
+/usr/bin/fluxcomp -i --no-direct --static-args-bytes=FLUXED_ARGS_BYTES DataBuffer.flux
+/usr/bin/fluxcomp -i --no-direct --static-args-bytes=FLUXED_ARGS_BYTES ImageProvider.flux
+make  all-am
+make[4]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/media'
+  CC       idirectfbdatabuffer_client.lo
+  CC       idirectfbfont.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/interface.h:36,
+                 from ../../include/directfb.h:49,
+                 from idirectfbfont.c:37:
+idirectfbfont.c: In function 'IDirectFBFont_CreateFromBuffer':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbfont.c:1017:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( ifont, IDirectFBFont );
+      ^
+  CC       idirectfbimageprovider.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/interface.h:36,
+                 from ../../include/directfb.h:49,
+                 from idirectfbimageprovider.c:38:
+idirectfbimageprovider.c: In function 'IDirectFBImageProvider_CreateFromBuffer':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbimageprovider.c:197:11: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+           DIRECT_ALLOCATE_INTERFACE( imageprovider, IDirectFBImageProvider );
+           ^
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbimageprovider.c:213:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( imageprovider, IDirectFBImageProvider );
+      ^
+  CC       idirectfbimageprovider_client.lo
+  CC       idirectfbvideoprovider.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/interface.h:36,
+                 from ../../include/directfb.h:49,
+                 from idirectfbvideoprovider.c:38:
+idirectfbvideoprovider.c: In function 'IDirectFBVideoProvider_CreateFromBuffer':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfbvideoprovider.c:386:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( videoprovider, IDirectFBVideoProvider );
+      ^
+  CXX      DataBuffer.lo
+  CXX      DataBuffer_real.lo
+  CXX      ImageProvider.lo
+  CXX      ImageProvider_real.lo
+  CC       idirectfbdatabuffer.lo
+  CC       idirectfbdatabuffer_file.lo
+  CC       idirectfbdatabuffer_memory.lo
+  CC       idirectfbdatabuffer_streamed.lo
+  CXXLD    libdirectfb_media.la
+make[4]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/media'
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/media'
+Making all in misc
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/misc'
+  CC       gfx_util.lo
+  CC       conf.lo
+In file included from ../../lib/direct/util.h:38:0,
+                 from ../../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../../lib/direct/os/types.h:55,
+                 from ../../lib/direct/os/mutex.h:36,
+                 from ../../lib/direct/os/log.h:36,
+                 from ../../lib/direct/log.h:36,
+                 from ../../lib/direct/debug.h:40,
+                 from ../../lib/direct/interface.h:36,
+                 from ../../include/directfb.h:49,
+                 from conf.c:40:
+conf.c: In function 'config_values_parse':
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+conf.c:343:11: note: in expansion of macro 'D_OOM'
+           D_OOM();
+           ^
+../../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+conf.c:352:16: note: in expansion of macro 'D_OOM'
+                D_OOM();
+                ^
+  CC       util.lo
+  CCLD     libdirectfb_misc.la
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src/misc'
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src'
+  CC       idirectfb.lo
+In file included from ../lib/direct/util.h:38:0,
+                 from ../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../lib/direct/os/types.h:55,
+                 from ../lib/direct/os/mutex.h:36,
+                 from ../lib/direct/os/log.h:36,
+                 from ../lib/direct/log.h:36,
+                 from ../lib/direct/debug.h:40,
+                 from ../lib/direct/interface.h:36,
+                 from ../include/directfb.h:49,
+                 from idirectfb.c:45:
+idirectfb.c: In function 'containers_add_input_eventbuffer':
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+idirectfb.c:244:11: note: in expansion of macro 'D_OOM'
+           D_OOM();
+           ^
+idirectfb.c: In function 'IDirectFB_CreateSurface':
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfb.c:708:16: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+                DIRECT_ALLOCATE_INTERFACE( iface, IDirectFBSurface );
+                ^
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfb.c:796:26: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+                          DIRECT_ALLOCATE_INTERFACE( iface, IDirectFBSurface );
+                          ^
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfb.c:902:26: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+                          DIRECT_ALLOCATE_INTERFACE( iface, IDirectFBSurface );
+                          ^
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfb.c:1040:21: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+                     DIRECT_ALLOCATE_INTERFACE( iface, IDirectFBSurface );
+                     ^
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfb.c:1120:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( iface, IDirectFBSurface );
+      ^
+idirectfb.c: In function 'IDirectFB_CreatePalette':
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfb.c:1166:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( iface, IDirectFBPalette );
+      ^
+idirectfb.c: In function 'IDirectFB_CreateEventBuffer':
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfb.c:1355:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( iface, IDirectFBEventBuffer );
+      ^
+idirectfb.c: In function 'IDirectFB_CreateInputEventBuffer':
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfb.c:1382:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( iface, IDirectFBEventBuffer );
+      ^
+idirectfb.c: In function 'IDirectFB_CreateDataBuffer':
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfb.c:1563:11: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+           DIRECT_ALLOCATE_INTERFACE( iface, IDirectFBDataBuffer );
+           ^
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfb.c:1571:11: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+           DIRECT_ALLOCATE_INTERFACE( iface, IDirectFBDataBuffer );
+           ^
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfb.c:1579:11: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+           DIRECT_ALLOCATE_INTERFACE( iface, IDirectFBDataBuffer );
+           ^
+idirectfb.c: In function 'IDirectFB_GetSurface':
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfb.c:1779:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( iface, IDirectFBSurface );
+      ^
+idirectfb.c: In function 'GetScreen_Callback':
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfb.c:2214:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( *context->interface, IDirectFBScreen );
+      ^
+idirectfb.c: In function 'GetDisplayLayer_Callback':
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfb.c:2246:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( *context->interface, IDirectFBDisplayLayer );
+      ^
+idirectfb.c: In function 'GetInputDevice_Callback':
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+idirectfb.c:2273:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( *context->interface, IDirectFBInputDevice );
+      ^
+  CC       directfb.lo
+In file included from ../lib/direct/os/types.h:55:0,
+                 from ../lib/direct/os/mutex.h:36,
+                 from ../lib/direct/os/log.h:36,
+                 from ../lib/direct/log.h:36,
+                 from ../lib/direct/debug.h:40,
+                 from ../lib/direct/interface.h:36,
+                 from directfb.c:41:
+directfb.c: In function 'DirectFBCreate':
+../lib/direct/os/linux/glibc/mutex.h:49:51: warning: missing braces around initializer [-Wmissing-braces]
+ #define DIRECT_RECURSIVE_MUTEX_INITIALIZER(name)  { PTHREAD_MUTEX_RECURSIVE }
+                                                   ^
+directfb.c:218:32: note: in expansion of macro 'DIRECT_RECURSIVE_MUTEX_INITIALIZER'
+      static DirectMutex lock = DIRECT_RECURSIVE_MUTEX_INITIALIZER(lock);
+                                ^
+../lib/direct/os/linux/glibc/mutex.h:49:51: note: (near initialization for 'lock')
+ #define DIRECT_RECURSIVE_MUTEX_INITIALIZER(name)  { PTHREAD_MUTEX_RECURSIVE }
+                                                   ^
+directfb.c:218:32: note: in expansion of macro 'DIRECT_RECURSIVE_MUTEX_INITIALIZER'
+      static DirectMutex lock = DIRECT_RECURSIVE_MUTEX_INITIALIZER(lock);
+                                ^
+In file included from ../lib/direct/util.h:38:0,
+                 from ../lib/direct/os/linux/glibc/mutex.h:38,
+                 from ../lib/direct/os/types.h:55,
+                 from ../lib/direct/os/mutex.h:36,
+                 from ../lib/direct/os/log.h:36,
+                 from ../lib/direct/log.h:36,
+                 from ../lib/direct/debug.h:40,
+                 from ../lib/direct/interface.h:36,
+                 from directfb.c:41:
+../lib/direct/messages.h:161:66: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+                                                 "out of memory" ), DR_NOLOCALMEMORY)
+                                                                  ^
+../lib/direct/interface.h:182:16: note: in expansion of macro 'D_OOM'
+                D_OOM();                                                                   \
+                ^
+directfb.c:233:6: note: in expansion of macro 'DIRECT_ALLOCATE_INTERFACE'
+      DIRECT_ALLOCATE_INTERFACE( dfb, IDirectFB );
+      ^
+  CC       directfb_result.lo
+  CXX      dummy.lo
+  CC       init.lo
+  CXXLD    libdirectfb.la
+copying selected object files to avoid basename conflicts...
+rm -f libdirectfb_fixed.a
+ar cru libdirectfb_fixed.a `find . -name "*.o" | grep -v '.libs'`
+ranlib libdirectfb_fixed.a
+cp -pf libdirectfb_fixed.a .libs/libdirectfb.a
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src'
+make[2]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/src'
+Making all in lib/++dfb
+make[2]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/++dfb'
+  CXX      ppdfb.lo
+  CXX      idirectfb.lo
+  CXX      idirectfbdatabuffer.lo
+  CXX      idirectfbdisplaylayer.lo
+  CXX      idirectfbeventbuffer.lo
+  CXX      idirectfbfont.lo
+  CXX      idirectfbimageprovider.lo
+  CXX      idirectfbinputdevice.lo
+  CXX      idirectfbpalette.lo
+  CXX      idirectfbscreen.lo
+  CXX      idirectfbsurface.lo
+  CXX      idirectfbvideoprovider.lo
+  CXX      idirectfbwindow.lo
+  CXXLD    lib++dfb.la
+rm -f lib++dfb_fixed.a
+ar cru lib++dfb_fixed.a `find . -name "*.o" | grep -v '.libs'`
+ranlib lib++dfb_fixed.a
+cp -pf lib++dfb_fixed.a .libs/lib++dfb.a
+make[2]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/++dfb'
+Making all in lib/wayland-dfb
+make[2]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/wayland-dfb'
+  GEN      wayland-dfb-protocol.c
+  GEN      wayland-dfb-client-protocol.h
+  GEN      wayland-dfb-server-protocol.h
+make  all-am
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/wayland-dfb'
+  CXX      wayland-dfb.lo
+  CC       wayland-dfb-protocol.lo
+  CXXLD    libwayland-dfb.la
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/wayland-dfb'
+make[2]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/wayland-dfb'
+Making all in tools
+make[2]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/tools'
+  CC       dfbdump.o
+  CCLD     dfbdump
+  CC       dfbdumpinput.o
+  CCLD     dfbdumpinput
+  CC       dfbinput.o
+  CCLD     dfbinput
+  CC       directfb-csource.o
+  CCLD     directfb-csource
+  CC       dfbfx.o
+  CCLD     dfbfx
+  CC       dfbg.o
+  CCLD     dfbg
+  CXX      dfbinfo.o
+  CXXLD    dfbinfo
+  CC       dfbinspector.o
+  CCLD     dfbinspector
+  CC       dfblayer.o
+  CCLD     dfblayer
+  CC       dfbmaster.o
+  CCLD     dfbmaster
+  CC       dfbscreen.o
+  CCLD     dfbscreen
+  CC       dfbpenmount.o
+  CCLD     dfbpenmount
+  CC       mkdfiff.o
+  CCLD     mkdfiff
+  CXX      mkdgifft.o
+  CXXLD    mkdgifft
+  CC       mkdgiff.o
+  CCLD     mkdgiff
+  CC       fusion_bench.o
+  CCLD     fusion_bench
+  CC       raw15toraw24.o
+  CCLD     raw15toraw24
+  CC       raw16toraw24.o
+  CCLD     raw16toraw24
+  CC       raw32toraw24.o
+  CCLD     raw32toraw24
+make[2]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/tools'
+Making all in lib/egl
+make[2]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/egl'
+Making all in .
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/egl'
+grep -hE '^#define[[:blank:]]+EGL_[[:alnum:]_]+[[:blank:]]+(0x[[:alnum:]][[:alnum:]][[:alnum:]][[:alnum:]])\b' ./EGL/egl.h ./EGL/eglext.h ./EGL/egldfbext.h | perl -p -e 's/#define[ \t]+EGL_([0-9A-Za-z_]+)[ \t]+(0x[0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z][0-9a-zA-Z]).*/     \{ EGL_\1 \/\*\2\*\/, \"\1\"\}, \\/' >> dfbegl_int_names.h
+  CXX      dfbegl.lo
+  CXX      egl_config.lo
+  CXX      egl_context.lo
+  CXX      egl_core.lo
+  CXX      egl_display.lo
+  CXX      egl_library.lo
+  CXX      egl_option.lo
+  CXX      egl_surface.lo
+  CXX      egl_tls.lo
+  CXX      egl_util.lo
+  CXX      DIRECTFB_GetConfigAttribs.lo
+  CXX      KHR_image.lo
+  CXXLD    libDFBEGL.la
+  CXX      egl_api.lo
+  CXXLD    libEGL.la
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/egl'
+Making all in EGL
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/egl/EGL'
+make[3]: Nothing to be done for 'all'.
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/egl/EGL'
+Making all in GLES2
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/egl/GLES2'
+make[3]: Nothing to be done for 'all'.
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/egl/GLES2'
+Making all in KHR
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/egl/KHR'
+make[3]: Nothing to be done for 'all'.
+make[3]: Leaving directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/egl/KHR'
+Making all in EGLCoreWayland
+make[3]: Entering directory '/root/rpmbuild/BUILD/DirectFB-1.7.7/lib/egl/EGLCoreWayland'
+  CXX      EGLDisplayWayland.lo
+In file included from EGLDisplayWayland.cpp:53:0:
+EGLDisplayWayland.h:171:121: warning: 'wl_buffer' is deprecated [-Wdeprecated-declarations]
+      static EGLBoolean eglQueryWaylandBufferWL(EGLDisplay dpy, struct wl_buffer *buffer, EGLint attribute, EGLint *value);
+                                                                                                                         ^
+In file included from ../../../lib/wayland-dfb/wayland-dfb.h:73:0,
+                 from EGLDisplayWayland.h:45,
+                 from EGLDisplayWayland.cpp:53:
+/usr/include/wayland-server.h:59:8: note: declared here
+ struct wl_buffer {
+        ^
+EGLDisplayWayland.cpp: In member function 'EGLint DirectFB::Wayland::SurfaceWLEGLWindow::SwapBuffers()':
+EGLDisplayWayland.cpp:424:69: warning: 'wl_buffer' is deprecated [-Wdeprecated-declarations]
+                wl_surface_attach( window->surface, (struct wl_buffer*) buffer, 0, 0 );
+                                                                     ^
+In file included from ../../../lib/wayland-dfb/wayland-dfb.h:73:0,
+                 from EGLDisplayWayland.h:45,
+                 from EGLDisplayWayland.cpp:53:
+/usr/include/wayland-server.h:59:8: note: declared here
+ struct wl_buffer {
+        ^
+EGLDisplayWayland.cpp: At global scope:
+EGLDisplayWayland.cpp:534:70: warning: 'wl_buffer' is deprecated [-Wdeprecated-declarations]
+                                              EGLint           *value )
+                                                                      ^
+In file included from ../../../lib/wayland-dfb/wayland-dfb.h:73:0,
+                 from EGLDisplayWayland.h:45,
+                 from EGLDisplayWayland.cpp:53:
+/usr/include/wayland-server.h:59:8: note: declared here
+ struct wl_buffer {
+        ^

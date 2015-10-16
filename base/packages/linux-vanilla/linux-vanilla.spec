@@ -1,5 +1,5 @@
 Name:		linux-vanilla
-Version:	3.18.21
+Version:	3.18.22
 Release:	1%{?dist}
 Summary:	The Linux kernel
 
