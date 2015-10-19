@@ -104,9 +104,9 @@ install -m755 %{_builddir}/%{name}-%{version}/tools/c_rehash %{buildroot}/usr/bi
 mkdir %{buildroot}/lib
 mv %{buildroot}/usr/lib/libcrypto.so.1.0.0 %{buildroot}/lib/libcrypto.so.1.0.0
 mv %{buildroot}/usr/lib/libssl.so.1.0.0 %{buildroot}/lib/libssl.so.1.0.0
-cd %{buildroot}/lib
-%__ln -s libcrypto.so.1.0.0 ../usr/lib/libcrypto.so.1.0.0
-%__ln -s libssl.so.1.0.0 ../usr/lib/libssl.so.1.0.0
+cd %{buildroot}/
+%__ln -sf /lib/libcrypto.so.1.0.0 %{buildroot}/usr/lib/libcrypto.so.1.0.0
+%__ln -sf /lib/libssl.so.1.0.0 %{buildroot}/usr/lib/libssl.so.1.0.0
 
 
 

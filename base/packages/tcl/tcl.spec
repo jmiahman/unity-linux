@@ -9,7 +9,7 @@ Summary:	Tool Command Language, pronounced tickle
 Group:		Development/Languages
 License:	TCL
 URL:		http://tcl.sourceforge.net/
-Source0:	ftp://ftp.tcl.tk/pub/tcl/tcl8_6/tcl-core8.6.4-src.tar.gz	
+Source0:	http://ftp.clfs.org/pub/clfs/conglomeration/tcl/tcl-core8.6.4-src.tar.gz
 Patch0:		tcl-stat64.patch
 
 BuildRequires:	autoconf, zlib-devel
@@ -63,7 +63,7 @@ make %{?_smp_mflags}
 export LD_LIBRARY_PATH=%{_builddir}
 make -j1 INSTALL_ROOT=%{buildroot} install install-private-headers
 
-ln -sf tclsh${_majorver} %{buildroot}/usr/bin/tclsh
+ln -sf /usr/bin/tclsh%{majorver} %{buildroot}/usr/bin/tclsh
 install -Dm644 license.terms %{buildroot}/usr/share/licenses/%{name}/LICENSE
 
 # remove buildroot traces

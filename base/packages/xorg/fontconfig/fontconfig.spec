@@ -1,7 +1,13 @@
+%define _sysconfdir /etc
+%define _fontbasedir %{_datadir}/fonts
+%define _fontconfig_masterdir   %{_sysconfdir}/fonts
+%define _fontconfig_confdir     %{_sysconfdir}/fonts/conf.d
+%define _fontconfig_templatedir %{_datadir}/fontconfig/conf.avail
+
 Summary:	Font configuration and customization library
 Name:		fontconfig
 Version:	2.11.94
-Release:	5%{?dist}
+Release:	1%{?dist}
 License:	MIT and Public Domain and UCD
 Group:		System Environment/Libraries
 Source:		http://fontconfig.org/release/%{name}-%{version}.tar.bz2
