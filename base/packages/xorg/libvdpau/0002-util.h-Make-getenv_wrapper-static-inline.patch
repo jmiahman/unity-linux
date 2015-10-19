@@ -1,0 +1,31 @@
+From fb5362be7a6d6f89f76c5e171c339f5fa1916d38 Mon Sep 17 00:00:00 2001
+From: Aaron Plattner <aplattner@nvidia.com>
+Date: Mon, 7 Sep 2015 21:16:58 -0700
+Subject: [PATCH 2/3] util.h: Make getenv_wrapper() static inline
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Otherwise, GCC generates a "‘getenv_wrapper’ defined but not used" warning.
+
+Signed-off-by: Aaron Plattner <aplattner@nvidia.com>
+---
+ src/util.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/util.h b/src/util.h
+index 1452c06..39227ea 100644
+--- a/src/util.h
++++ b/src/util.h
+@@ -28,7 +28,7 @@
+ #include <unistd.h>
+ #include <stdlib.h>
+ 
+-static char * getenv_wrapper(const char *name)
++static inline char * getenv_wrapper(const char *name)
+ {
+     if (getuid() == geteuid() && getgid() == getegid()) {
+         return getenv(name);
+-- 
+1.7.2.1
+

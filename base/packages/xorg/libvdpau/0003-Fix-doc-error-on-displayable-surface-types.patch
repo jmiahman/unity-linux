@@ -1,0 +1,30 @@
+From a21bf7aa438f5dd40d0a300a3167aa3d6f26dccc Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jos=C3=A9=20Hiram=20Soltren?= <jsoltren@nvidia.com>
+Date: Wed, 9 Sep 2015 15:05:01 -0500
+Subject: [PATCH 3/3] Fix doc error on displayable surface types
+
+VdpVideoSurface is not directly displayable in the current
+implementation of VDPAU. VdpOutputSurface is. Make the documentation
+consistent with reality.
+
+Signed-off-by: Aaron Plattner <aplattner@nvidia.com>
+---
+ include/vdpau/vdpau.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/include/vdpau/vdpau.h b/include/vdpau/vdpau.h
+index 8cc4524..0bc5b60 100644
+--- a/include/vdpau/vdpau.h
++++ b/include/vdpau/vdpau.h
+@@ -1704,7 +1704,7 @@ typedef VdpStatus VdpVideoSurfacePutBitsYCbCr(
+  * - The Hardware that implements \ref VdpPresentationQueue
+  *   "VdpPresentationQueue" functionality,
+  *
+- * VdpVideoSurfaces are directly displayable using a \ref
++ * VdpOutputSurfaces are directly displayable using a \ref
+  * VdpPresentationQueue "VdpPresentationQueue" object.
+  *
+  * @{
+-- 
+1.7.2.1
+
