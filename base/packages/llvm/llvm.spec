@@ -46,7 +46,7 @@ BuildRequires:  libtool libltdl
 BuildRequires:  binutils-devel
 BuildRequires:  ncurses-devel
 BuildRequires:  zip
-BuildRequires: python-sphinx
+BuildRequires:  python-sphinx
 Requires:       %{name}-libs = %{version}-%{release}
 
 %description
@@ -64,24 +64,23 @@ Requires:       %{name} = %{version}-%{release}
 Requires:       libffi-devel
 Requires:       libstdc++-devel >= 3.4
 Requires:       ncurses-devel
-Requires(posttrans): /usr/sbin/alternatives
-Requires(postun):    /usr/sbin/alternatives
+#Requires(posttrans): /usr/sbin/alternatives
+#Requires(postun):    /usr/sbin/alternatives
 
 %description devel
 This package contains library and header files needed to develop new
 native programs that use the LLVM infrastructure.
 
 
-%package doc
-Summary:        Documentation for LLVM
-Group:          Documentation
-BuildArch:      noarch
-Requires:       %{name} = %{version}-%{release}
+#%package docs
+#Summary:        Documentation for LLVM
+#Group:          Documentation
+#BuildArch:      noarch
+#Requires:       %{name} = %{version}-%{release}
 # might seem redundant, but needed to kill off the old arch-ed -doc subpackage
-Obsoletes:      %{name}-doc < %{version}-%{release}
 
-%description doc
-Documentation for the LLVM compiler infrastructure.
+#%description docs
+#Documentation for the LLVM compiler infrastructure.
 
 
 %package libs
@@ -304,23 +303,23 @@ make install DESTDIR=%{buildroot} PROJ_docsdir=/moredocs
 cd -
 
 # you have got to be kidding me
-rm -f %{buildroot}%{_bindir}/{FileCheck,count,not,verify-uselistorder,obj2yaml,yaml2obj}
+rm -f %{buildroot}%{_bindir}/FileCheck
+rm -f %{buildroot}%{_bindir}/count
+rm -f %{buildroot}%{_bindir}/not
+rm -f %{buildroot}%{_bindir}/verify-uselistorder
+rm -f %{buildroot}%{_bindir}/obj2yaml
+rm -f %{buildroot}%{_bindir}/yaml2obj
 
-# multilib fixes
-mv %{buildroot}%{_bindir}/llvm-config{,-%{__isa_bits}}
-
-cd %{buildroot}%{_includedir}/llvm/Config
-mv config.h config-%{__isa_bits}.h
-cp -p %{SOURCE10} config.h
-mv llvm-config.h llvm-config-%{__isa_bits}.h
-cp -p %{SOURCE11} llvm-config.h
-cd ../../../
+#cd %{buildroot}%{_includedir}/llvm/Config
+#cp -p %{SOURCE10} config.h
+#cp -p %{SOURCE11} llvm-config.h
+#cd ../../../
 
 # Create ld.so.conf.d entry
-mkdir -p %{buildroot}%{_sysconfdir}/ld.so.conf.d
-cat >> %{buildroot}%{_sysconfdir}/ld.so.conf.d/%{name}-%{_arch}.conf << EOF
-%{_libdir}/%{name}
-EOF
+#mkdir -p %{buildroot}%{_sysconfdir}/ld.so.conf.d
+#cat >> %{buildroot}%{_sysconfdir}/ld.so.conf.d/%{name}-%{_arch}.conf << EOF
+#%{_libdir}/%{name}
+#EOF
 
 %if %{with clang}
 # Static analyzer not installed by default:
@@ -366,19 +365,19 @@ find %{buildroot}/moredocs/ -name "*.tar.gz" -print0 | xargs -0 rm -rf
 mkdir -p %{buildroot}%{_docdir}
 
 # llvm-doc
-mkdir -p %{buildroot}%{llvmdocdir %{name}-doc}
-cp -ar examples %{buildroot}%{llvmdocdir %{name}-doc}/examples
-find %{buildroot}%{llvmdocdir %{name}-doc} -name Makefile -o -name CMakeLists.txt -o -name LLVMBuild.txt -print0 | xargs -0 rm -f
+#mkdir -p %{buildroot}%{llvmdocdir %{name}-doc}
+#cp -ar examples %{buildroot}%{llvmdocdir %{name}-doc}/examples
+#find %{buildroot}%{llvmdocdir %{name}-doc} -name Makefile -o -name CMakeLists.txt -o -name LLVMBuild.txt -print0 | xargs -0 rm -f
 
 # llvm-apidoc
-%if %{with doxygen}
-mv %{buildroot}/moredocs/html/doxygen %{buildroot}%{llvmdocdir %{name}-apidoc}
-%endif
+#%if %{with doxygen}
+#mv %{buildroot}/moredocs/html/doxygen %{buildroot}%{llvmdocdir %{name}-apidoc}
+#%endif
 
 # llvm-ocaml-doc
-%if %{with ocaml}
-mv %{buildroot}/moredocs/ocamldoc/html %{buildroot}%{llvmdocdir %{name}-ocaml-doc}
-%endif
+#%if %{with ocaml}
+#mv %{buildroot}/moredocs/ocamldoc/html %{buildroot}%{llvmdocdir %{name}-ocaml-doc}
+#%endif
 
 # clang
 %if %{with clang}
@@ -387,24 +386,24 @@ make -f Makefile.sphinx man
 cd -
 cp tools/clang/docs/_build/man/clang.1 %{buildroot}%{_mandir}/man1/clang.1
 
-mkdir -p %{buildroot}%{llvmdocdir clang}
-for f in LICENSE.TXT NOTES.txt README.txt CODE_OWNERS.TXT; do
-  cp tools/clang/$f %{buildroot}%{llvmdocdir clang}/
-done
+#mkdir -p %{buildroot}%{llvmdocdir clang}
+#for f in LICENSE.TXT NOTES.txt README.txt CODE_OWNERS.TXT; do
+#  cp tools/clang/$f %{buildroot}%{llvmdocdir clang}/
+#done
 %endif
 
 # clang-apidoc
 %if %{with clang}
-%if %{with doxygen}
-cp -ar tools/clang/docs/doxygen/html %{buildroot}%{llvmdocdir clang-apidoc}
-%endif
+#%if %{with doxygen}
+#cp -ar tools/clang/docs/doxygen/html %{buildroot}%{llvmdocdir clang-apidoc}
+#%endif
 %endif
 
 # lldb
-%if %{with lldb}
-mkdir -p %{buildroot}%{llvmdocdir lldb}
-cp tools/lldb/LICENSE.TXT %{buildroot}%{llvmdocdir lldb}/
-%endif
+#%if %{with lldb}
+#mkdir -p %{buildroot}%{llvmdocdir lldb}
+#cp tools/lldb/LICENSE.TXT %{buildroot}%{llvmdocdir lldb}/
+#%endif
 
 # delete the rest of installed documentation (because it's bad)
 rm -rf %{buildroot}/moredocs
@@ -425,20 +424,20 @@ file %{buildroot}%{_libdir}/%{name}/*.so | awk -F: '$2~/ELF/{print $1}' | xargs 
 # broken makefiles in the doc dirs.
 
 # LLVM test suite failing on ARM, PPC64 and s390(x)
-mkdir -p %{buildroot}%{llvmdocdir %{name}-devel}
-cd build
-make -k check LIT_ARGS="-v -j4" | tee %{buildroot}%{llvmdocdir %{name}-devel}/testlog-%{_arch}.txt || :
-cd -
+#mkdir -p %{buildroot}%{llvmdocdir %{name}-devel}
+#cd build
+#make -k check LIT_ARGS="-v -j4" | tee %{buildroot}%{llvmdocdir %{name}-devel}/testlog-%{_arch}.txt || :
+#cd -
 
 %if %{with clang}
 # clang test suite failing on PPC and s390(x)
 # FIXME:
 # unexpected failures on all platforms with GCC 4.7.0.
 # capture logs
-mkdir -p %{buildroot}%{llvmdocdir clang-devel}
-cd build
-make -C tools/clang/test TESTARGS="-v -j4" | tee %{buildroot}%{llvmdocdir clang-devel}/testlog-%{_arch}.txt || :
-cd -
+#mkdir -p %{buildroot}%{llvmdocdir clang-devel}
+#cd build
+#make -C tools/clang/test TESTARGS="-v -j4" | tee %{buildroot}%{llvmdocdir clang-devel}/testlog-%{_arch}.txt || :
+#cd -
 %endif
 
 
@@ -456,7 +455,7 @@ cd -
 %endif
 
 
-%posttrans devel
+#%posttrans devel
 # link llvm-config to the platform-specific file;
 # use ISA bits as priority so that 64-bit is preferred
 # over 32-bit if both are installed
@@ -464,19 +463,16 @@ cd -
 # XXX ew alternatives though. seems like it'd be better to install a
 # shell script that cases on $(arch) and calls out to the appropriate
 # llvm-config-%d.
-alternatives \
-  --install \
-  %{_bindir}/llvm-config \
-  llvm-config \
-  %{_bindir}/llvm-config-%{__isa_bits} \
-  %{__isa_bits}
+#alternatives \
+#  --install \
+#  %{_bindir}/llvm-config \
+##  llvm-config \
 
-%postun devel
-if [ $1 -eq 0 ]; then
-  alternatives --remove llvm-config \
-    %{_bindir}/llvm-config-%{__isa_bits}
-fi
-exit 0
+#%postun devel
+#if [ $1 -eq 0 ]; then
+#  alternatives --remove llvm-config \
+#fi
+#exit 0
 
 
 %files
@@ -487,29 +483,29 @@ exit 0
 %{_bindir}/llc
 %{_bindir}/lli
 %{_bindir}/lli-child-target
-%exclude %{_bindir}/llvm-config-%{__isa_bits}
+%exclude %{_bindir}/llvm-config
 %{_bindir}/llvm*
 %{_bindir}/macho-dump
 %{_bindir}/opt
 %if %{with clang}
 %exclude %{_mandir}/man1/clang.1.*
-%exclude %{_mandir}/man1/scan-build.1.*
+#%exclude %{_mandir}/man1/scan-build.1.*
 %endif
 %if %{with lldb}
-%exclude %{_mandir}/man1/lldb.1.*
+#%exclude %{_mandir}/man1/lldb.1.*
 %endif
-%doc %{_mandir}/man1/*.1.*
+#%doc %{_mandir}/man1/*.1.*
 
 %files devel
-%doc %{llvmdocdir %{name}-devel}/
-%{_bindir}/llvm-config-%{__isa_bits}
+#%doc %{llvmdocdir %{name}-devel}/
+%{_bindir}/llvm-config
 %{_includedir}/%{name}
 %{_includedir}/%{name}-c
 %{_datadir}/llvm/cmake
 
 %files libs
 %doc LICENSE.TXT
-%config(noreplace) %{_sysconfdir}/ld.so.conf.d/%{name}-%{_arch}.conf
+#%config(noreplace) %{_sysconfdir}/ld.so.conf.d/%{name}-%{_arch}.conf
 %dir %{_libdir}/%{name}
 %if %{with clang}
 %exclude %{_libdir}/%{name}/libclang.so
@@ -524,7 +520,7 @@ exit 0
 
 %if %{with clang}
 %files -n clang
-%doc %{llvmdocdir clang}/
+#%doc %{llvmdocdir clang}/
 %{_bindir}/clang*
 %{_bindir}/c-index-test
 %{_prefix}/lib/clang
@@ -534,12 +530,12 @@ exit 0
 %{_libdir}/%{name}/libclang.so
 
 %files -n clang-devel
-%doc %{llvmdocdir clang-devel}/
+#%doc %{llvmdocdir clang-devel}/
 %{_includedir}/clang
 %{_includedir}/clang-c
 
 %files -n clang-analyzer
-%{_mandir}/man1/scan-build.1.*
+#%{_mandir}/man1/scan-build.1.*
 %{_bindir}/scan-build
 %{_bindir}/scan-view
 %{_libexecdir}/clang-analyzer
@@ -547,19 +543,19 @@ exit 0
 
 %if %{with lldb}
 %files -n lldb
-%doc %{llvmdocdir lldb}/
+#%doc %{llvmdocdir lldb}/
 %{_bindir}/lldb
 %{_bindir}/lldb-*
 %{_libdir}/%{name}/liblldb.so
 # XXX double check this
 #{python2_sitearch}/*
-%doc %{_mandir}/man1/lldb.1.*
+#%doc %{_mandir}/man1/lldb.1.*
 
 %files -n lldb-devel
 %{_includedir}/lldb
 %endif
 
-%files doc
-%doc %{llvmdocdir %{name}-doc}/
+%files docs
+#%doc %{llvmdocdir %{name}-doc}/
 
 %changelog
