@@ -1,24 +1,18 @@
-Name:       libxfont
-Version:    1.5.1
+Name:       libxaw
+Version:    1.0.13
 Release:    1%{?dist}
-Summary:    X.Org font library used by the X server
+Summary:    X.Org Athena Widgets library.
 Group:      Development/Libraries
 License:    MIT
 URL:        http://xorg.freedesktop.org/
-Source0:    http://xorg.freedesktop.org/releases/individual/lib/libXfont-%{version}.tar.bz2
+Source0:    http://xorg.freedesktop.org/releases/individual/lib/libXaw-%{version}.tar.bz2
 
-BuildRequires: xproto resourceproto xtrans
-BuildRequires: libx11-devel zlib-devel bzip2-devel
-BuildRequires: freetype-devel docbook-xml fontsproto
-BuildRequires: xmlto util-macros
+BuildRequires: xproto libxmu-devel 
+BuildRequires: libxpm-devel libxext-devel 
 
 %description
-libXfont provides the core of the legacy X11 font system, handling the
-index files (fonts.dir, fonts.alias, fonts.scale), the various font
-file formats, and rasterizing them. It is used by the X servers, the X
-Font Server (xfs), and some font utilities (bdftopcf for instance),
-but should not be used by normal X11 clients. X11 clients access fonts
-via either the new API's in libXft, or the legacy API's in libX11.
+X Athena Widgets library. Athena Widget Set is baced on the X Toolkit
+Intrinsics (Xt) library.
 
 %package devel                                                          
 Summary: Development tools for %{name}.
@@ -31,7 +25,7 @@ for %{name}. If you like to develop programs using %{name}, you will need
 to install %{name}-devel. 
 
 %prep
-%setup -q -n libXfont-%{version}
+%setup -q -n libXaw-%{version}
 
 %build
 #Remove OLD config.sub                                                         
@@ -40,8 +34,15 @@ for i in $(find . -name config.guess 2>/dev/null) $(find . -name config.sub 2>/d
 done
 
 %configure \
+	--prefix=/usr \
 	--sysconfdir=/etc \
-                                     
+	--mandir=/usr/share/man \
+	--infodir=/usr/share/info \
+	--localstatedir=/var \
+	--disable-xaw8 \
+	--disable-static \
+	--disable-xaw6 \
+ 
 make %{?_smp_mflags}
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -60,7 +61,9 @@ mkdir -p %{buildroot}/%{_libdir}/pkgconfig/
 
 %files devel
 %{_libdir}/*.so
-%{_includedir}/X11/fonts/*.h
 %{_libdir}/pkgconfig/*.pc
+%dir %{_includedir}/X11/Xaw/
+%{_includedir}/X11/Xaw/*.h
+%{_mandir}/man3/X*.3*
 
 %changelog

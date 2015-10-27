@@ -62,7 +62,7 @@ BuildRequires:	docbook-xml
 BuildRequires:	dbus-devel >= 1.0
 %endif
 %{?with_hal:BuildRequires:	hal-devel}
-BuildRequires:	libdrm-devel >= 2.4.46
+BuildRequires:	libdrm-devel 
 %if %{with glamor} || %{with wayland}
 BuildRequires:	libepoxy-devel
 %endif

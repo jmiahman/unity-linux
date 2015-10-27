@@ -1,3 +1,5 @@
+%define _pkgconfigdir %{_libdir}/pkgconfig
+
 #
 # todo:
 # - check if gallium_intel note is still valid, switch the bcond if not
