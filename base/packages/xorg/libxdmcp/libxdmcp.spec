@@ -13,11 +13,22 @@ License:	MIT
 URL:		http://www.x.org
 Source0:	http://xorg.freedesktop.org/releases/individual/lib/libXdmcp-%{version}.tar.bz2	
 
-BuildRequires:	xproto
+BuildRequires:	xproto util-macros
 
 %description
 The libXdmcp package contains a library implementing the X Display Manager Control Protocol. This is useful for allowing clients to interact with the X Display Manager. 
 
+%package devel
+Summary:	Header files for libXdmcp library
+Group:		X11/Development/Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	xproto
+
+%description devel
+X Display Manager Control Protocol library.
+
+This package contains the header files needed to develop programs that
+use libXdmcp.
 
 %prep
 %setup -q -n libXdmcp-%{version}
@@ -47,5 +58,10 @@ rm %{buildroot}/usr/lib/*.la
 #/usr/share/doc/libXdmcp/COPYING
 #/usr/share/doc/libXdmcp/ChangeLog
 #/usr/share/doc/libXdmcp/Wraphelp.README.crypto
+
+%files devel
+%{_libdir}/libXdmcp.so
+%{_includedir}/X11/Xdmcp.h
+%{_libdir}/pkgconfig/xdmcp.pc
 
 %changelog

@@ -77,7 +77,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libxcb-icccm.la
 %{_includedir}/xcb/xcb_ewmh.h
 %{_includedir}/xcb/xcb_icccm.h
-%{_pkgconfigdir}/xcb-ewmh.pc
-%{_pkgconfigdir}/xcb-icccm.pc
+%{_libdir}/pkgconfig/xcb-ewmh.pc
+%{_libdir}/pkgconfig/xcb-icccm.pc
 
 %changelog

@@ -19,6 +19,8 @@
 %define	xorg_xserver_server_videodrv_abi	19.0
 %define	xorg_xserver_server_xinput_abi		21.0
 
+%define _fontsdir %{_datadir}/fonts
+
 %define	pixman_ver	0.30.0
 
 %ifarch x32
@@ -33,11 +35,12 @@ License:	MIT
 Group:		X11/Servers
 Source0:	http://xorg.freedesktop.org/releases/individual/xserver/xorg-server-%{version}.tar.bz2
 # Source0-md5:	397e405566651150490ff493e463f1ad
-#Source1:	10-quirks.conf
-#Source2:	xserver.pamd
+Source1:	10-quirks.conf
+Source2:	xserver.pamd
 #Source10:	%{name}-Xvfb.init
 #Source11:	%{name}-Xvfb.sysconfig
-#Source12:	xvfb-run.sh
+Source11:	20-modules.conf
+Source12:	xvfb-run.sh
 
 #Patch0:		%{name}-xwrapper.patch
 #Patch1:		%{name}-pic-libxf86config.patch
@@ -84,6 +87,7 @@ BuildRequires:	xcb-util-wm-devel
 BuildRequires:	xmlto 
 BuildRequires:	mkfontscale
 BuildRequires:	libx11-devel
+BuildRequires:	font-util
 BuildRequires:	libxau-devel
 %{?with_dmx:BuildRequires:	libxaw-devel}
 BuildRequires:	libxdamage-devel
@@ -142,20 +146,18 @@ BuildRequires:	util-macros
 #BR: tslib (for KDRIVE only)
 Requires(triggerpostun):	sed
 %{?with_glamor:Requires:	mesa-libgbm}
-Requires:	libdrm >= 2.4.46
+Requires:	libdrm 
 Requires:	pixman >= %{pixman_ver}
 Requires:	eudev
 Requires:	xkeyboard-config
-# for rgb.txt
-Requires:	rgb
 Requires:	xkbcomp
-Requires:	lixxfont
+Requires:	libxfont
 Requires:	libpciaccess
 Requires:	libxshmfence
 Suggests:	dbus-x11 >= 1.0
 %{?with_hal:Suggests:	hal}
-Suggests:	udev-acl >= 1:143
-%{?with_udev:Suggests:	udev-core >= 1:143}
+Suggests:	udev-acl >= 143
+%{?with_udev:Suggests:	udev-core >= 143}
 Suggests:	xkeyboard-config
 Suggests:	evdev
 # Usual desktop setups need least one video driver to run, see xorg.log which one exactly
@@ -181,28 +183,28 @@ Requires:	libdmx
 %description xdmx
 Xdmx - distributed multi-head X server.
 
-%package -n xorg-xserver-Xnest
+%package xnest
 Summary:	Xnest - nested X server
 Group:		X11/Servers
 Requires:	pixman >= %{pixman_ver}
-Requires:	xorg-lib-libXext >= 1.0.99.4
-Requires:	xorg-lib-libXfont >= 1.4.2
+Requires:	libxext 
+Requires:	libxfont
 
-%description -n xorg-xserver-Xnest
+%description xnest
 Xnest is an X Window System server which runs in an X window. Xnest is
 a 'nested' window server, actually a client of the real X server,
 which manages windows and graphics requests for Xnest, while Xnest
 manages the windows and graphics requests for its own clients.
 
-%package -n xorg-xserver-Xephyr
+%package xephyr
 Summary:	Xephyr - nested X server
 Group:		X11/Servers
-Requires:	Mesa-libGL >= 7.1.0
-Requires:	libxcb >= 1.6
+Requires:	mesa-libgl
+Requires:	libxcb
 Requires:	pixman >= %{pixman_ver}
-Requires:	xorg-lib-libXfont >= 1.4.2
+Requires:	libxfont
 
-%description -n xorg-xserver-Xephyr
+%description xephyr
 Xephyr is a kdrive server that outputs to a window on a pre-existing
 'host' X display. Think Xnest but with support for modern extensions
 like composite, damage and randr.
@@ -214,30 +216,28 @@ server window as "framebuffer" via fast SHM XImages.
 It also has support for 'visually' debugging what the server is
 painting.
 
-%package -n xorg-xserver-Xfbdev
+%package xfbdev
 Summary:	Xfbdev - Linux framebuffer device X server
 Group:		X11/Servers
 Requires:	pixman >= %{pixman_ver}
-Requires:	xorg-lib-libXfont >= 1.4.2
+Requires:	libxfont >= 1.4.2
 
-%description -n xorg-xserver-Xfbdev
+%description xfbdev
 Xfbdev is a Linux framebuffer device X server based on the kdrive X
 server.
 
-%package -n xorg-xserver-Xvfb
+%package xvfb
 Summary:	Xvfb - virtual framebuffer X server
 Group:		X11/Servers
 Requires:	mesa-libgl >= 7.1.0
-Requires:	mktemp
 Requires:	pixman >= %{pixman_ver}
 Requires:	util-linux
-Requires:	which
 Requires:	xkeyboard-config
 Requires:	xauth
 Requires:	xkbcomp
 Requires:	libxfont
 
-%description -n xorg-xserver-Xvfb
+%description xvfb
 Xvfb (X Virtual Frame Buffer) is an X Window System server that is
 capable of running on machines with no display hardware and no
 physical input devices. Xvfb emulates a dumb framebuffer using virtual
@@ -251,25 +251,25 @@ load testing, to help with porting an X server to a new platform, and
 to provide an unobtrusive way of running applications which really
 don't need an X server but insist on having one.
 
-%package -n xorg-xserver-Xvfb-init
-Summary:	Init scripts for Xvfb
-Group:		X11/Servers
-Requires:	xorg-xserver-Xvfb
+#%package xvfb-init
+#Summary:	Init scripts for Xvfb
+#Group:		X11/Servers
+#Requires:	xorg-xserver-xvfb
 
-%description -n xorg-xserver-Xvfb-init
-This package contains init scripts for Xvfb and registers Xvfb as
-system service.
+#%description xvfb-init
+#This package contains init scripts for Xvfb and registers Xvfb as
+#system service.
 
-%package -n xorg-xserver-Xwayland
+%package xwayland
 Summary:	Xwayland - X server integrated into a Wayland window system
 Group:		X11/Servers
 Requires:	pixman >= %{pixman_ver}
-Requires:	xorg-lib-libX11 >= 1.6
-Requires:	xorg-lib-libXext >= 1.0.99.4
-Requires:	xorg-lib-libXfont >= 1.4.2
-Requires:	xorg-lib-libXi >= 1.2.99.1
+Requires:	libx11
+Requires:	libxext
+Requires:	libxfont
+Requires:	libxi
 
-%description -n xorg-xserver-Xwayland
+%description xwayland
 Xwayland - server integrated into a Wayland window system.
 
 %package devel
@@ -280,20 +280,20 @@ Requires:	libdrm-devel >= 2.4.46
 Requires:	pixman-devel >= %{pixman_ver}
 Requires:	libpciaccess-devel >= 0.12.901
 Requires:	libxkbfile-devel
-%{?with_dri2:Requires:	dri2proto-devel}
+%{?with_dri2:Requires:	dri2proto}
 Requires:	dri3proto
 Requires:	fontsproto
 Requires:	glproto
-Requires:	inputproto-devel >= 2.3
-Requires:	kbproto-devel >= 1.0.3
-Requires:	presentproto-devel >= 1.0
-Requires:	randrproto-devel >= 1.4.0
-Requires:	renderproto-devel >= 0.11
-Requires:	resourceproto-devel >= 1.2.0
-Requires:	scrnsaverproto-devel >= 1.1
-Requires:	videoproto-devel
+Requires:	inputproto
+Requires:	kbproto
+Requires:	presentproto
+Requires:	randrproto
+Requires:	renderproto
+Requires:	resourceproto
+Requires:	scrnsaverproto
+Requires:	videoproto
 Requires:	xextproto
-Requires:	xf86driproto-devel
+Requires:	xf86driproto
 Requires:	xineramaproto
 Requires:	xproto
 
@@ -307,17 +307,17 @@ Group:		X11/Development/Libraries
 %description source
 X.org server source code.
 
-%package -n xorg-xserver-libglx
+%package libglx
 Summary:	GLX extension library for X.org server
 Group:		X11/Servers
 Requires:	%{name} = %{version}-%{release}
-Requires:	Mesa-libGL >= 7.1.0
-%{?with_dri2:Requires:	Mesa-libGL >= 9.2.0}
+Requires:	mesa-libgl
+%{?with_dri2:Requires:	mesa-libgl}
 # Mesa version glapi tables in glx/ dir come from
-Provides:	xorg-xserver-libglx(glapi) = 7.1.0
+Provides:	xorg-xserver-libglx(glapi)
 Provides:	xorg-xserver-module(glx)
 
-%description -n xorg-xserver-libglx
+%description libglx
 GLX extension library for X.org server.
 
 %prep
@@ -332,6 +332,10 @@ GLX extension library for X.org server.
 
 #unfortunately breaks build
 #patch7 -p1
+
+# Fix dbus config path
+sed -i -e 's/\$(sysconfdir)/\/etc/' config/Makefile.*
+sed -i -e 's/termio.h/termios.h/' hw/xfree86/os-support/xf86_OSlib.h
 
 # xserver uses pixman-1 API/ABI so put that explictly here
 sed -i -e 's#<pixman\.h#<pixman-1/pixman.h#g' ./fb/fb.h ./include/miscstruct.h ./render/picture.h
@@ -373,9 +377,18 @@ fi
 %{__autoconf}
 %{__autoheader}
 %{__automake}
+
+# xorg modules does not work with the -z now and it seems like we
+# cannot pass over the linker flag to .so files. so we tweak the
+# gcc specs.
+export CFLAGS="$CFLAGS -D_GNU_SOURCE"
+export CFLAGS="$CFLAGS -D__gid_t=gid_t -D__uid_t=uid_t"
+export LDFLAGS="$LDFLAGS -Wl,-z,lazy"
 %configure \
+	--prefix=/usr \
 	--with-os-name="Unity/Linux" \
 	--with-os-vendor="Unity/Team" \
+	--with-fontrootdir=%{_fontsdir} \
 	--with-default-font-path="%{_fontsdir}/misc,%{_fontsdir}/TTF,%{_fontsdir}/OTF,%{_fontsdir}/Type1,%{_fontsdir}/100dpi,%{_fontsdir}/75dpi" \
 	--with-xkb-output=/var/lib/xkb \
 	--disable-linux-acpi \
@@ -393,7 +406,6 @@ fi
 	--enable-kdrive \
 	%{?with_libunwind:--enable-libunwind} \
 	%{?with_record:--enable-record} \
-	--enable-secure-rpc \
 	%{?with_xcsecurity:--enable-xcsecurity} \
 	--enable-xephyr \
 	%{?with_xf86bigfont:--enable-xf86bigfont} \
@@ -403,6 +415,8 @@ fi
 	%{?with_wayland:--enable-xwayland} \
 	%{!?with_systemtap:--without-dtrace} \
 	--without-fop \
+	--disable-systemd-logind \
+	--without-systemd-daemon \
 
 %{__make} -j1
 
@@ -416,18 +430,25 @@ install -d $RPM_BUILD_ROOT%{_exec_prefix}/lib/xorg/modules/dri
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-#install -Dp %{SOURCE2} $RPM_BUILD_ROOT/etc/pam.d/xserver
-install -d $RPM_BUILD_ROOT/etc/{security/console.apps,X11/xorg.conf.d}
-install -d $RPM_BUILD_ROOT%{_libdir}/xorg/modules/{dri,drivers,input}
+install -Dp %{SOURCE2} $RPM_BUILD_ROOT/etc/pam.d/xserver
+install -d $RPM_BUILD_ROOT/etc/security/console.apps
+install -d $RPM_BUILD_ROOT/etc/X11/xorg.conf.d
+install -d $RPM_BUILD_ROOT%{_libdir}/xorg/modules/dri
+install -d $RPM_BUILD_ROOT%{_libdir}/xorg/modules/drivers
+install -d $RPM_BUILD_ROOT%{_libdir}/xorg/modules/input
+
+
 install -d $RPM_BUILD_ROOT%{_datadir}/X11/xorg.conf.d
-#install -p %{SOURCE12} $RPM_BUILD_ROOT%{_bindir}/xvfb-run
+install -p %{SOURCE12} $RPM_BUILD_ROOT%{_bindir}/xvfb-run
 
 :> $RPM_BUILD_ROOT/etc/security/console.apps/xserver
 :> $RPM_BUILD_ROOT/etc/security/blacklist.xserver
 
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/xorg/modules/{*,*/*}.la
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/xorg/modules/*.la
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/xorg/modules/*/*.la
 
-#cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_datadir}/X11/xorg.conf.d/10-quirks.conf
+cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_datadir}/X11/xorg.conf.d/10-quirks.conf
+cp -p %{SOURCE11} $RPM_BUILD_ROOT%{_datadir}/X11/xorg.conf.d/20-modules.conf
 
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
 install -d $RPM_BUILD_ROOT/etc/sysconfig
@@ -449,7 +470,7 @@ find -name '*.h' | xargs chmod a-x
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%triggerpostun -- xorg-xserver-server < 1.5.0
+%triggerpostun -- xorg-xserver < 1.5.0
 if [ -f /etc/X11/xorg.conf ]; then
 	sed -i -e 's/^\s*RgbPath.*$/#& # obsolete option/' /etc/X11/xorg.conf
 	sed -i -e 's/^\s*Load\s*"type1".*$/#& # obsolete module/' /etc/X11/xorg.conf
@@ -459,25 +480,26 @@ if [ -f /etc/X11/xorg.conf ]; then
 	sed -i -e 's/^\s*Load\s*"xtrap".*$/#& # obsolete module/' /etc/X11/xorg.conf
 fi
 
-%post -n xorg-xserver-Xvfb-init
-/sbin/chkconfig --add Xvfb
-%service Xvfb restart
+#%post xvfb-init
+#/sbin/chkconfig --add Xvfb
+#%service Xvfb restart
 
-%preun -n xorg-xserver-Xvfb-init
-if [ "$1" = "0" ]; then
-	%service -q Xvfb stop
-	/sbin/chkconfig --del Xvfb
-fi
+#%preun xvfb-init
+#if [ "$1" = "0" ]; then
+#	%service -q Xvfb stop
+#	/sbin/chkconfig --del Xvfb
+#fi
 
 %files
 %defattr(644,root,root,755)
 %doc COPYING ChangeLog README
 %attr(755,root,root) %{_bindir}/X
 %attr(755,root,root) %{_bindir}/Xorg
-%attr(4755,root,root) %{_bindir}/Xwrapper
+#%attr(4755,root,root) %{_bindir}/Xwrapper
 %attr(755,root,root) %{_bindir}/cvt
 %attr(755,root,root) %{_bindir}/gtf
 %dir %{_libdir}/xorg
+%dir /etc/X11
 %{_libdir}/xorg/protocol.txt
 %dir %{_libdir}/xorg/modules
 %attr(755,root,root) %{_libdir}/xorg/modules/libexa.so
@@ -504,6 +526,7 @@ fi
 /var/lib/xkb/README.compiled
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/xserver
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/security/blacklist.xserver
+%dir /etc/security/console.apps
 %config(missingok) /etc/security/console.apps/xserver
 %{?with_dbus:/etc/dbus-1/system.d/xorg-server.conf}
 %dir /etc/X11/xorg.conf.d
@@ -511,6 +534,7 @@ fi
 # overwrite these settings with local configs in /etc/X11/xorg.conf.d
 %verify(not md5 mtime size) %{_datadir}/X11/xorg.conf.d/10-evdev.conf
 %verify(not md5 mtime size) %{_datadir}/X11/xorg.conf.d/10-quirks.conf
+%verify(not md5 mtime size) %{_datadir}/X11/xorg.conf.d/20-modules.conf
 %{_mandir}/man1/Xorg.1*
 %{_mandir}/man1/Xserver.1*
 %{_mandir}/man1/cvt.1*
@@ -542,33 +566,33 @@ fi
 %{_mandir}/man1/xdmxconfig.1*
 %endif
 
-%files -n xorg-xserver-Xnest
+%files xnest
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/Xnest
 %{_mandir}/man1/Xnest.1*
 
-%files -n xorg-xserver-Xephyr
+%files xephyr
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/Xephyr
 %{_mandir}/man1/Xephyr.1*
 
-%files -n xorg-xserver-Xfbdev
+%files xfbdev
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/Xfbdev
 
-%files -n xorg-xserver-Xvfb
+%files xvfb
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/Xvfb
 %attr(755,root,root) %{_bindir}/xvfb-run
 %{_mandir}/man1/Xvfb.1*
 
-%files -n xorg-xserver-Xvfb-init
-%defattr(644,root,root,755)
-%attr(754,root,root) /etc/rc.d/init.d/Xvfb
-%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/Xvfb
+#%files xvfb-init
+#%defattr(644,root,root,755)
+#%attr(754,root,root) /etc/rc.d/init.d/Xvfb
+#%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/Xvfb
 
 %if %{with wayland}
-%files -n xorg-xserver-Xwayland
+%files xwayland
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/Xwayland
 %endif
@@ -579,8 +603,8 @@ fi
 %{_includedir}/xorg
 %{_libdir}/libxf86config.a
 %{_libdir}/libxf86config.la
-%{_aclocaldir}/xorg-server.m4
-%{_pkgconfigdir}/xorg-server.pc
+%{_datadir}/aclocal/xorg-server.m4
+%{_libdir}/pkgconfig/xorg-server.pc
 
 %files source
 %defattr(644,root,root,755)
@@ -588,7 +612,7 @@ fi
 %defattr(-,root,root,755)
 %{_usrsrc}/%{name}-%{version}
 
-%files -n xorg-xserver-libglx
+%files libglx
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/xorg/modules/extensions/libglx.so
 

@@ -54,7 +54,7 @@ mkdir -p %{buildroot}/%{_libdir}/pkgconfig/
 %files devel
 %{_libdir}/libdmx.so
 %{_includedir}/X11/extensions/dmxext.h
-%{_pkgconfigdir}/dmx.pc
+%{_libdir}/pkgconfig/dmx.pc
 %{_mandir}/man3/DMX*.3*
 
 %changelog

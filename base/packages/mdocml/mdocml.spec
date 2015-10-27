@@ -61,6 +61,8 @@ make -j1 DESTDIR=%{buildroot} base-install db-install
 
 install -Dm644 %{SOURCE1} %{buildroot}/etc/man.conf
 
+mkdir -p %{buildroot}/%{_datadir}/man/man4/
+
 %clean
 rm -rf %{buildroot}
 
@@ -86,6 +88,7 @@ rm -rf %{buildroot}
 
 %dir %{_datadir}/man/man1
 %dir %{_datadir}/man/man3
+%dir %{_datadir}/man/man4
 %dir %{_datadir}/man/man5
 %dir %{_datadir}/man/man7
 %dir %{_datadir}/man/man8

@@ -67,6 +67,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libxcb-keysyms.so
 %{_libdir}/libxcb-keysyms.la
 %{_includedir}/xcb/xcb_keysyms.h
-%{_pkgconfigdir}/xcb-keysyms.pc
+%{_libdir}/pkgconfig/xcb-keysyms.pc
 
 %changelog

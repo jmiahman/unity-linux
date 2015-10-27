@@ -17,7 +17,8 @@ X font server, and related components.
 %setup -q
 
 %build
-%configure 
+%configure \
+	--enable-secure-rpc
 make %{?_smp_mflags}
 
 %install
@@ -35,6 +36,7 @@ mv %{buildroot}/%{_datadir}/pkgconfig/%{name}.pc %{buildroot}/%{_libdir}/pkgconf
 %files
 %{_includedir}/X11/Xtrans
 %{_libdir}/pkgconfig/*.pc
+%{_datadir}/aclocal/xtrans.m4
 #%{_datadir}/licenses/xtrans/COPYING
 #%{_datadir}/doc/xtrans/xtrans.xml
 

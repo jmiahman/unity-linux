@@ -1112,7 +1112,7 @@ rm -rf %{buildroot}
 %files libglapi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libglapi.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libglapi.so.0
+%{_libdir}/libglapi.so.0
 # libGLapi-devel? nothing seems to need it atm.
 #%attr(755,root,root) %{_libdir}/libGLapi.so
 
