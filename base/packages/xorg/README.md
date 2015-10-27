@@ -3,28 +3,14 @@
 - libs  
 libFS  
 libXScrnSaver  
-libXpm  
-libXaw  
 libXcomposite  
-libXfont  
 libXft  
-libXi  
 libXrandr  
-libXres  
-libXtst  
-libXvMC  
-libdmx  
-libxshmfence  
 
 - utils  
-xcb-util-image  
-xcb-util-keysyms  
 xcb-util-renderutil  
-xcb-util-wm  
 elfutils  
 libvdpau  
-LLVM  
-mesa  
 xbitmaps  
 
 - apps  
@@ -32,7 +18,6 @@ bdftopcf
 iceauth  
 luit  
 mkfontdir  
-mkfontscale  
 sessreg  
 setxkbmap  
 smproxy  
