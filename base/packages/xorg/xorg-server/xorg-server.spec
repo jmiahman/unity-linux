@@ -389,6 +389,7 @@ export LDFLAGS="$LDFLAGS -Wl,-z,lazy"
 	--with-os-name="Unity/Linux" \
 	--with-os-vendor="Unity/Team" \
 	--with-fontrootdir=%{_fontsdir} \
+	--with-log-dir=/var/log \
 	--with-default-font-path="%{_fontsdir}/misc,%{_fontsdir}/TTF,%{_fontsdir}/OTF,%{_fontsdir}/Type1,%{_fontsdir}/100dpi,%{_fontsdir}/75dpi" \
 	--with-xkb-output=/var/lib/xkb \
 	--disable-linux-acpi \
