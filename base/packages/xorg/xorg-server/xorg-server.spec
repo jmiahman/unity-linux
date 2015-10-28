@@ -1,6 +1,5 @@
 # Conditional builds:
 %bcond_with	dbus		# D-BUS support for configuration (if no udev)
-%bcond_with	hal		# HAL support for configuration (if no udev)
 %bcond_without	udev		# UDEV support for configuration
 %bcond_without	dri2		# DRI2 extension
 %bcond_without	record		# RECORD extension
@@ -61,10 +60,6 @@ BuildRequires:	automake
 BuildRequires:	cpp
 BuildRequires:	docbook-xml
 #BuildRequires:	doxygen >= 1.6.1
-%if %{with hal} || %{with dbus}
-BuildRequires:	dbus-devel >= 1.0
-%endif
-%{?with_hal:BuildRequires:	hal-devel}
 BuildRequires:	libdrm-devel 
 %if %{with glamor} || %{with wayland}
 BuildRequires:	libepoxy-devel
@@ -154,12 +149,7 @@ Requires:	xkbcomp
 Requires:	libxfont
 Requires:	libpciaccess
 Requires:	libxshmfence
-Suggests:	dbus-x11 >= 1.0
-%{?with_hal:Suggests:	hal}
-Suggests:	udev-acl >= 143
-%{?with_udev:Suggests:	udev-core >= 143}
 Suggests:	xkeyboard-config
-Suggests:	evdev
 # Usual desktop setups need least one video driver to run, see xorg.log which one exactly
 Suggests:	xorg-driver-video
 
@@ -396,7 +386,6 @@ export LDFLAGS="$LDFLAGS -Wl,-z,lazy"
 	--disable-linux-apm \
 	--enable-aiglx \
 	%{?with_dbus:--enable-config-dbus} \
-	--enable-config-hal%{!?with_hal:=no} \
 	--enable-config-udev%{!?with_udev:=no} \
 	--enable-dga \
 	%{?with_dmx:--enable-dmx} \
