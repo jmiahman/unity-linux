@@ -97,6 +97,8 @@ install -m 0755 -d \
 	usr/share/man \
 	usr/share/doc \
 	usr/share/aclocal \
+	usr/share/applications \
+	usr/share/pixmaps \
 	var/cache/misc \
 	var/lib/misc \
 	var/lock/subsys \
@@ -207,6 +209,8 @@ fi
 %dir /usr/share/info
 %dir /usr/share/man
 %dir /usr/share/doc
+%dir /usr/share/applications
+%dir /usr/share/pixmaps
 /bin/
 /usr/bin
 /dev

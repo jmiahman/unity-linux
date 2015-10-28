@@ -8,6 +8,8 @@ License:	GPLv2
 URL:		http://www.gentoo.org/proj/en/eudev
 Group:		Base/System
 Source0:	http://dev.gentoo.org/~blueness/eudev/eudev-3.1.2.tar.gz
+Source1:	setup-udev
+Source2:	udev-postmount.initd
 
 BuildRequires:	gperf glib-devel linux-headers kmod-devel
 
@@ -67,6 +69,10 @@ mv %{buildroot}/usr/share/pkgconfig/udev.pc %{buildroot}%{_libdir}/pkgconfig
 rmdir %{buildroot}/usr/share/pkgconfig
 find %{buildroot} -name '*.la' -delete
 
+install -m755 %{SOURCE1} %{buildroot}/sbin/setup-udev
+install -dm755 %{buildroot}/etc/init.d/
+install -m755 %{SOURCE2} %{buildroot}/etc/init.d/udev-postmount
+
 %post
 /sbin/ldconfig
 /sbin/udevadm hwdb --update
@@ -118,6 +124,8 @@ find %{buildroot} -name '*.la' -delete
 %{_libdir}/libgudev-1.0.so.*.*.*
 /sbin/udevadm
 /sbin/udevd
+/sbin/setup-udev
+/etc/init.d/udev-postmount
 %dir /%{_lib}/udev
 %dir /etc/udev
 %dir /etc/udev/hwdb.d

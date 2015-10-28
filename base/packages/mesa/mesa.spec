@@ -216,7 +216,6 @@ requires:	libxext-devel >= 1.0.5
 requires:	libxxf86vm-devel
 requires:	dri2proto >= %{dri2proto_ver}
 requires:	glproto >= %{glproto_ver}
-suggests:	opengl-doc-man
 provides:	opengl-glx-devel = 1.4
 provides:	opengl-devel = 3.3
 obsoletes:	mesa-devel

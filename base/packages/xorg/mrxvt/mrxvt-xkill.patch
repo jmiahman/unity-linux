@@ -1,0 +1,46 @@
+diff -ur mrxvt-0.5.4.old/src/init.c mrxvt-0.5.4/src/init.c
+--- mrxvt-0.5.4.old/src/init.c	2008-06-13 20:08:13.000000000 +0100
++++ mrxvt-0.5.4/src/init.c	2011-03-18 20:11:36.645940109 +0000
+@@ -46,6 +46,7 @@
+ int    rxvt_getdtablesize     ();
+ #endif
+ int    rxvt_xerror_handler    (const Display*, const XErrorEvent*);
++int    rxvt_xioerror_handler  (Display*);
+ void   rxvt_init_colors       (rxvt_t*);
+ void   rxvt_init_win_size     (rxvt_t*);
+ void   rxvt_color_aliases     (rxvt_t*, int);
+@@ -885,6 +886,25 @@
+     r->num_fds = 7 + 1;
+ #endif
+ }
++/* + * FIXME 
++ *
++ * Wed Apr 30 14:35:33 CEST 2008 +gar <[EMAIL PROTECTED]>
++ *
++ * This is a workaround for for OpenBSD users. On killed connection after
++ * ctrl+alt+backspace with ksh as default shell child processes don't exit,
++ * remaining in WCHAN state for ttyin. This works for me, I set a IO error
++ * handler for killed connection (man XSetErrorHandler) to clean vts before
++ * exiting. + */ 
++int
++rxvt_xioerror_handler(Display *d)
++{
++    rxvt_msg(DBG_ERROR, DBG_INIT, "IO error, cleaning...\n");
++    rxvt_Exit_signal(1);
++    return 0;
++//    abort();
++}
++
++
+ 
+ 
+ /* INTPROTO */
+@@ -1079,6 +1099,7 @@
+      * allowed.
+      */
+     XSetErrorHandler( (XErrorHandler) rxvt_xerror_handler );
++    XSetIOErrorHandler( rxvt_xioerror_handler );
+ 
+     /* Initialize all atoms after establishing connection to X */
+     for (i = 0; i < NUM_XA; i++)
+Only in mrxvt-0.5.4/src: init.c~

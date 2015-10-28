@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Mrxvt
+Comment=Small, fast X terminal application 
+Comment[pl]=Mały, ale szybki emulator terminala dla Systemu X Window
+Comment[pt_BR]=Um emulador de vt102 colorido
+Exec=mrxvt
+Icon=mrxvt
+Terminal=false
+Type=Application
+Categories=TerminalEmulator;
+# vi: encoding=utf-8
