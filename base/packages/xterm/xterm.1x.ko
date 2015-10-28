@@ -1,0 +1,1488 @@
+.\" $XConsortium: xterm.man,v 1.80 94/04/17 19:01:03 rws Exp $
+.\" Copyright (c) 1989  X Consortium
+.\" 
+.\" Permission is hereby granted, free of charge, to any person obtaining
+.\" a copy of this software and associated documentation files (the
+.\" "Software"), to deal in the Software without restriction, including
+.\" without limitation the rights to use, copy, modify, merge, publish,
+.\" distribute, sublicense, and/or sell copies of the Software, and to
+.\" permit persons to whom the Software is furnished to do so, subject to
+.\" the following conditions:
+.\" 
+.\" The above copyright notice and this permission notice shall be included
+.\" in all copies or substantial portions of the Software.
+.\" 
+.\" THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+.\" OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+.\" MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+.\" IN NO EVENT SHALL THE X CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR
+.\" OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+.\" ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+.\" OTHER DEALINGS IN THE SOFTWARE.
+.\" 
+.\" Except as contained in this notice, the name of the X Consortium shall
+.\" not be used in advertising or otherwise to promote the sale, use or
+.\" other dealings in this Software without prior written authorization
+.\" from the X Consortium.
+.TH XTERM 1 "Release 6" "X Version 11"
+.SH 이름
+xterm \- X 용 터미날 에뮬레이터
+.SH 사용법
+.B xterm
+[\-\fI툴킷옵션\fP ...] [\-\fI옵션\fP ...]
+.SH 설명
+\fIxterm\fP 풀그림은 X 윈도우 시스템을 위한 터미날 에뮬레이터이다.
+이것은 윈도우 시스템을 바로 사용할 수 없는 풀그림들을 위해, 
+DEC VT102나 Tektronix 4014 호환 터미날을 제공한다.
+underlying operating system(?)이 터미날 크기변경 기능을 지원한다면
+(예를 들어, 4.3bsd 시스템을 바탕으로 개발된 시스템에서의 SIGWINCH 시그날),
+\fIxterm\fP은 창 크기가 바뀔 때 마다, 그 창에서 실행중인 풀그림을 알리기위해
+편의를 제공한다.
+.PP
+VT102와 Tektronix 4014 터미날은 각각 자신의 창을 가지고 있어,
+하나의 창에서 텍스트 편집을 하고, 다른 창에서 그래픽 형식으로
+동시에 볼 수 있다. 
+창의 적당한 가로 세로 비율을 유지하려면, 
+Tektronix 그래픽은 그 창에 채워질 4014의 가로 세로 비율 만큼의 가장 큰 
+상자로 제한될 것이다. 
+이 상자는 창의 좌측 상단에 있다.
+.PP
+두 창을 동시에 볼 수는 있지만, 글쇠판 입력과 출력을 위한 창은 
+그들 중 하나만이 활상화 된다. 
+활성화 된 창이란 커서가 있는 창을 말한다.
+활성화 된 창을 바꾸는 방법은 ctrl글쇠를 누르고 
+다람쥐 중간 단추를 누르면 VT102 창에서는 "VT Options" 차림표가,
+4014 창에서는 "Tek Options" 차림표가 나타나는데, 
+여기서 활성화된 창을 바꾼다.
+.SH EMULATIONS
+VT102 에뮬레이션은 거의 완벽하지만, 
+부드러운 스크롤 기능, VT52 모드, 
+두배 넓거나, 두배 큰 문자 셋이 아닌 문자들의 깜빡임 속성들은 
+지원하지 않는다. 
+.IR Termcap (5)
+파일에서 \fBxterm\fR이 사용하는 부분은 
+``xterm,'' ``vt102,'' ``vt100'' and ``ansi,''이며,
+자동으로 ``TERM'' 환경변수와 ``TERMCAP'' 환경 변수를 사용해 
+적당한 터미날값을 찾는다.
+.PP
+\fIxterm\fP의 특별한 기능들 중 대부분은 풀그림 실행중에, 
+ctrl글쇠를 누른 상태에서 다람쥐 가운데 단추를 눌러 보여지는 차림표 
+항목에서 바꿀 수 있다. 
+(자세한 이야기는 
+.I "Xterm Control Sequences"
+문서를 참조한다.)
+.PP
+Tektronix 4014 에뮬레이션 또한 좋은 편이다.
+여기서는 12비트 그래픽 주소 처리와 창 크기 변경 기능도 지원한다.
+또한 네가지 다른 글꼴 크기와 다섯가지 다른 줄 형태를 지원하다.
+쓰기 금지 기능이나, 백그라운드 실행모드(defacused mode)도 지원한다.
+Tektronix 텍스트와 그래픽 명령들은 내부적으로 \fIxterm\fP에 의해서
+기록되고, "Tek Options" 차림표 항목의 \fICOPY\fP 명령으로 
+파일로 쓰여질 수 있다. 
+파일의 이름은 
+``\fBCOPY\fIyy\fB\-\fIMM\fB\-\fIdd\fB.\fIhh\fB:\fImm\fB:\fIss\fR''
+이런 형태를 가 되며, 
+.IR yy ,
+.IR MM ,
+.IR dd ,
+.IR hh ,
+.IR mm ,
+.I ss
+에는 COPY 명령이 수행될 당시 시스템의 시간이 기록된다.
+그 파일의 위치는 \fIxterm\fP을 시작한 그 경로안에 있게 된다.
+.SH "OTHER FEATURES"
+\fIxterm\fP은 현재 창이 활성화 되어 있을 경우에는 자동으로 
+커서에 있는 문자가 역상이되고 비활성화 상태에는 다시 보통 
+문자로 바뀐다.
+.PP
+VT102 모드에서는, 궁극적인 스크린 버퍼에서 메뉴가 호출되거나, 
+다시 원상복귀한다. 궁극적인 스크린 버퍼란, 현재 창의 디스플레이
+영역 만큼의 크기를 가진 버퍼를 말한다. 
+메뉴가 호출되면, 현제 스크린은 저정되고, 궁극적인 스크린으로 
+바뀐다. 
+일반적인 문서 편집기인 \fIvi\fP (1)를 사용할 때, 문서 편집을 위한 화면 
+전환을 하도록 하고, \fIvi\fP (1)가 종료되었을 때, 화면을 복귀하도록 
+처리하는 부분은 
+.IR termcap (5)
+파일 안에 있다.
+.PP
+VT102 모드나, Tektronix 모드에서, 창의 이름을 바꾸는 
+기능도 제공하고 있다. 자세한 이야기는 
+.I Xterm Control Sequences
+문서를 참조한다.
+.SH OPTIONS
+\fIxterm\fP에서는 표준 X 툴킷 명령행 옵션과 함께 다음 옵션들을 
+사용할 수 있다. 
+(만약, 아래 옵션에서 
+.RB ` \- '
+대신에, 
+.RB ` + '
+옵션이 사용되면, 그것은 초기값을 반대로 함을 의미한다.)
+.TP 8
+.B \-help
+\fIxterm\fP에서 사용할 수 있는 옵션들과 그것에 대한 설명을 보여주고 
+마친다.
+.TP 8
+.B \-132
+일반적으로 80칸과 132칸을 전환하는 VT102 DECCOLM 기능을 전환한다. 
+이 옵션은 DECCOLM 기능을 인식하며, 창 크기는 적당하게 조절된다.
+.TP 8
+.B \-ah
+항상 커서가 위치한 곳의 글자를 역상 시킨다. 
+이렇게 하면, 창이 활성화 상태건 비활성화 상태건 상관없이 
+항상 커서가 있는 곳은 역상된다.
+.TP 8
+.B \+ah
+이 옵션은 창이 활성화 되었을 때면 커서가 위치한 곳의 글자를
+역상 시킨다.
+.TP 8
+.BI \-b " number"
+창의 테두리 두께를 지정한 "숫자"의 픽셀만큼으로 지정한다.
+초기값은 2이다.
+.TP 8
+.B "\-cb"
+\fIvt100\fP 리소스 \fBcutToBeginningOfLine\fP의 값을 FALSE로 지정한다.
+.TP 8
+.B "\+cb"
+\fIvt100\fP 리소스 \fBcutToBeginningOfLine\fP의 값을 TRUE로 지정한다.
+.TP 8
+.B "\-cc \fIcharacterclassrange\fP:\fIvalue\fP[,...]"
+This sets classes indicated by the given ranges for using in selecting by
+words.  
+아래
+.B CHARACTER CLASSES 
+부분을 참조한다.
+.TP 8
+.B "\-cn"
+line-mode 선택에서 새 줄이 잘려지지 않게 지정한다.
+.TP 8
+.B \+cn
+line-mode 선택에서 새 줄이 짤려지게 지정한다.
+.TP 8
+.BI \-cr " color"
+텍스트 커서의 색깔을 지정한다. 초기값은 텍스트의 전경색(글자색)이다.
+.TP 8
+.B \-cu
+옛 버전의 
+.IR curses (3x)
+함수를 사용하는 
+.IR more (1)
+에서 한 줄의 길이가 창의 가로 길이와 똑같을 경우와, 
+첫칸에 탭 문자이 있을 경우 그 라인들을 제대로 못하는 벌레가 
+있는데, 이런 문제가 발생할 경우 이 옵션을 사용한다. 
+.TP 8
+.B \+cu
+이 옵션은 그냥 
+.TR curses (3x)
+벌레에 대해서 무시한다.
+.TP 8
+.BI \-e " program \fP[ \fIarguments \fP.\|.\|. ]\fI"
+이 옵션은 \fIxterm\fP이 실행될 때 \fIxterm\fP에서 실행될 풀그림을
+지정한다. 이러면, 바로 지정한 풀그림이 실행되고, 그 풀그림을 
+끝내면 \fIxterm\fP도 끝나게 된다. 
+또한 \fI\-n\fP이나, \fI\-T\fP 옵션을 사용해서, 
+창의 이름을 따로 지정할 수도 있다. 
+\fB이 옵션(-e)은 받드시 명령행의 가장 마지막에 와야한다.\fP
+.TP 8
+.BI \-fb " font"
+이 옵션은 \fIxterm\fP에서 사용할 굵은 글자의 글꼴을 지정한다.
+이 글꼴은 보통 글자 글꼴의 세로, 가로 길이가 같아야한다. 
+만약, 보통 글꼴이나, 굵은 글꼴 중 하나만을 지정하면, 
+지정된 그 글꼴은 보통 글자 글꼴로 지정되고, 굵은 글자는 
+그 글꼴을 확대해서 사용한다. 
+초기값은 굵은 글자 글꼴을 따로 지정하지 않고, 
+보통 글자 글꼴을 확대해서 사용한다. 
+.TP 8
+.B \-im
+\fBuseInsertMode\fP 리소스 on
+.TP 8
+.B +im
+\fBuseInsertMode\fP 리소스 off
+.TP 8
+.B \-j
+이 옵션은 \fIxterm\fP이 점프 스크롤을 할 수 있게 한다. 
+보통, 텍스트는 한번에 한 줄씩 스크롤 된다; 이 옵션은 
+\fIxterm\fP에서 한번에 여러 줄을 스크롤할 수 있게 한다. 
+이것은 많은 양의 문서를 읽을 때, 해당 부분으로 건더 뛰기 할 때, 
+보다 빠르게 작동하기 위해서 사용한다.
+또한 이 기능은 "VT Options" 차림표에서 실행중에도 직접 제어 할 수 있다.
+.TP 8
+.B \+j
+점프 스크롤 기능을 사용하지 않는다.
+.TP 8
+.B \-ls
+이 옵션은 \fIxterm\fP이 로그인 쉘로써 사용되게 한다. 
+이 말은 로그인 할 때에 실행되는 .login, .profile 같은 초기화 
+파일들을 함께 실행한다는 것을 의미한다.
+.TP 8
+.B \+ls
+이 옵션은 로그인 쉘로 사용하지 않고 단지 하위 쉘로 사용할 때 사용된다.
+(초기값)
+.TP 8
+.B \-mb
+이 옵션은 커서가 줄의 오른쪽 끝에 오게 되면 벨 소리를 나게한다. 
+"VT Options" 차림표에서 이옵션은 제어 할 수 있다.
+.TP 8
+.B \+mb
+이 옵션은 윗 기능을 불가 상태로 한다(초기값).
+.TP 8
+.B "\-mc milliseconds"
+다람쥐의 두번 연속 찍기 인식 최대 시간을 지정한다.
+.TP 8
+.BI \-ms " color"
+다람쥐 커서의 색깔을 지정한다. 초기값은 전경색(글자색)이다.
+.TP 8
+.BI \-nb " number"
+커서가 줄의 오른쪽 끝에 왔을 때, 소리를 낼 문자의 숫자를 지정한다. 
+\fI\-mb\fP 옵션이 지정된 경우, 여기서 지정한 문자를 표준 출력으로 
+보낸다. 초기값은 10(bell)이다.
+.TP 8
+.B \-rw
+reverse-wraparound(?)를 사용 가능 상태로 지시한다. 
+이것은 커서가 어떤 줄의 첫 칸에 있을 때, 이때, 
+왼쪽으로 이동하거나, 그 왼쪽 글자를 삭제하는 명령이 있을 경우, 
+그 윗줄의 맨 끝을 대상으로 이루워지게 한다. 
+이 옵션은 명령행에서 아주 긴 명령조합을 편집하는데 유용하게 사용된다. 
+이 옵션은 "VT Option" 차림표에서도 지정할 수 있다. 
+.TP 8
+.B \+rw
+reverse-wraparound 기능 사용을 금지 한다.
+.TP 8
+.B \-aw
+이 옵션은 자동 줄바꿈 기능 사용을 허용한다. 
+한 문장의 길이가 화면의 최대 가로길이보다 클 경우, 
+단어 별로 잘려 나머지는 다음 줄에 표시하게 한다. 
+.TP 8
+.B \+aw
+이 옵션은 자동 줄바꿈 기능 사용을 금지 한다.
+.TP 8
+.B \-s
+이옵션은 스크롤을 비동기적으로(asynchronously)으로 하게 한다. 
+이 말은 화면이 스크롤 되는 동안 계속해서 갱신되지 않게 한다.
+이 옵션은 네트워킹에서 사용할 때 유용하게 쓰인다. 
+즉, 전송속도가 늦을 경우에 전형적으로 쓰인다.
+.TP 8
+.B \+s
+윗 옵션의 반대 기능으로 스크롤을 동기적으로 하게 한다.
+.TP 8
+.B \-sb
+창 한편에 스크롤 막대를 보인다. 
+지나간 화면은 메모리에 저장되고, 스크롤 막대로 지나간 화면을 볼 수 있다.
+이 옵션은 ``VT Options'' 차림표에서 바꿀 수 있다.
+.TP 8
+.B \+sb
+스크롤 막대를 보이지 않게 한다.
+.TP 8
+.B \-sf
+이 옵션은 기능글쇠(Function key)를 위해, Sun 기능글쇠 escape code 가 
+만들어지도록 한다.
+.TP 8
+.B \+sf
+이 옵션은 기능글쇠(Function key)를 위해, 표준 기능글쇠 escape code 가
+만들어지도록 한다.
+.TP 8
+.B \-si
+이 옵션은 자동 스크롤 기능을 금지 시킨다.
+화면이 맨 밑에서 글이 나타나더라도 스크롤 되지 않는다.
+이 옵션은 "VT Options" 차림표에서도 지정할 수 있다.
+.TP 8
+.B \+si
+이 옵션은 자동 스크롤 기능 사용을 허용한다.
+.TP 8
+.B \-sk
+이 옵션은 스크롤 막대를 사용해 지나간 글을 볼 때, 
+글쇠가 눌려지면, 자동으로 현재 화면으로 돌아오게 한다.
+.TP 8
+.B \+sk
+이 옵션은 스크롤 막대를 사용해 지나간 글을 볼 때, 
+글쇠가 눌려져도 화면 이동을 하지 않는다.
+.TP 8
+.BI \-sl " number"
+스크롤할 때 지나간 화면의 기억량을 줄 수로 지정한다.
+초기값은 64줄이다.
+.TP 8
+.B \-t
+이 옵션은 \fIxterm\fP 시작 시, VT102 모드로 시작하는 것이 아니라, 
+Tektronix 모드로 시작하도록 한다.
+물론 다람쥐 가운데 단추와 Ctrl 글쇠를 함께 눌러 만들어지는 
+차림표에서 이 두 모드의 전환이 가능하다. 
+.TP 8
+.B \+t
+이 옵션은 \fIxterm\fP 시작 시, VT102 모드로 시작하도록 한다.
+.TP 8
+.BI \-tm " string"
+이 옵션은 \fIstring\fR인 터미날 설정 키워드를 사용해 터미날 환경을 
+지정한다. 이 옵션은 \fBstty\fR 명령과 비슷한 역활을 한다.
+사용할 수 있는 키워드는 intr, quit, erase, kill, eof,
+eol, swtch, start, stop, brk, susp, dsusp, rprnt, flush, weras, lnext
+이다. 제어 문자는 ^글자와 함께 지정된다(예, ^c, ^u). ^?는 
+delete를 지시하게 될 것이다. 
+.TP 8
+.BI \-tn " 이름"
+이 옵션은 환경 변수 TERM 값을 \fI이름\fR으로 바꾼다. 
+즉 터미날 형태를 \fI이름\fR으로 지정한 터미날 형태로 바꾼다. 
+이 \fI이름\fR은 반드시 \fItermcap(5)\fP 파일안에 
+\fIli#\fP 와 \fIco#\fP 항목에서 정의되어 있는 것이여야 한다.
+.TP 8
+.B \-ut
+이 옵션은 시스템 기록 파일인 \fI/etc/utmp\fP 파일의 기록을 생각하게 한다.
+.TP 8
+.B \+ut
+이 옵션은 시스템 기록 파일인 \fI/etc/utmp\fP 파일의 기록을 하게 한다.
+.TP 8
+.B \-vb
+Ctrl-G 문자인 벨 소리를 나게 한다. 
+즉, ^G 출력 있을 경우 이것을 스피커 소리로 나게 한다.
+.TP 8
+.B \+vb
+벨 소리를 나지 않게 한다.
+.TP 8
+.B \-wf
+이 옵션은 서브프로세스를 시작하기 전에 첫번째로 창이 map되기를(창의
+크기와 위치를 정하고 메모리를 할당하는 작업) 
+기다린다. 그래서, 초기의 터미날 환경과 환경 변수들이 바뀌어진다. 
+이 옵션은 \fBxterm\fR에서 실행되는 풀그림들이 그 바뀐 터미날의 
+크기에 대해서 반응하도록 한다.
+.TP 8
+.B \+wf
+서브프로세스를 시작하기 전에 \fBxterm\fR은 기다리지 않는다.
+.TP 8
+.B \-C
+이 옵션은 이 창이 콘솔 출력을 받도록 한다. 
+이 옵션은 모든 시스템에서 지원되는 것은 아니다. 
+콘솔 출력을 얻으려면, 먼저 사용자가 콘솔 장치의(/dev/console) 소유주여야하며,
+그 장치가 쓰기 권한이 부여되어 있어야한다. 콘솔 화면의 
+\fBxdm\fR 상태에서 \fBxterm\fR을 실행킨다면,
+먼저 세션 startup을 실행해야하고, 콘솔 장치의 파일 권한과 소유주 관계를 
+다시 정의하는 부분이 있어야한다.
+.TP 8
+.B \-S\fIccn\fP
+이 옵션에서 사용되는 앞의 두 글자는 문자형으로 slave 모드에서 
+사용되는 의사터미날(pseudoterminal)의 이름을 뜻하고, 
+마지막에 오는 한 글자는 숫자형으로 상속받는 파일 기술자(descriptor)의
+번호를 뜻한다. 즉 이옵션의 인자 형식은 ``%c%c%d''이다.
+이 옵션은 \fBxterm\fR이 존재하는 풀그림을 위해 입출력 채널로서 
+사용되는 것을 허락하고, 가끔, 특정 풀그림 안에서 사용할 수 있게 한다.
+.PP
+다음의 명령행 인자들은 옛버전의 호환을 위해서 제공하고 있다. 
+만일 최신 버전의 X Toolkit에서는 이런 옵션을 지원하지 않을 수도 있다.
+.TP 8
+.B "%\fIgeom\fP"
+Tektronix 창의 크기와 위치 지정.
+``\fI*tekGeometry\fP'' 리소스로도 지정이 가능하다.
+.TP 8
+.B "#\fIgeom\fP"
+아이콘 창의 크기와 위치 지정.
+``\fI*iconGeometry\fP'' 리소스로도 지정이 가능하다.
+.TP 8
+.BI \-T " string"
+윈도우 관리자에서 실행될 경우 창 제목을 \fIstring\fR으로 지정한다. 
+이 옵션은 \fB\-title\fP 옵션과 같은 기능을 한다.
+.TP 8
+.BI \-n " string"
+윈도우 관리자로 \fBxterm\fR을 실행시켜, 아이콘화 했을 경우, 
+그 아이콘의 이름으로 나타날 것을 \fIstring\fR으로 지정한다.
+``\fI*iconName\fP'' 리소스로도 이 문자열을 지정할 수 있다.
+이 옵션은 아래에서 설명할 \fB\-name\fP 툴킷 옵션과는 다르다는 것을 
+주의. 초기값은 풀그림의 이름을 아이콘 이름으로 사용한다.
+.TP 8
+.B \-r
+글자색과 배경색을 바꾼다(역상시킨다). 이 옵션은 \fB\-rv\fP 옵션과 같은 기능을
+한다.
+.TP 8
+.BI \-w " number"
+창의 테두리 폭을 \fInumber\fR 픽셀로 지정한다. 
+이 옵션은 \fB\-borderwidth\fP나 \fB\-bw\fP 옵션과 같은 기능을 한다.
+(참고: 윈도우 관리자를 사용할 경우에는 이 옵션은 무시된다 \- 옮긴이 말)
+.PP
+다음은 \fIxterm\fR에서 사용되는 일반적인 X 툴킷 옵션들이다:
+.TP 8
+.B \-bg \fIcolor\fP
+배경색을 \fIcolor\fP로 지정. 초기값은 ``white''
+.TP 8
+.B \-bd \fIcolor\fP
+창 테두리 색을 \fIcolor\fP로 지정. 초기값은 ``black.''
+.TP 8
+.B \-bw \fInumber\fP
+창 테두리 넓이를 \fInumber\fP 픽셀로 지정. 
+.TP 8
+.B \-fg \fIcolor\fP
+글자색을 \fIcolor\fP로 지정. 초기값은 ``black.''
+.TP 8
+.B \-fn \fIfont\fP
+사용할 글꼴을 \fIfont\fP로 지정. 초기값은 \fIfixed\fP.
+.TP 8
+.B \-name \fIname\fP
+실행 파일 이름 대신 사용할 이름을 \fIname\fP으로 지정.
+\fIname\fP에는 ``.'' 또는 ``*'' 문자를 사용할 수 없다.
+.TP 8
+.B \-title \fIstring\fP
+윈도우 관리자에서 실행될 때 보여질 창 제목을 \fIstring\fP으로 지정.
+초기값은 실행파일 이름이다. 즉 \fB\-e\fP 옵션 다음에 사용될 실행파일 이름이나,
+이 옵션을 사용하지 않으면, 이 풀그림의 실행때 사용한 실행파일이름이다.
+.TP 8
+.B \-rv
+전경색(글자색)과 배경색을 바꾼다.
+.TP 8
+.B \-geometry \fIgeometry\fP
+VT102 창 크기와 위치를 \fIgeometry\fP로 지정.
+자세한 사항은 \fIX(1)\fP 매뉴얼 참조.
+.TP 8
+.B \-display \fIdisplay\fP
+연결한 X 서버를 \fIdisplay\fP로 지정. 자세한 사항은 \fIX(1)\fP 매뉴얼 참조.
+.TP 8
+.B \-xrm \fIresourcestring\fP
+사용할 리소스를 \fIresourcestring\fP으로 지정.
+.TP 8
+.B \-iconic
+윈도우 관리자에서 실행될 경우 아이콘 형식으로 실행되게 한다.
+.SH 리소스
+대부분의 기본 X 툴킷 리소스를 다음과 같이 지원한다:
+.\".in +1in
+.TP 8
+.B "iconGeometry (\fPclass\fB IconGeometry)"
+풀그림이 아이콘형태로 실행될 때의 그 크기와 위치.
+이값은 모든 윈도우 관리자에서 필요한 것은 아니다.
+.TP 8
+.B "iconName (\fPclass\fB IconName)"
+아이콘 이름 지정. 초기값은 풀그림 이름.
+.TP 8
+.B "termName (\fPclass\fB TermName)"
+환경변수 TERM 값을 지정한다.
+.TP 8
+.B "title (\fPclass\fB Title)"
+이 풀그림이 윈도우 관리자에 의해서 실행될 때 그 창 제목을 지정한다.
+.TP 8
+.B "ttyModes (\fPclass\fB TtyModes)"
+명령행 옵션 \fB\-tm\fR 기능을 한다. 
+자세한 이야기는 이 옵션 설명을 참조한다.
+.TP 8
+.B "useInsertMode (\fPclass\fB UseInsertMode)"
+TERMCAP 환경 변수 값을 강제로 바꾸어 insert 모드를 사용한다.
+이것은 시스템 termcap이 손상되었을 때 유용하게 쓰인다. 
+초기값은 ``false.''
+.TP 8
+.B "utmpInhibit (\fPclass\fB UtmpInhibit)"
+\fI/etc/utmp\fP 파일에 현재 사용을 기록할 것인지를 지정한다.
+.TP 8
+.B "sunFunctionKeys (\fPclass\fB SunFunctionKeys)"
+표준 escape 처리 대신에 Sun Function Key escape 코드값을 
+사용할 것인지를 지정한다.
+.\".in -1in
+.TP 8
+.B "waitForMap (\fPclass\fB WaitForMap)"
+하위프로세스를 시작하기 전에 창의 map을 초기화하기 위해 기다릴 것인지를 
+지정한다. 초기값은 ``false.''
+.\".in 11in
+.sp
+.PP
+다음 리소스들은 \fIvt100\fP 위젯 (\fIVT100\fP 클래스)에서 사용된다. 
+.\".in +1in
+.TP 8
+.B "allowSendEvents (\fPclass\fB AllowSendEvents)"
+글쇠가 눌려지는 것이나 다람쥐 단추가 눌려지는 여러 이벤트들이 
+(X 프로토콜 SendEvent 조사를 사용함으로 생성됨) 외부에 알릴 것인지를 
+지정한다. 초기값은 ``false.'' 이것은 자체적으로 해결한다는 뜻이다. 
+이 값은 ``true''로 지정된다면, 심각한 보안상의 위험을 초래할 수도 있다.
+.sp
+.TP 8
+.B "alwaysHighlight (\fPclass\fB AlwaysHighlight)"
+커서가 있는 곳을 항상 밝게 보여줄 것인지를 지정한다. 
+초기값으로는 \fBxterm\fR 창이 활성화 되거나 입력가능상태일때만, 
+커서가 밝게 나타난다.
+.TP 8
+.B "appcursorDefault (\fPclass\fB AppcursorDefault)"
+이 값이 ``true''면, 커서 키가 원래, 풀그림 모드안에 있게 된다. 
+초기값은 ``false.''
+.TP 8
+.B "appkeypadDefault (\fPclass\fB AppkeypadDefault)"
+이 값이 ``true''면, keypad key가 원래, 풀그림 모드안에 
+있게 된다. 초기값은 ``false.''
+.TP 8
+.B "autoWrap (\fPclass\fB AutoWrap)"
+자동 줄바꿈 기능 지정. 초기값은 "true"
+.TP 8
+.B "bellSuppressTime (\fPclass\fB BellSuppressTime)"
+벨 소리가 나기 시작한후 몇초 뒤에 다시 벨 소리를 나게 할 것인가를 
+지정한다. 단위는 밀리초. 이 말은 연속해서 벨 소리가 날 때, 
+그 간격을 말한다. 이런 값이 지정되는 이유는 앞의 벨 소리가 
+미치 나기도 전에 다음 벨 소리가 나고, 또 그다음...
+이런 식으로 해서 벨 소리를 제대로 듣지 못하는 것을 방지하기 
+위해서다.
+.TP 8
+.B "boldFont (\fPclass\fB BoldFont)"
+글자 속성이 굵은 문자인 경우 그것을 보여줄 글꼴 지정.
+.TP 8
+.B "c132 (\fPclass\fB C132)"
+VT102 DECCOLM escape 처리를 지원할 것인지를 지정한다.
+초기값은 ``false.''
+.TP 8
+.B "cutNewline (\fPclass\fB CutNewline)"
+false면, 화면을 초과하는 줄일을 보일 때, 줄나눔을 하지 않는다. 
+true면, 줄나눔을 한다.
+초기값은 ``true.''
+.TP 8
+.B "cutToBeginningOfLine (\fPclass\fB CutToBeginningOfLine)"
+다람쥐 단추를 세번 연속해서 누를 경우, 그 전체를 선택, 복사할 것인지를 
+지정. false면, 현재 커서가 있는 단어부터 그줄 끝까지만 선택된다.
+초기값은 ``true.''
+.TP 8
+.B "charClass (\fPclass\fB CharClass)"
+[\fIlow\fP\-]\fIhigh\fP:\fIvalue\fP 형식으로 지정되는 문자 클래스의 
+쉼표(,)로 나열된 목록을 지정한다. 자세한 이야기는 아래의 
+\fBCHARACTER CLASSES\fR 부분을 참조한다.
+.TP 8
+.B "curses (\fPclass\fB Curses)"
+.B more (1)
+안의 벌레를 무시할 것인지 말 것인지를 지정한다. 
+.B more (1)
+벌레에 대한 자세한 사항은 \fB\-cu\fP 옵션에서 다루고 있다.
+초기값은 ``false.''
+.TP 8
+.B "background (\fPclass\fB Background)"
+창 배경색 지정. 초기값은 ``white.''
+.TP 8
+.B "foreground (\fPclass\fB Foreground)"
+글자색(전경색) 지정. 초기값은 ``black.''
+.TP 8
+.B "cursorColor (\fPclass\fB Foreground)"
+텍스트 커서의 색깔 지정. 초기값은 ``black.''
+.TP 8
+.B "eightBitInput (\fPclass\fB EightBitInput\fP)"
+true면, 글쇠판으로부터 입력되는 메타문자들을 단일문자(1바이트),
+8비트로 그대로 처리하고, 
+false면, 메타문자를 ESC 문자를 앞세운 2바이트문자로 처리한다.
+초기값은 ``true.''
+.TP 8
+.B "eightBitOutput (\fPclass\fB EightBitOutput\fP)"
+8비트 문자 출력 허용 여부를 지정한다. 
+초기값은 ``true.''
+.TP 8
+.B "font (\fPclass\fB Font)"
+보통 글꼴 지정. 초기값은 ``fixed.''
+.TP 8
+.B "font1 (\fPclass\fB Font1)"
+첫번째 다른 글꼴 지정.
+.TP 8
+.B "font2 (\fPclass\fB Font2)"
+두번째 다른 글꼴 지정
+.TP 8
+.B "font3 (\fPclass\fB Font3)"
+세번째 다른 글꼴 지정
+.TP 8
+.B "font4 (\fPclass\fB Font4)"
+네번째 다른 글꼴 지정
+.TP 8
+.B "font5 (\fPclass\fB Font5)"
+다섯번째 다른 글꼴 지정
+.TP 8
+.B "font6 (\fPclass\fB Font6)"
+여섯번째 다른 글꼴 지정
+.TP 8
+.B "geometry (\fPclass\fB Geometry)"
+VT102 창의 위치와 크기를 지정.
+.TP 8
+.B "hpLowerleftBugCompat (\fPclass\fB HpLowerleftBugCompat)"
+이 값이 ``true''면,
+HP의 \fIxdb\fP 벌레인 termcap 관련 문제에서 termcap의 
+지정값을 무시고, 아래 왼쪽으로 이동하기 위해 항상 ESC F를 보낸다.
+초기값은 ``false.''
+.TP 8
+.B "internalBorder (\fPclass\fB BorderWidth)"
+글자들과 창 테두리 사이의 간격을 픽셀값으로 지정. 초기값은 2
+.TP 8
+.B "jumpScroll (\fPclass\fB JumpScroll)"
+점프 스크롤을 할 것인지를 지정한다. 초기값은 ``true.''
+자세한 이야기는 \fB\-j\fR 옵션 설명을 참조한다.
+.TP 8
+.B "loginShell (\fPclass\fB LoginShell)"
+로그인 쉘로 실행하게 한다.
+초기값은 ``false.''
+.TP 8
+.B "marginBell (\fPclass\fB MarginBell)"
+창의 오른쪽 경계에 오면 벨 소리를 낼 것인지 지정한다.
+초기값은 ``false.''
+.TP 8
+.B "multiClickTime (\fPclass\fB MultiClickTime)"
+두번 연속해서 찍기(multi-click) 이벤트로 인식하게 하는 최대 시간값 지정.
+초기값은 250 밀리초.
+.TP 8
+.B "multiScroll (\fPclass\fB MultiScroll)"
+비동기적으로(asynchronously) 스크롤 할 것인지를 지정한다.
+초기값은 ``false.''
+.TP 8
+.B "nMarginBell (\fPclass\fB Column)"
+벨 소리를 낼 수 있을 때, 벨 소리를 나게할 오른쪽 경계 칸 
+숫자를 지정한다.
+.TP 8
+.B "pointerColor (\fPclass\fB Foreground)"
+창이 활성화 될 때의 전경색(글자색)을 지정한다. 
+초기값은 ``XtDefaultForeground.''
+.TP 8
+.B "pointerColorBackground (\fPclass\fB Background)"
+창이 활성화 될 때의 배경색을 지정한다. 
+초기값은 ``XtDefaultBackground.''
+.TP 8
+.B "pointerShape (\fPclass\fB Cursor)"
+창이 활성화 될 때의 이름. 초기값은 ``xterm.''
+.TP 8
+.B "resizeGravity (\fPclass\fB ResizeGravity)"
+이것은 창 크기가 바뀌었을 때, 창 안에 있는 내용이 
+어떻게 다시 보여질 것인가에 대해서 지정한다. 
+사용되는 값은 \fBNorthWest\fP, \fBSouthWest\fP (초기값)인데, 
+\fBNorthWest\fP 인 경우는 창이 줄어들 경우 윗줄이 가려지고, 
+창이 크질 경우 빈줄이 아래에 추가 된다. 
+\fBSouthWest\fP 인 경우는 창이 줄어들 경우 아랫줄이 가려지고, 
+창이 크질 경우 윗줄의 내용이 더 보여진다.
+.TP 8
+.B "reverseVideo (\fPclass\fB ReverseVideo)"
+역상시킬 것인지를 지정한다. 초기값은 ``false.''
+.TP 8
+.B "reverseWrap (\fPclass\fB ReverseWrap)"
+reverse-wraparound 기능을 사용할 것인지를 지정한다. 
+초기값은 ``false.''
+.TP 8
+.B "saveLines (\fPclass\fB SaveLines)"
+스크롤 최대 저장 줄 수. 초기값은 64줄.
+.TP 8
+.B "scrollBar (\fPclass\fB ScrollBar)"
+스크롤막대를 보일 것인지 지정. 초기값은 ``false.''
+.TP 8
+.B "scrollTtyOutput (\fPclass\fB ScrollCond)"
+지나간 화면을 보는 중에 화면 출력이 있으면, 
+현재 작업 화면으로 돌아올 것인지를 지정한다.
+초기값은 ``true.''
+.TP 8
+.B "scrollKey (\fPclass\fB ScrollCond)"
+지나간 화면을 보는 중에 입력이 있으면, 자동으로
+현재 작업 화면으로 돌아올 것인지를 지정한다. 
+초기값은 ``false.''
+.TP 8
+.B "scrollLines (\fPclass\fB ScrollLines)"
+\fIscroll-forw\fP, \fIscroll-back\fP 액션으로 스크롤 되는 
+줄 수. 초기값은 1줄.
+.TP 8
+.B "signalInhibit (\fPclass\fB SignalInhibit)"
+시그날 금지. ``Main Options'' 차림표에서 이값을 바꿀 수 있다. 
+초기값은 ``false.''
+.TP 8
+.B "tekGeometry (\fPclass\fB Geometry)"
+Tektronix 창의 크기와 위치 지정.
+.TP 8
+.B "tekInhibit (\fPclass\fB TekInhibit)"
+true면 Tektronix 모드 접근을 금지한다.
+초기값은 ``false.''
+.TP 8
+.B "tekSmall (\fPclass\fB TekSmall)"
+true 면,
+Tektronix 모드 창이 그 크기와 위치가 지정되지 않았다면, 
+가장 작은 크기로 보여지게 한다. 이것은 \fBxterm\fR을 작게 
+보이고자 할 때 유용하게 쓰인다. 초기값은 ``false.''
+.TP 8
+.B "tekStartup (\fPclass\fB TekStartup)"
+\fIxterm\fP을 Tektronix 모드로 시작할 것인지 지정. 초기값은 ``false.''
+.TP 8
+.B "titeInhibit (\fPclass\fB TiteInhibit)"
+TERMCAP 값에 의해 \fIti\fP, \fIte\fP 문자열이 사용되면, 이것을 
+없앨 것인지를 지정한다.  
+.TP 8
+.B "translations (\fPclass\fB Translations)"
+글쇠와 다람쥐 단추 지정 리소스. 자세한 사항은 아래, 
+\fBACTIONS\fP 부분을 참조한다.
+.TP 8
+.B "visualBell (\fPclass\fB VisualBell)"
+벨 소리 대신 화면 깜빡임을 사용할 것인지를 지정한다. 
+초기값은 ``false.''
+.sp
+.PP
+다음 리소스들은 \fItek4014\fP 위젯에서 사용된다.
+.\".in +1in
+.TP 8
+.B "width (\fPclass\fB Width)"
+Tektronix 창의 가로 길이를 픽셀값으로 지정.
+.TP 8
+.B "height (\fPclass\fB Height)"
+Tektronix 창의 세로 길이를 픽셀값으로 지정.
+.TP 8
+.B "fontLarge (\fPclass\fB Font)"
+Tektronix 창의 큰 글꼴 지정
+.TP 8
+.B "font2 (\fPclass\fB Font)"
+두번째 글꼴 지정
+.TP 8
+.B "font3 (\fPclass\fB Font)"
+세번째 글골 지정
+.TP 8
+.B "fontSmall (\fPclass\fB Font)"
+작은 글꼴 지정.
+.TP 8
+.B "initialFont (\fPclass\fB InitialFont)"
+초기값으로 사용될 글꼴 지정. 초기값은 ``large.''
+이 값은 \fIset-tek-text\fP 액션으로 바꿀 수 있다.
+.TP 8
+.B "ginTerminator (\fPclass\fB GinTerminator)"
+이 리소스는 GIN 보고나, 상태 보고를 할 때 사용할 
+문자를 지정하는데, 사용할 수 있는 값은 ``none,'' ``CRonly,'' ``CR&EOT'' 
+이다. none은 마침 문자 없음, CRonly는 CR만 보냄, CR&EOT는 CR과 EOT 함께 
+보냄을 의미한다. 초기값은 ``none.''
+.\".in -1in
+.sp
+.PP
+다음에 오는 리소스들은 \fBxterm\fR 창에서 Ctrl 글쇠를 누르고 
+다람쥐 단추를 눌렀을 때 나타나는 각종 차림표 항목들과 관련된 것들이다. 
+자세한 이야기는 Athena \fBSimpleMenu\fP 위젯에서 다루고 있다. 
+.PP
+\fImainMenu\fP 부분:
+.\".in +1in
+.TP 8
+.B "securekbd (\fPclass\fB SmeBSB)"
+\fBsecure()\fP 액션 호출.
+.TP 8
+.B "allowsends (\fPclass\fB SmeBSB)"
+\fBallow-send-events(toggle)\fP 액션 호출.
+.TP 8
+.B "redraw (\fPclass\fB SmeBSB)"
+\fBredraw()\fP 액션 호출.
+.TP 8
+.B "line1 (\fPclass\fB SmeLine)"
+줄 첨가.
+.TP 8
+.B "suspend (\fPclass\fB SmeBSB)"
+job 제어를 지원하는 시스템에서 사용할 수 있는 
+\fBsend-signal(tstp)\fP 액션 호출.
+.TP 8
+.B "continue (\fPclass\fB SmeBSB)"
+\fBsend-signal(cont)\fP 액션 호출.
+.TP 8
+.B "interrupt (\fPclass\fB SmeBSB)"
+\fBsend-signal(int)\fP 액션 호출.
+.TP 8
+.B "hangup (\fPclass\fB SmeBSB)"
+\fBsend-signal(hup)\fP 액션 호출.
+.TP 8
+.B "terminate (\fPclass\fB SmeBSB)"
+\fBsend-signal(term)\fP 액션 호출.
+.TP 8
+.B "kill (\fPclass\fB SmeBSB)"
+\fBsend-signal(kill)\fP 액션 호출.
+.TP 8
+.B "line2 (\fPclass\fB SmeLine)"
+줄 첨가.
+.TP 8
+.B "quit (\fPclass\fB SmeBSB)"
+\fBquit()\fP 액션 호출.
+.\".in -1in
+.sp
+.PP
+\fIvtMenu\fP 부분:
+.\".in +1in
+.TP 8
+.B "scrollbar (\fPclass\fB SmeBSB)"
+\fBset-scrollbar(toggle)\fP 액션 호출.
+.TP 8
+.B "jumpscroll (\fPclass\fB SmeBSB)"
+\fBset-jumpscroll(toggle)\fP 액션 호출.
+.TP 8
+.B "reversevideo (\fPclass\fB SmeBSB)"
+\fBset-reverse-video(toggle)\fP 액션 호출.
+.TP 8
+.B "autowrap (\fPclass\fB SmeBSB)"
+\fBset-autowrap(toggle)\fP 액션 호출.
+.TP 8
+.B "reversewrap (\fPclass\fB SmeBSB)"
+\fBset-reversewrap(toggle)\fP 액션 호출.
+.TP 8
+.B "autolinefeed (\fPclass\fB SmeBSB)"
+\fBset-autolinefeed(toggle)\fP 액션 호출.
+.TP 8
+.B "appcursor (\fPclass\fB SmeBSB)"
+\fBset-appcursor(toggle)\fP 액션 호출.
+.TP 8
+.B "appkeypad (\fPclass\fB SmeBSB)"
+\fBset-appkeypad(toggle)\fP 액션 호출.
+.TP 8
+.B "scrollkey (\fPclass\fB SmeBSB)"
+\fBset-scroll-on-key(toggle)\fP 액션 호출.
+.TP 8
+.B "scrollttyoutput (\fPclass\fB SmeBSB)"
+\fBset-scroll-on-tty-output(toggle)\fP 액션 호출.
+.TP 8
+.B "allow132 (\fPclass\fB SmeBSB)"
+\fBset-allow132(toggle)\fP 액션 호출.
+.TP 8
+.B "cursesemul (\fPclass\fB SmeBSB)"
+\fBset-cursesemul(toggle)\fP 액션 호출.
+.TP 8
+.B "visualbell (\fPclass\fB SmeBSB)"
+\fBset-visualbell(toggle)\fP 액션 호출.
+.TP 8
+.B "marginbell (\fPclass\fB SmeBSB)"
+\fBset-marginbell(toggle)\fP 액션 호출.
+.TP 8
+.B "altscreen (\fPclass\fB SmeBSB)"
+이 부분은 현재 사용불가 상태이다.
+.TP 8
+.B "line1 (\fPclass\fB SmeLine)"
+줄 삽입.
+.TP 8
+.B "softreset (\fPclass\fB SmeBSB)"
+\fBsoft-reset()\fP 액션 호출.
+.TP 8
+.B "hardreset (\fPclass\fB SmeBSB)"
+\fBhard-reset()\fP 액션 호출.
+.TP 8
+.B "clearsavedlines" (\fPclass\fB SmeBSB)"
+\fBclear-saved-lines()\fP 액션 호출.
+.TP 8
+.B "line2 (\fPclass\fB SmeLine)"
+줄 삽입.
+.TP 8
+.B "tekshow (\fPclass\fB SmeBSB)"
+\fBset-visibility(tek,toggle)\fP 액션 호출.
+.TP 8
+.B "tekmode (\fPclass\fB SmeBSB)"
+\fBset-terminal-type(tek)\fP 액션 호출.
+.TP 8
+.B "vthide (\fPclass\fB SmeBSB)"
+\fBset-visibility(vt,off)\fP 액션 호출.
+.\".in -1in
+.sp
+.PP
+\fIfontMenu\fP 부분:
+.\".in +1in
+.TP 8
+.B "fontdefault (\fPclass\fB SmeBSB)"
+\fBset-vt-font(d)\fP 액션 호출.
+.TP 8
+.B "font1 (\fPclass\fB SmeBSB)"
+\fBset-vt-font(1)\fP 액션 호출.
+.TP 8
+.B "font2 (\fPclass\fB SmeBSB)"
+\fBset-vt-font(2)\fP 액션 호출.
+.TP 8
+.B "font3 (\fPclass\fB SmeBSB)"
+\fBset-vt-font(3)\fP 액션 호출.
+.TP 8
+.B "font4 (\fPclass\fB SmeBSB)"
+\fBset-vt-font(4)\fP 액션 호출.
+.TP 8
+.B "font5 (\fPclass\fB SmeBSB)"
+\fBset-vt-font(5)\fP 액션 호출.
+.TP 8
+.B "font6 (\fPclass\fB SmeBSB)"
+\fBset-vt-font(6)\fP 액션 호출.
+.TP 8
+.B "fontescape (\fPclass\fB SmeBSB)"
+\fBset-vt-font(e)\fP 액션 호출.
+.TP 8
+.B "fontsel (\fPclass\fB SmeBSB)"
+\fBset-vt-font(s)\fP 액션 호출.
+.\".in -1in
+.sp
+.PP
+\fItekMenu\fP 부분:
+.\".in +1in
+.TP 8
+.B "tektextlarge (\fPclass\fB SmeBSB)"
+\fBset-tek-text(l)\fP 액션 호출.
+.TP 8
+.B "tektext2 (\fPclass\fB SmeBSB)"
+\fBset-tek-text(2)\fP 액션 호출.
+.TP 8
+.B "tektext3 (\fPclass\fB SmeBSB)"
+\fBset-tek-text(3)\fP 액션 호출.
+.TP 8
+.B "tektextsmall (\fPclass\fB SmeBSB)"
+\fBset-tek-text(s)\fP 액션 호출.
+.TP 8
+.B "line1 (\fPclass\fB SmeLine)"
+줄 삽입.
+.TP 8
+.B "tekpage (\fPclass\fB SmeBSB)"
+\fBtek-page()\fP 액션 호출.
+.TP 8
+.B "tekreset (\fPclass\fB SmeBSB)"
+\fBtek-reset()\fP 액션 호출.
+.TP 8
+.B "tekcopy (\fPclass\fB SmeBSB)"
+\fBtek-copy()\fP 액션 호출.
+.TP 8
+.B "line2 (\fPclass\fB SmeLine)"
+줄 삽입.
+.TP 8
+.B "vtshow (\fPclass\fB SmeBSB)"
+\fBset-visibility(vt,toggle)\fP 액션 호출.
+.TP 8
+.B "vtmode (\fPclass\fB SmeBSB)"
+\fBset-terminal-type(vt)\fP 액션 호출.
+.TP 8
+.B "tekhide (\fPclass\fB SmeBSB)"
+\fBset-visibility(tek,toggle)\fP 액션 호출.
+.\".in -1in
+.sp
+.PP
+Athena Scrollbar 위젯을 위한 유용한 리소스들:
+.\".in +1in
+.TP 8
+.B "thickness (\fPclass\fB Thickness)"
+스크롤 막대의 가로 길이 픽셀값 지정.
+.TP 8
+.B "background (\fPclass\fB Background)"
+스크롤 막대의 배경색 지정.
+.TP 8
+.B "foreground (\fPclass\fB Foreground)"
+스크롤 막대의 전경색 지정. Xaw일 경우는 이 전경색과 배경색이 
+서로 섞겨서 스크롤 막대의 색이 된다.
+.\".in -1in
+.SH "다람쥐 사용법"
+.PP
+\fBxterm\fR의 VT102 창에서는 그 창에 보여지는 내용들(글자들)을 
+선택하고, 복사해서 다른 창에 붙히기를 할 수 있다.
+.PP
+선택 기능은 다람쥐를 사용할 때 글쇠 조합을 하지 않고 사용할 때나, 
+``shift'' 글쇠를 사용할 때 호출된다.
+이런 각 글쇠나 다람쥐 단추의 그 기능별 지정은 리소스 데이터베이스를 
+통해 바꿀 수 있다. 자세한 이야기는 \fBACTIONS\fP 부분에서 하고 있다.
+.PP
+다람쥐 왼쪽 단추는 텍스트를 cut 버퍼로 저장하는데 사용된다. 
+영역의 선택은 다람쥐 왼쪽 단추를 눌러 끌어 놓기를 하면된다. 
+이렇게 하면, 끌려진 부분은 역상으로 보여지며, 그 부분이 버퍼에 저장된다. 
+왼쪽 단추 두번 연속해서 누르면, 한 단어가 선택, 복사되고, 
+세번 연속해서 누르면 다람쥐 커서가 있는 그줄 전체가 선택, 복사된다.
+연속 누름인지 판단하는 것은 그 연속해서 누르는 시간에 의해서 
+정해진다. 이런 부분에 대한 자세한 이야기는 \fBX (3)\fR 매뉴얼 페이지를 
+참조한다. 이렇게 선택되어 역상으로 보여지는 부분은 다른 선택 영역이 
+지정되기 전까지 그대로 유지된다.
+.PP
+다람쥐 가운데 단추는 선택 영역의 내용을 입력 부분에서 그대로 
+복사한다. 즉, 마치 직접 사용자가 그 내용을 입력한것 처럼 할 수 있다.
+.PP
+다람쥐 오른쪽 단추는 현재 영역을 확장하는데 사용된다. 
+눈에 보이지는 않지만, 다람쥐 왼쪽 단추가 처음 한번 눌려진 장소가 
+선택 영역의 시작점이 된다. 그리고, 다람쥐 오른쪽 단추가 눌려지는 
+장소가 선택 영역의 마지막 점이 된다. 
+즉, 이미 선택 영역이 있다면, 그 선택영역의 확장이나 축소하는데, 
+다람쥐 오른쪽 단추를 사용할 수 있다. 
+.PP
+이런 선택, 복사, 붙히기 기능은 텍스트 기반으로 하는 각종 다른 풀그림에서도
+사용되어 질 수 있다. 굳이 같은 창이 아니어도 된다. 즉, 한쪽 창에서의 
+출력 글과를 다람쥐로 사용해서 선택 복사한 후, 그것을 다른 쪽 창에서 
+편집기를 열어, 그곳에 붙힐 수 있다. 
+이때 줄 바꿈 문자(일반적으로 Enter)도 그대로 복사, 붙히기가 된다. 
+이말은 한 명령이 텍스트에 보여질 때, 줄 바꿈 문자로 끝나게 된다면, 
+그 줄바꿈 문자까지 복사를 해서 쉘 프롬프트 상에서 붙히기를 하면, 
+그대로 실행될 수 있다는 이야기다. 
+.PP
+그러면, 하나의 팁으로 이미 스크롤 되어 화면에 보여지지 않는 내용부터 
+현재까지의 내용을 모두 복사해서 텍스트 파일로 저장하는 방법을 구현해 보자.
+.PP
+먼저 스크롤 막대를 다람쥐로 눌러 스크롤 영역의 시작점으로 간뒤, 
+그 부분의 첫줄 컷칸에 다람쥐 왼쪽 단추를 한번만 누른다. 
+.PP
+다음 스크롤 막대를 움직여 다시 현재 화면으로 돌아온 후, 
+다람쥐 오른쪽 단추를 한번만 누르면, 
+스크롤 전제 영역이 선택된다. (이때 주의할 점은 
+왼쪽 단추를 한번 누른 후 다시 다른 곳에서 왼쪽 다르면 그 선택
+영역의 시작점이 바뀌어 버린다.)
+.PP
+다음 편집기를 열어서 그곳에서 다람쥐 가운데 단추를 누르면, 
+스크롤의 전체 영역이 편집기에 나타난다. 
+.PP
+Tektronix 창에서는 VT102 창과 달리, 이 선택, 복사, 붙히기 기능을 
+제공하지 않는다. 
+이것은 Tektronix GIN 모드를 허락하고, 이 모드에서는 
+다람쥐 커서가 화살표로 보여진다. 
+이 창에서는 다람쥐의 단추가 각각 `l', `m', `r' 문자로 처리되고, 
+`shift'를 누르고 단추를 누르면, 각각 대문자로 처리된다. 
+그런데, 일반 글쇠와 다람쥐 단추 누름으로 생성되는 문자들의 구분은 
+최상위 비트로 판단한다. 하지만, Tektronix 터미날 모드에서는 
+사용될 수 없기에 이런 기능을 제공하지 못한다. 
+자세한 이야기는 
+.IR tty (4)
+매뉴얼을 참조한다.
+.SH 차림표
+.PP
+\fBXterm\fR에서는 
+.IR mainMenu ,
+.IR vtMenu ,
+.IR fontMenu ,
+.IR tekMenu 
+이름을 가진 네개의 차림표를 제공하고 있다. 
+각 차림표는 Ctrl 글쇠와 각 다람쥐 단추를 함께 누름으로 호출된다.
+대부분의 항목들은 \fBxterm\fR의 환경들을 전환(On/Off)하는 기능을 하고 
+있으며, \fImainMenu\fP의 항목목들은 VT102, Tektronix 창 모두에서 
+사용된다.
+The
+.B Secure Keyboard
+모드는 보안이 보장되지 않는 환경에서 비밀번호나, 기타 비밀이 보장되어야
+하는 내용을 입력할 때 사용된다. 자세한 이야기는 아래 
+.B 보안
+부분을 참조.
+.B Allow SendEvents 
+모드는 \fBxterm\fR에서 발생하는 각종 이벤트들을 외부에 알릴 것인지를 지정한다.
+다음에 나는 
+.BR Continue ,
+.BR Suspend ,
+.BR Interrupt ,
+.BR Hangup ,
+.BR Terminate ,
+.B Kill
+항목들은 각각 SIGCONT, SIGTSTP, SIGINT, SIGHUP, SIGTERM, SIGKILL 
+시그날을 \fBxterm\fR을 상위 프로세스 그룹으로한 각각의 하위 프로세스들에게
+보낸다.
+.B Continue(SIGCONT)
+기능은 프로세스 보류기능인 Ctrl-Z 가 눌려져 현재 보류되고 있는 
+프로세스를 다시 진행하는데 유용하게 쓰인다.
+.PP
+.I vtMenu
+차림표에서는 VT102 에뮬래이션에 대한 각종 기능들을 제어할 수 있다.
+이 차림표는 Ctrl 글쇠를 누르고 다람쥐 가운데 단추를 누름으로 호출된다.
+이 차림표에 있는 각종 기능들은 \fBxterm\fR에서 실행되는 각 풀그림들에 
+따라 자주 바뀌어야 하는 하는 기능들을 제공하고 있다. 
+가령, 어떤 풀그림에서는 역상(reverse) 일때가 보다 보기 좋고, 
+어떤 풀그림에서는 보통일 때가 보기 좋을 때가 있다. 이럴 때, 
+\fBxterm\fR 실행 도중에 언제든지 이 값을 바꿀 수 있도록 여기서 제공하고 
+있다.
+.PP
+\fIfontMenu\fP 차림표에서는 VT102 창에서 사용할 글꼴을 바꿀 수 있다.
+이 차림표는 Ctrl 글쇠를 누르고 다람쥐 오른쪽 단추를 누름으로 호출 된다.
+.PP
+.I tekMenu
+차림표에서는 Tektronix 에뮬래이션에서 사용할 수 있는 각종 기능들을 
+제어할 수 있다. 이 차림표는 Ctrl 글쇠를 누르고 Tektronix 창에서 
+다람쥐 가운데 단추를 누름으로 호출된다.
+차림표 안의 
+.B PAGE
+항목은 화면을 깨끗이 지우는데 사용된다.
+.SH 보안
+.PP
+X 시스템에서는 보안문제에 대해서 개념이 약간 다르다.
+\fIxdm\fP으로 돌아가는 대부분의 서버는 권한 부여에 대해서 
+``magic cookie''라는 것을 사용하는데, 이것은, 
+많은 사람들을 위한 각각의 보안 차별화를 부여할 수 있다. 
+만약에 서버의 접근을 제어하기 위한  host-based mechanism(?) 만을 
+사용한다면(\fIxhost(1)\fP 매뉴얼 참조), 그리고, 현재 사용자도 
+현재 호스트에 접근이 가능하고, 다른 사용자도 같은 호스트에서 
+클라이언트를 실행시킬 수 있는 권한이 있다면, 다른 사용자가, 
+현재 자신이 X 프로토콜로 보내는 신호를 훔쳐볼 수 있게 된다. 
+이런 상태에서 비밀번호나, 아니면, 보안상의 문제가 있는 내용을 
+입력해야 할 경우에, xterm에서는 이런 문제를 자체적으로 해결해서, 
+다른 사용자가 자신의 글쇠입력을 훔쳐보지 못하게 할 수 있다.
+.PP
+\fBxterm\fP 차림표에는 (위의 \fB차림표\fR 참조) \fBSecure Keyboard\fP
+항목이 있는데, 이것이 사용가능 상태가 되어 있으면, 
+글쇠 입력의 내용은 GrabKeyboard protocol 조사를 사용해서, 
+자체적으로 모든 것을 해결한다. 
+한 풀그림을 실행한 상태에서 비밀번호를 물어본다든지, 아니면, 
+보안상의 내용을 입력해야 할 경우에, \fBSecure Keyboard\fP 항목을 선택하고, 
+그 내용을 입력하고, 다시 \fBSecure Keyboard\fP 항목을 선택해서 
+이 기능을 사용불가 상태로 만들어 놓아야한다. 
+만약 이 기능을 계속 사용가능 상태로 해 놓고, 사용하게 된다면, 
+X 서버와 통신을 하지 않는 상태가 되기 때문에, 제대로 동작되지 않을 
+경우가 발생하기 한다. 
+이 기능이 사용가능 상태가 되면, 화면은 역상이 된다(전경색과 배경색이 바뀜).
+만약에 역상으로 되지 않는다면, 
+일단 이 기능이 제대로 작동되지 않는다고 의심할 필요가 있다.
+이런 경우에는 창을 아이콘으로 만든 후 다시 원래대로 해서 
+실행해 보기 바란다.
+.PP
+\fBSecure Keyboard\fP 모드는 xterm이 아이콘화 되었을 경우에는 
+자동으로 사용불가 상태가 된다. 또한 다시 원래 창 크기로 바뀌면, 
+지정한 대로 그 값이 지정된다. (이것은 xterm에서도 어쩔 수 없는 
+X 프로토콜의 기능이기 때문이다) 
+.SH "CHARACTER CLASSES"
+다람쥐 왼쪽 단추를 연속해서 두번 찍으면, 초기값으로, 
+하나의 단어가 선택된다. \- 이 말은 공백문자나, 구두점같은 것이 
+없는 상태의 연속하는 문자열만을 선택한다는 뜻이다. 
+그런데, 사용자마다 이 두번찍기로 해서 선택하고자 하는 것이 
+다를 것이다. 예를 들어, 파일이름에서 이런 공백문자나, 구두점같은 
+것이 있을 경우, 어떤 사람은 그 파일 전체 이름의 일부분만, 
+선택되기를 원하고, 또 어떤 사람은 파일 전체가 선택되기를 원할 
+것이다. 바로 이런 것을 지정하는 것이 \fIcharClass\fP
+리소스이다. 
+.PP
+이 리소스의 값은 \fIrange\fP:\fIvalue\fP 형식으로, 쉼표를 
+구분해서 여러개 지정할 수 있다. 
+\fIrange\fP에는 하나의 숫자나, 시작숫자-끝숫자 형식이 올 수있으며, 
+여기서 사용될 수 있는 숫자는 ASCII 코드값과 관련이 있다. (아래 테이블 참조)
+\fIvalue\fP에는 하나의 숫자가 사용되는데, 
+이것은 \fIrange\fP에서 지정한 문자들과 함께 처리될 문자를 지정한다.
+(일반적으로 알파벳만을 지정한다.)
+.PP
+초기값으로 지정된 테이블은 다음과 같다.
+.sp
+.in +8
+.ft C			\" Courier
+.nf
+static int charClass[128] = {
+/* NUL  SOH  STX  ETX  EOT  ENQ  ACK  BEL */
+    32,   1,   1,   1,   1,   1,   1,   1,
+/*  BS   HT   NL   VT   NP   CR   SO   SI */
+     1,  32,   1,   1,   1,   1,   1,   1,
+/* DLE  DC1  DC2  DC3  DC4  NAK  SYN  ETB */
+     1,   1,   1,   1,   1,   1,   1,   1,
+/* CAN   EM  SUB  ESC   FS   GS   RS   US */
+     1,   1,   1,   1,   1,   1,   1,   1,
+/*  SP    !    "    #    $    %    &    ' */
+    32,  33,  34,  35,  36,  37,  38,  39,
+/*   (    )    *    +    ,    \-    .    / */
+    40,  41,  42,  43,  44,  45,  46,  47,
+/*   0    1    2    3    4    5    6    7 */
+    48,  48,  48,  48,  48,  48,  48,  48,
+/*   8    9    :    ;    <    =    >    ? */
+    48,  48,  58,  59,  60,  61,  62,  63,
+/*   @    A    B    C    D    E    F    G */
+    64,  48,  48,  48,  48,  48,  48,  48,
+/*   H    I    J    K    L    M    N    O */
+    48,  48,  48,  48,  48,  48,  48,  48,
+/*   P    Q    R    S    T    U    V    W */ 
+    48,  48,  48,  48,  48,  48,  48,  48,
+/*   X    Y    Z    [    \\    ]    ^    _ */
+    48,  48,  48,  91,  92,  93,  94,  48,
+/*   `    a    b    c    d    e    f    g */
+    96,  48,  48,  48,  48,  48,  48,  48,
+/*   h    i    j    k    l    m    n    o */
+    48,  48,  48,  48,  48,  48,  48,  48,
+/*   p    q    r    s    t    u    v    w */
+    48,  48,  48,  48,  48,  48,  48,  48,
+/*   x    y    z    {    |    }    ~  DEL */
+    48,  48,  48, 123, 124, 125, 126,   1};
+.fi
+.ft P
+.in -8
+.sp
+예를 들어, ``33:48,37:48,45-47:48,64:48'' 이런 값이 지정된다면, 
+문자(알파벳)와 함께, !, %, \-, ., /, @ 기호들도 함께 
+선택된다. 이것은 파일이름이나, e\-mail 주소 같은 것을 
+선택하는데 유용하다. (참고로, 아쉽게도 한글 코드에 대한 지정이 
+없다. 한글에서도 이런 두번찍기 기능이 제대로 작동되려면, 
+소스를 수정하던지, 아니면, 로케일 문제에 대한 근본적인 
+해결책이 있어야 할 것 같다 - 옮긴이 말)
+.SH ACTIONS
+액션이라는 \fBxterm\fR 안에서 일어나는 각종 반응들에 대한 것을 설명한다. 
+이 액션의 글쇠지정을 바꿈으로 단출글쇠나 다람쥐 단추를 바꿀 수 있으며, 
+자신만의 고유한 \fBxterm\fR을 꾸밀 수도 있다. 
+다음에 나오는 액션들은 \fIvt100\fP, \fItek4014\fP, \fB변환\fR 리소스에서
+사용되어 진다:
+.TP 8
+.B "bell([\fIpercent\fP])"
+벨 소리를 냄(^G 문자를 출력한다)
+.TP 8
+.B "ignore()"
+이벤트를 무시하지만, escape 처리의 특별 포인터 위치를 검사한다.
+.TP 8
+.B "insert()"
+문자나, 글쇠가 눌려져 조합되는 문자열을 삽입.
+.TP 8
+.B "insert-seven-bit()"
+\fBinsert()\fP와 같은 역활을 하지만 7bit 문자로 처리.
+.TP 8
+.B "insert-eight-bit()"
+8bit 문자로 삽입. 이 액션은 \fBeightBitInput\fP 리소스값에 따라,
+다르게 동작할 수도 있다.
+.TP 8
+.B "insert-selection(\fIsourcename\fP [, ...])"
+지정한 cutbuffer의 내용을 삽입.
+선택영역으로 사용할 영역은 주로 \fIPRIMARY\fP, \fISECONDARY\fP, \fICLIPBOARD\fP
+값이 사용되고, cutbuffer의 이름은 주로 \fICUT_BUFFER0\fP에서 
+\fICUT_BUFFER7\fP 값을 가진다.
+.TP 8
+.B "keymap(\fIname\fP)"
+글쇠지정. \fIname\fP 값이 \fINone\fP이면, 초기값으로 되돌림.
+.TP 8
+.B "popup-menu(\fImenuname\fP)"
+차림표 호출. \fImenuname\fP에 사용할 수 있는 값은,
+\fImainMenu\fP, \fIvtMenu\fP, \fIfontMenu\fP, \fItekMenu\fP.
+.TP 8
+.B "secure()"
+mainMenu에서 지정한는 \fISecure Keyboard\fP 모드를 토클한다.
+.TP 8
+.B "select-start()"
+현재 포인터를 선택영역의 시작으로 지정.
+.TP 8
+.B "select-extend()"
+선택영역 확장. 이 액션은 다람쥐가 움직이고 있을 때 가능하다.
+.TP 8
+.B "select-end(\fIdestname\fP [, ...])"
+현재 포인터를 선택영역의 끝으로 지정. 그리고 선택 영역을 
+\fIdestname\fP으로 cut 버퍼에 저장한다.
+.TP 8
+.B "select-cursor-start()"
+\fBselect-start\fP와 비슷하나, 여기서는 텍스트 커서가 있는 곳을 
+시작으로 한다.
+.TP 8
+.B "select-cursor-end(\fIdestname\fP [, ...])"
+\fBselect-start\fP와 비슷하나, 여기서는 텍스트 커서가 있는 곳을
+선택의 끝으로 하고, \fIdestname\fP으로 cut 버퍼에 저장한다.
+.TP 8
+.B "set-vt-font(\fId/1/2/3/4/5/6/e/s\fP [,\fInormalfont\fP [, \fIboldfont\fP]])"
+VT102 창에서 사용할 글꼴 지정.
+첫번째 인자는 글꼴 번호. D, 또는 d는 초기값.
+1-6이 지정되면, 리소스에서 지정된 각각의 글꼴을 이용한다. 
+E 또는 e는 보통 글씨의 글꼴과 굵은 글씨의 글꼴을 직접 지정해 준다. 
+S 또는 s는 \fIxfontsel(1)\fP과 같은 직접 글꼴 고르기 풀그림을 
+실행시켜 글꼴을 고른다.
+.TP 8
+.B "start-extend()"
+\fBselect-start\fP 액션과 비슷하나, 그 시작점을 현재 
+포인터 위치로 확장한다.
+.TP 8
+.B "start-cursor-extend()"
+\fBselect-start\fP 액션과 비슷하나, 그 시작점을 현재
+텍스트 커서가 있는 위치로 확장한다.
+.TP 8
+.B "string(\fI문자열\fP)"
+\fI문자열\fR을 삽입한다. 문자열 사이 공백문자가 있다면, 
+따움표로 묶어준다. 문자열이 ``0x'' 글자로 시작한다면, 
+그것은 16진수로 처리된다.
+.TP 8
+.B "scroll-back(\fIcount\fP [,\fIunits\fP])"
+화면을 \fIcount\fR 단위만큼 스크롤 한다. 
+\fIunits\fP 인자가 그 단위인데, 여기서 사용할 수 있는 값은, 
+\fIpage\fP, 또는 \fIhalfpage\fP, \fIpixel\fP, \fIline\fP 이다. 
+.TP 8
+.B "scroll-forw(\fIcount\fP [,\fIunits\fP])"
+\fBscroll-back\fP 액션과 같은 기능을 하나, 그 방향이 반대이다. 
+\fBscroll-back\fP 액션은 이전(위, 뒤)으로 스크롤하며, 
+\fBscroll-forw\fP 액션은 다음(아래, 앞)으로 스크롤 한다.
+.TP 8
+.B "allow-send-events(\fIon/off/toggle\fP)"
+\fBallowSendEvents\fP 리소스 값을 토클시킴.
+.TP 8
+.B "redraw()"
+\fImainMenu\fP 안의 \fIredraw\fP 항목이 호출 될 때 실행할 화면 갱신.
+.TP 8
+.B "send-signal(\fIsigname\fP)"
+시그날 보내기. \fIsigname\fP 값으로 사용될 수 있는 것은.
+.BR suspend ,
+.BR continue ,
+.BR interrupt ,
+.BR hangup ,
+.BR terminate ,
+.BR kill
+이다. 
+.TP 8
+.B "quit()"
+SIGHUP 시그날을 보내서 하위 풀그림을 종료시킨다. 
+.TP 8
+.B "set-scrollbar(\fIon/off/toggle\fP)"
+\fBscrollbar\fP 리소스 값을 지정하거나 전환한다. 
+.TP 8
+.B "set-jumpscroll(\fIon/off/toggle\fP)"
+\fBjumpscroll\fP 리소스 값을 지정하거나 전환한다.
+.TP 8
+.B "set-reverse-video(\fIon/off/toggle\fP)"
+\fIreverseVideo\fP 리소스 값을 지정하거나 전환한다.
+.TP 8
+.B "set-autowrap(\fIon/off/toggle\fP)"
+자동 줄 바꿈 기능을 지정하거나 전환한다.
+.TP 8
+.B "set-reversewrap(\fIon/off/toggle\fP)"
+\fBreverseWrap\fP 리소스 값을 지정하거나 전환한다.
+.TP 8
+.B "set-autolinefeed(\fIon/off/toggle\fP)"
+자동으로 linefeed 문자를 삽입하는 기능을 지정하거나 전환한다.
+.TP 8
+.B "set-appcursor(\fIon/off/toggle\fP)"
+Application Cursor Key mode 값을 지정하거나 전환한다.
+.TP 8
+.B "set-appkeypad(\fIon/off/toggle\fP)"
+Application Keypad mode 값을 지정하거나 전환한다.
+.TP 8
+.B "set-scroll-on-key(\fIon/off/toggle\fP)"
+\fBscrollKey\fP 리소스 값을 지정하거나 전환한다.
+.TP 8
+.B "set-scroll-on-tty-output(\fIon/off/toggle\fP)"
+\fBscrollTtyOutput\fP 리소스 값을 지정하거나 전환한다.
+.TP 8
+.B "set-allow132(\fIon/off/toggle\fP)"
+\fBc132\fP 리소스 값을 지정하거나 전환한다.
+.TP 8
+.B "set-cursesemul(\fIon/off/toggle\fP)"
+\fBcurses\fP 리소스 값을 지정하거나 전환한다.
+.TP 8
+.B "set-visual-bell(\fIon/off/toggle\fP)"
+\fBvisualBell\fP 리소스 값을 지정하거나 전환한다.
+.TP 8
+.B "set-marginbell(\fIon/off/toggle\fP)"
+\fBmarginBell\fP 리소스 값을 지정하거나 전환한다.
+.TP 8
+.B "set-altscreen(\fIon/off/toggle\fP)"
+지난 화면과 현재 화면 사이를 전환한다.
+.TP 8
+.B "soft-reset()"
+스크롤 영역을 재 설정한다. 이 기능은 \fIvtMenu\fP의 \fBsoftreset\fP
+항목에서도 호출될 수 있다.
+.TP 8
+.B "hard-reset()"
+스크롤 영역, 탭, 창크기, 커서 글쇠를 재설정하고, 화면을 모두 지운다. 
+이 기능은 \fIvtMenu\fP의 \fBhardreset\fP 항목에서도 호출될 수 있다.
+.TP 8
+.B "clear-saved-lines()"
+\fBhard-reset()\fP 액션과 같은 기능을 하지만, 스크롤 영역에 남아 
+내용까지 모두 지워버린다. 이 기능은 \fIvtMenu\fP의 \fBclearsavedlines\fP 
+항목에서도 호출될 수 있다.
+.TP 8
+.B "set-terminal-type(\fItype\fP)"
+터미날 형태를 지정하는 것으로 \fItype\fP 값에는 
+\fIvt\fP 또는 \fItek\fP 값이 사용된다. 
+이 기능은 \fIvtMenu\fP의 \fBtekmode\fP 항목이나, 
+\fItekMenu\fP의 \fBvtmode\fP 항목에서 호출된다.
+.TP 8
+.B "set-visibility(\fIvt/tek\fP,\fIon/off/toggle\fP)"
+\fIvt\fP 또는 \fItek\fP 창을 보일 것인지를 지정한다. 
+\fIvtMenu\fP의 \fBtekshow\fP, \fBvthide\fP 항목과 
+\fItekMenu\fP의 \fBvtshow\fP, \fBtekhide\fP 항목에서 호출된다.
+.TP 8
+.B "set-tek-text(\fIlarge/2/3/small\fP)"
+Tektronix 창에서 사용할 글꼴을 지정한다. 이것은 
+\fBtektextlarge\fP, \fBtektext2\fP, \fBtektext3\fP 리소스 값들을 
+각각 바꾼다. 이 액션은 Tektronix 창만을 대상으로 하고 있다.
+.TP 8
+.B "tek-page()"
+Tektronix 창 화면을 모두 지운다. 이 기능은 
+\fItekMenu\fP의 \fBtekpage\fP 항목에서도 호출 될 수 있다.
+.TP 8
+.B "tek-reset()"
+Tektronix 창을 재설정한다.
+.TP 8
+.B "tek-copy()"
+현재 창에 나타난 내용을 현재 경로에서 COPY라는 이름으로 시작하는 
+파일로 저장한다. (위의 \fBEMULATIONS\fR 부분 참조)
+.TP 8
+.B "visual-bell()"
+창 화면을 반짝인다. 이것은 벨 소리를 나게하는 것 대신에, 
+화면을 깜박거리게 한다.
+.PP
+Tektronix 창에서는 다음의 액션을 사용할 수 있다:
+.TP 8
+.B "gin-press(\fIl/L/m/M/r/R\fP)"
+그래픽 입력 코드를 보낸다.
+.PP
+VT102 창에서의 글쇠지정 초기값은 다음과 같다:
+.sp
+.in +4
+.DS
+.TA 2.5i
+.ta 2.5i
+.nf
+ Shift <KeyPress> Prior:	scroll-back(1,halfpage) \\n\\
+  Shift <KeyPress> Next:	scroll-forw(1,halfpage) \\n\\
+Shift <KeyPress> Select:	select-cursor-start() \\
+	select-cursor-end(PRIMARY, CUT_BUFFER0) \\n\\
+Shift <KeyPress> Insert:	insert-selection(PRIMARY, CUT_BUFFER0) \\n\\
+        ~Meta<KeyPress>:	insert-seven-bit() \\n\\
+         Meta<KeyPress>:	insert-eight-bit() \\n\\
+       !Ctrl <Btn1Down>:	popup-menu(mainMenu) \\n\\
+  !Lock Ctrl <Btn1Down>:	popup-menu(mainMenu) \\n\\
+       ~Meta <Btn1Down>:	select-start() \\n\\
+     ~Meta <Btn1Motion>:	select-extend() \\n\\
+       !Ctrl <Btn2Down>:	popup-menu(vtMenu) \\n\\
+  !Lock Ctrl <Btn2Down>:	popup-menu(vtMenu) \\n\\
+ ~Ctrl ~Meta <Btn2Down>:	ignore() \\n\\
+   ~Ctrl ~Meta <Btn2Up>:	insert-selection(PRIMARY, CUT_BUFFER0) \\n\\
+       !Ctrl <Btn3Down>:	popup-menu(fontMenu) \\n\\
+  !Lock Ctrl <Btn3Down>:	popup-menu(fontMenu) \\n\\
+ ~Ctrl ~Meta <Btn3Down>:	start-extend() \\n\\
+     ~Meta <Btn3Motion>:	select-extend() \\n\\
+                <BtnUp>:	select-end(PRIMARY, CUT_BUFFER0) \\n\\
+              <BtnDown>:	bell(0)
+.fi
+.DE
+.sp
+.in -4
+.PP
+Tektronix 창에서의 글쇠지정 초기값은 다음과 같다:
+.sp
+.in +4
+.DS
+.TA 2.5i
+.ta 2.5i
+.nf
+      ~Meta<KeyPress>: 	insert-seven-bit() \\n\\
+       Meta<KeyPress>: 	insert-eight-bit() \\n\\
+     !Ctrl <Btn1Down>: 	popup-menu(mainMenu) \\n\\
+!Lock Ctrl <Btn1Down>: 	popup-menu(mainMenu) \\n\\
+     !Ctrl <Btn2Down>: 	popup-menu(tekMenu) \\n\\
+!Lock Ctrl <Btn2Down>: 	popup-menu(tekMenu) \\n\\
+Shift ~Meta<Btn1Down>:	gin-press(L) \\n\\
+      ~Meta<Btn1Down>:	gin-press(l) \\n\\
+Shift ~Meta<Btn2Down>:	gin-press(M) \\n\\
+      ~Meta<Btn2Down>:	gin-press(m) \\n\\
+Shift ~Meta<Btn3Down>:	gin-press(R) \\n\\
+      ~Meta<Btn3Down>:	gin-press(r)
+.fi
+.DE
+.sp
+.in -4
+.PP
+다음은 \fBkeymap()\fP 기능의 사용법과 상용구(commonly-typed works)
+지정에 대한 예제이다:
+.sp
+.in +4
+.nf
+.DS
+.TA .5i 1.5i
+.ta .5i 1.5i
+.nf
+*VT100.Translations: #override <Key>F13: keymap(dbx)
+*VT100.dbxKeymap.translations: \\
+	<Key>F14:	keymap(None) \\n\\
+	<Key>F17:	string("next") string(0x0d) \\n\\
+	<Key>F18:	string("step") string(0x0d) \\n\\
+	<Key>F19:	string("continue") string(0x0d) \\n\\
+	<Key>F20:	string("print ") insert-selection(PRIMARY, CUT_BUFFER0)
+.fi
+.DE
+.sp
+.in -4
+.SH 환경변수
+\fIXterm\fR에서는 창의 모양에 대한 "TERM", "TERMCAP" 환경 변수를 
+제공하고, 
+창을 어디서 사용할 것인가에 대한 "DISPLAY" 변수를 제공하고, 
+.I xterm 
+창의 ID를 위해서 "WINDOWID" 변수를 제공한다.
+.SH "관련 항목"
+resize(1), X(1), pty(4), tty(4)
+.br
+\fIXterm Control Sequences\fP
+.SH 벌레
+.PP
+Large pastes 기능은 어떤 시스템에서는 작동되지 않는다. 
+이것은 \fIxterm\fP의 버그가 아니라, 그 시스템의 pseudo 터미날 드라이버
+벌레이다. \fIxterm\fP은 pty그 그 처리할 수 있는 데이타 처리 속도만큼만
+large pastes를 pty에 공급한다. 이때, 어떤 pty 드라이버는 그 자료를 
+성공적으로 기록했는지에 대한 충분한 정보를 리턴하지 못한다.
+.PP
+많은 옵션은 \fIxterm\fP이 실행된 후에는 다시 지정되지 못한다.
+.PP
+사용할 수 있는 글꼴은 fixed-width, character-cell 형태의 글꼴 뿐이다.
+.PP
+이 풀그림은 아직 고칠점이 많다. 
+각 함수(섹션, 루틴)들이 보다 세분화 되어야하며, 여러가지 터미날들을
+위젯 수준으로 지원해야할 것이다. 가장 이상적인 형태는 여러 터미날 
+흉네내기를 위젯 수준으로 하나의 리소스 지정으로 그 터미날을 구현
+할 수 있도록 하는 것일 것이다.
+.PP
+Tek 복사 파일 이름 지정을 하는 대화상자가 필요하다.
+.SH 만든이
+아랫 사람들 외에도 많은 사람들이 이 풀그림 제작에 참가했다:
+.sp
+Loretta Guarino Reid (DEC-UEG-WSL), 
+Joel McCormack (DEC-UEG-WSL), Terry Weissman (DEC-UEG-WSL),
+Edward Moy (Berkeley), Ralph R. Swick (MIT-Athena),
+Mark Vandevoorde (MIT-Athena), Bob McNamara (DEC-MAD),
+Jim Gettys (MIT-Athena), Bob Scheifler (MIT X Consortium), Doug Mink (SAO),
+Steve Pitschke (Stellar), Ron Newman (MIT-Athena), Jim Fulton (MIT X 
+Consortium), Dave Serisky (HP), Jonathan Kamens (MIT-Athena)
+.SH "한텀 이야기"
+\fBhanterm\fR도 \fBxterm\fR을 기반으로 만들어졌기에, 거의 모든 옵션과 
+리소스와 액션을 그대로 사용할 수 있다. 단지 차이점이라면, 
+.PP
+Tektronix 창 기능이 없다는 것과,
+.br
+한글 폰트를 위한 \fB\-hfn\fR 옵션과 \fBhangulFont\fR 리소스가 추가되었고,
+.br
+한글 자판을 위한 \fBhangulKeyboard\fR 리소스가 추가되었다. 이 리소스의 인자는 
+\fB2\fR(두벌식)또는 \fB3\fR(세벌식)이다.
+

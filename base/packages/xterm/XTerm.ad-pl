@@ -1,0 +1,307 @@
+*saveLines: 1024
+
+*SimpleMenu*BackingStore: NotUseful
+*SimpleMenu*menuLabel.font: -adobe-helvetica-bold-r-normal--*-120-*-*-*-*-iso8859-*
+*SimpleMenu*menuLabel.vertSpace:	100
+*SimpleMenu*HorizontalMargins: 16
+*SimpleMenu*Sme.height:	16
+
+*SimpleMenu*Cursor: left_ptr
+
+*mainMenu.Label:			Opcje g³ówne
+*mainMenu*toolbar*Label:		Pasek narzêdziowy
+*mainMenu*securekbd*Label:		Zabezpiecz klawiaturê
+*mainMenu*allowsends*Label:		Zezwalaj SendEvents
+*mainMenu*redraw*Label:			Od¶wie¿ zawarto¶æ okna
+*mainMenu*logging*Label:		Loguj do pliku
+*mainMenu*print*Label:			Drukuj okno
+*mainMenu*print-redir*Label:		Przekieruj na drukarkê
+*mainMenu*eightBit*Label:		8-bitowe sekwencje kontrolne
+*mainMenu*backarrow key*Label:		Backarrow Key (BS/DEL)
+*mainMenu*num-lock*Label:		Alt/NumLock Modifiers
+*mainMenu*alt-esc*Label:		Alt Sends Escape
+*mainMenu*meta-esc*Label:		Meta Sends Escape
+*mainMenu*delete-is-del*Label:		Delete is DEL
+*mainMenu*oldFunctionKeys*Label:	Old Function-Keys
+*mainMenu*sunFunctionKeys*Label:	Sun Function-Keys
+*mainMenu*sunKeyboard*Label:		VT220 Keyboard
+*mainMenu*hpFunctionKeys*Label:		HP Function-Keys
+*mainMenu*scoFunctionKeys*Label:	SCO Function-Keys
+*mainMenu*suspend*Label:		Wy¶lij sygna³ STOP
+*mainMenu*continue*Label:		Wy¶lij sygna³ CONT
+*mainMenu*interrupt*Label:		Wy¶lij sygna³ INT
+*mainMenu*hangup*Label:			Wy¶lij sygna³ HUP
+*mainMenu*terminate*Label:		Wy¶lij sygna³ TERM
+*mainMenu*kill*Label:			Wy¶lij sygna³ KILL
+*mainMenu*quit*Label:			Koniec
+
+*vtMenu.Label:				Opcje terminala
+*vtMenu*scrollbar*Label:		W³±cz pasek przewijania
+*vtMenu*jumpscroll*Label:		W³±cz Jump Scroll
+*vtMenu*reversevideo*Label:		Zamieñ kolory t³a i fontu
+*vtMenu*autowrap*Label:			W³±cz automatyczne zawijanie linii
+*vtMenu*reversewrap*Label:		W³±cz odwrotne zawijanie linii
+*vtMenu*autolinefeed*Label:		W³±cz Auto Linefeed
+*vtMenu*appcursor*Label:		W³acz dla aplikacji klawiaturê kursorów
+*vtMenu*appkeypad*Label:		W³acz dla aplikacji klawiaturê numeryczn±
+*vtMenu*scrollkey*Label:		Przewijaj w dó³ po naci¶niêciu klawisza
+*vtMenu*scrollttyoutput*Label:		Przewijaj w dó³ po dowolnej akcji terminala
+*vtMenu*allow132*Label:			Zezwól na prze³±czanie 80/132 kolumn
+*vtMenu*cursesemul*Label:		W³acz emulacjê kursora
+*vtMenu*visualbell*Label:		W³±cz sygna³ wizualny
+*vtMenu*poponbell*Label:		Enable Pop on Bell
+*vtMenu*marginbell*Label:		W³±cz dzwonek marginesu
+*vtMenu*cursorblink*Label:		Enable Blinking Cursor
+*vtMenu*titeInhibit*Label:		Enable Alternate Screen Switching
+*vtMenu*activeicon*Label:		Enable Active Icon
+*vtMenu*softreset*Label:		Wykonaj miekki reset
+*vtMenu*hardreset*Label:		Wykonaj pe³ny reset
+*vtMenu*clearsavedlines*Label:		Reset i wyczyszcznie bufora terminala
+*vtMenu*tekshow*Label:			Poka¿ okno Tektronic
+*vtMenu*tekmode*Label:			Prze³±cz w tryb Tek
+*vtMenu*vthide*Label:			Ukryj okno terminala
+*vtMenu*altscreen*Label:		Poka¿ alternatywny obraz
+
+*fontMenu.Label:			Font terminala
+*fontMenu*fontdefault*Label:		Domy¶lny   (iso-8859-2)
+*VT100*font:				-misc-fixed-medium-r-*-*-13-*-*-*-*-*-*-2
+*fontMenu*font1*Label:			Nieczytelny (iso-8859-2)
+*VT100*font1:				-misc-fixed-medium-r-*-*-7-*-*-*-*-*-*-2
+*fontMenu*font2*Label:			Bardzo ma³y (iso-8859-2)
+*VT100*font2:				-misc-fixed-medium-r-*-*-10-*-*-*-*-*-*-2
+*fontMenu*font3*Label:			Ma³y        (iso-8859-2)
+*VT100*font3:				-misc-fixed-medium-r-semicondensed-*-13-*-*-*-*-*-*-2
+*fontMenu*font4*Label:			¦redni      (iso-8859-2)
+*VT100*font4:				-misc-fixed-medium-r-*-*-15-*-*-*-*-*-*-2
+*fontMenu*font5*Label:			Du¿y        (iso-8859-2)
+*VT100*font5:				-misc-fixed-medium-r-*-*-18-*-*-*-*-*-*-2
+*fontMenu*font6*Label:			Bardzo du¿y (iso-8859-2)
+*VT100*font6:				-misc-fixed-medium-r-*-*-20-*-*-*-*-*-*-2
+*fontMenu*fontescape*Label:		Escape Sequence
+*fontMenu*fontsel*Label:		Zaznaczony
+
+!fontescape and fontsel overridden by application
+
+*fontMenu*font-linedrawing*Label:	Font do rysowania linii
+*fontMenu*font-doublesize*Label:	Font o podwójnym rozmiarze
+*fontMenu*font-loadable*Label:		Programowe fonty VT220
+*fontMenu*render-font*Label:		Fonty TrueType
+*fontMenu*utf8-mode*Label:		UTF-8
+
+*VT100.utf8Fonts.font2:	-misc-fixed-medium-r-normal--8-80-75-75-c-50-iso10646-1
+*VT100.utf8Fonts.font:	-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+*VT100.utf8Fonts.font3:	-misc-fixed-medium-r-normal--14-130-75-75-c-70-iso10646-1
+*VT100.utf8Fonts.font4:	-misc-fixed-medium-r-normal--13-120-75-75-c-80-iso10646-1
+*VT100.utf8Fonts.font5:	-misc-fixed-medium-r-normal--18-120-100-100-c-90-iso10646-1
+*VT100.utf8Fonts.font6:	-misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1
+
+*tekMenu.Label:				Opcje terminala Tektronix
+*tekMenu*tektextlarge*Label:		Du¿y font
+*tekMenu*tektext2*Label:		Rozmiar #2 fontu
+*tekMenu*tektext3*Label:		Rozmiar #3 fontu
+*tekMenu*tektextsmall*Label:		Ma³y font
+*tekMenu*tekpage*Label:			PAGE
+*tekMenu*tekreset*Label:		RESET
+*tekMenu*tekcopy*Label:			COPY
+*tekMenu*vtshow*Label:			Poka¿ okno terminala
+*tekMenu*vtmode*Label:			Prze³±cz na tryb terminala
+*tekMenu*tekhide*Label:			Ukryj okno Tektronic
+
+*tek4014*fontLarge: 9x15
+*tek4014*font2: 8x13
+*tek4014*font3: 6x13
+*tek4014*fontSmall: 6x10
+
+
+! This file causes when loaded using xrdb correct behaviour of xterm
+! if you are using enclosed xterm.tcap and xterm.ti.
+! Some keys would never normally work if they weren't here (like Alt
+! something), some key definitions differ from one termcap/terminfo
+! to the other. You may delete any line if you find out that mc
+! sends exactly that string which is mentioned here.
+! See xterm(1).
+! Either put this into your ~/.Xdefaults, or to app-defaults/XTerm
+! or wherever it will be loaded into xrm from.
+! To know, why this works, see Xt documentation (appendix B).
+! On some systems you may want to replace the a (alt) modifiers with
+! m (meta) modifier in front of some <Key> events.
+*VT100.Translations: #override \
+	Alt Ctrl<Btn4Down>: string(0x1b) string("OA")\n\
+	Alt Ctrl<Btn5Down>: string(0x1b) string("OB")\n\
+	Alt<Btn4Down>: string(0x1b) string("OA") string(0x1b) string("OA") string(0x1b) string("OA") string(0x1b) string("OA") string(0x1b) string("OA")\n\
+	Alt<Btn5Down>: string(0x1b) string("OB") string(0x1b) string("OB") string(0x1b) string("OB") string(0x1b) string("OB") string(0x1b) string("OB")\n\
+	Shift<Btn4Down>: scroll-back(1,page)\n\
+	Shift<Btn5Down>: scroll-forw(1,page)\n\
+	Ctrl<Btn4Down>: scroll-back(1,line)\n\
+	Ctrl<Btn5Down>: scroll-forw(1,line)\n\
+	<Btn4Down>: scroll-back(5,line)\n\
+	<Btn5Down>: scroll-forw(5,line)\n\
+	@Num_Lock<Key>KP_0: string(0)\n\
+	@Num_Lock<Key>KP_1: string(1)\n\
+	@Num_Lock<Key>KP_2: string(2)\n\
+	@Num_Lock<Key>KP_3: string(3)\n\
+	@Num_Lock<Key>KP_4: string(4)\n\
+	@Num_Lock<Key>KP_5: string(5)\n\
+	@Num_Lock<Key>KP_6: string(6)\n\
+	@Num_Lock<Key>KP_7: string(7)\n\
+	@Num_Lock<Key>KP_8: string(8)\n\
+	@Num_Lock<Key>KP_9: string(9)\n\
+	@Num_Lock<Key>KP_Add: string(+)\n\
+	@Num_Lock<Key>KP_Decimal: string(.)\n\
+	@Num_Lock<Key>KP_Divide: string(/)\n\
+	@Num_Lock<Key>KP_Enter: string(\015)\n\
+	@Num_Lock<Key>KP_Equal: string(=)\n\
+	@Num_Lock<Key>KP_Multiply: string(*)\n\
+	@Num_Lock<Key>KP_Subtract: string(-)\n\
+	<Key>KP_Add: string(+)\n\
+	<Key>KP_Divide: string(/)\n\
+	<Key>KP_Enter: string(\015)\n\
+	<Key>KP_Equal: string(=)\n\
+	<Key>KP_Multiply: string(*)\n\
+	<Key>KP_Subtract: string(-)\n\
+	Shift<Key>KP_Home: scroll-back(100,page)\n\
+	Shift<Key>KP_End: scroll-forw(100,page)\n\
+	Shift<Key>Prior:scroll-back(1,page)\n\
+	Shift<Key>Next:scroll-forw(1,page)\n\
+	<Key>F16: start-extend() select-end(PRIMARY, CUT_BUFFER0, CLIPBOARD)\n\
+	<Key>F18: insert-selection(PRIMARY, CLIPBOARD)\n\
+	<Key>F27: scroll-back(100,page)\n\
+	<Key>R13: scroll-forw(100,page)\n\
+	Ctrl<Key>Home: string(0x1b) string("[1;5H")\n\
+	Shift<Key>Home: string(0x1b) string("[1;2H")\n\
+	Ctrl<Key>End: string(0x1b) string("[1;5F")\n\
+	Shift<Key>End: string(0x1b) string("[1;2F")\n\
+	Ctrl<Key>Insert: string(0x1b) string("[2;5~")\n\
+	Shift<Key>Insert: string(0x1b) string("[2;2~")\n\
+	~Meta<Key>Insert: string(0x1b) string("[2~")\n\
+	Meta<Key>Insert: string(0x1b) string(0x1b) string("[2~")\n\
+	Ctrl<Key>Delete: string(0x1b) string("[3;5~")\n\
+	Shift<Key>Delete: string(0x1b) string("[3;2~")\n\
+	~Meta<Key>Delete: string(0x1b) string("[3~")\n\
+	Meta<Key>Delete: string(0x1b) string(0x1b) string("[3~")\n\
+	Ctrl<Key>Page_Up: string(0x1b) string("[5;5~")\n\
+	~Meta<Key>Page_Up: string(0x1b) string("[5~")\n\
+	Meta<Key>Page_Up: string(0x1b) string(0x1b) string("[5~")\n\
+	Ctrl<Key>Page_Down: string(0x1b) string("[6;5~")\n\
+	~Meta<Key>Page_Down: string(0x1b) string("[6~")\n\
+	Meta<Key>Page_Down: string(0x1b) string(0x1b) string("[6~")\n\
+	~Meta<Key>BackSpace: string(0x08)\n\
+	Meta<Key>BackSpace: string(0x1b) string(0x08)\n\
+	Ctrl Shift<Key>Up: string(0x1b) string("[1;6A")\n\
+	Ctrl<Key>Up: string(0x1b) string("[1;5A")\n\
+	Shift<Key>Up: string(0x1b) string("[1;2A")\n\
+	Meta<Key>Up: string(0x1b) string("[1;3A")\n\
+	Ctrl Shift<Key>Down: string(0x1b) string("[1;6B")\n\
+	Ctrl<Key>Down: string(0x1b) string("[1;5B")\n\
+	Shift<Key>Down: string(0x1b) string("[1;2B")\n\
+	Meta<Key>Down: string(0x1b) string("[1;3B")\n\
+	Ctrl Shift<Key>Left: string(0x1b) string("[1;6D")\n\
+	Ctrl<Key>Left: string(0x1b) string("[1;5D")\n\
+	Shift<Key>Left: string(0x1b) string("[1;2D")\n\
+	Mod5<Key>Left: string(0x1b) string("b")\n\
+	Meta<Key>Left: string(0x1b) string("[1;3D")\n\
+	Ctrl Shift<Key>Right: string(0x1b) string("[1;6C")\n\
+	Ctrl<Key>Right: string(0x1b) string("[1;5C")\n\
+	Shift<Key>Right: string(0x1b) string("[1;2C")\n\
+	Mod5<Key>Right: string(0x1b) string("f")\n\
+	Meta<Key>Right: string(0x1b) string("[1;3C")\n\
+	~Meta<Key>Return: string(0x0d)\n\
+	Meta<Key>Return: string(0x1b) string(0x0d)\n\
+	Ctrl<Key>Tab: string(0x1b) string(0x09)\n\
+	Mod5<Key>Tab: string(0x1b) string(0x09)\n\
+	~Meta<Key>Tab: string(0x09)\n\
+	Meta<Key>Tab: string(0x1b) string(0x09)\n\
+	~s<Key>F5: string(0x1b) string("[15~")\n\
+	~s<Key>F6: string(0x1b) string("[17~")\n\
+	~s<Key>F7: string(0x1b) string("[18~")\n\
+	~s<Key>F8: string(0x1b) string("[19~")\n\
+	~s<Key>F9: string(0x1b) string("[20~")\n\
+	~s<Key>F10: string(0x1b) string("[21~")\n\
+	<Key>F11: string(0x1b) string("[23~")\n\
+	<Key>F12: string(0x1b) string("[24~")\n\
+	<Key>F13: string(0x1b) string("[25~")\n\
+	<Key>F14: string(0x1b) string("[26~")\n\
+	<Key>F15: string(0x1b) string("[28~")\n\
+	<Key>F16: string(0x1b) string("[29~")\n\
+	<Key>F17: string(0x1b) string("[31~")\n\
+	<Key>F18: string(0x1b) string("[32~")\n\
+	<Key>F19: string(0x1b) string("[33~")\n\
+	<Key>F20: string(0x1b) string("[34~")\n\
+	s<Key>F5: string(0x1b) string("[28~")\n\
+	s<Key>F6: string(0x1b) string("[29~")\n\
+	s<Key>F7: string(0x1b) string("[31~")\n\
+	s<Key>F8: string(0x1b) string("[32~")\n\
+	s<Key>F9: string(0x1b) string("[33~")\n\
+	s<Key>F10: string(0x1b) string("[34~")\n\
+
+*eightBitInput: false
+
+! If xterm is built with a toolbar, the widget hierarchy looks like this,
+! showing widget name / class names.  The complete menu hierarchy is built
+! at startup because it is needed to make the layout work for the menubar:
+!
+!	xterm/XTerm
+!		form/Form
+!			menubar/Box
+!				mainMenuButton/MenuButton
+!					mainMenu/SimpleMenu
+!						menuLabel/SmeBSB
+!						toolbar/SmeBSB
+!						...
+!					vtMenu/SimpleMenu
+!						menuLabel/SmeBSB
+!						scrollbar/SmeBSB
+!						...
+!					fontMenu/SimpleMenu
+!						menuLabel/SmeBSB
+!						fontdefault/SmeBSB
+!						...
+!					tekMenu/SimpleMenu
+!						menuLabel/SmeBSB
+!						fontdefault/SmeBSB
+!						...
+!			vt100/VT100
+!			tektronix/TopLevelShell
+!				shellext/VendorShellExt
+!					tek4014/Tek4014
+!
+! If built without a toolbar, the widget hierarchy is simpler, because there
+! is no form, and the popup menu widgets are created only when they are first
+! used.
+!
+!	xterm/XTerm
+!		shellext/VendorShellExt
+!			mainMenu/SimpleMenu
+!				menuLabel/SmeBSB
+!				...
+!			...
+!		vt100/VT100
+!		tektronix/TopLevelShell
+!			shellext/VendorShellExt
+!				tek4014/Tek4014
+!
+! A more complete list of the widget/class names can be obtained using editres
+! to dump a file.  Some widget names are not available until the corresponding
+! menu has been created.
+
+! These resources reduce space around the menubar, by eliminating padding in
+! the enclosing form (Thickness) and the border of the Box which represents
+! the menubar widget.
+*form.Thickness: 0
+*menubar.borderWidth: 0
+
+! If we wanted to eliminate the border of the popup menus, we could do this
+! instead, since they are children of the menubar:
+!*menubar.*.borderWidth: 0
+
+! Eliminate the border of the buttons in the menubar, so the only line around
+! the text is for the highlighted button:
+*MenuButton*borderWidth: 0
+
+! Set a border for the menus to make them simpler to distinguish against the
+! vt100 widget:
+*SimpleMenu*borderWidth: 2
+
+! Set polish diacritical letters (¡£¦¬¯±³¶¼¿ with ÆÊÑÓæêñó already set) the same class as regular letters
+! in order to properly match while double-click word selection
+*charClass: 161:48,163:48,166:48,172:48,175:48,177:48,179:48,182:48,188:48,191:48,198:48,202:48,209:48,211:48,230:48,234:48,241:48,243:48
