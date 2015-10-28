@@ -51,6 +51,8 @@ rm -rf $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT
 
+chmod +x %{buildroot}/%{_bindir}/*
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 

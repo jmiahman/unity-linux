@@ -57,7 +57,7 @@ which is useful for developing applications that uses fontconfig.
 export HASDOCBOOK=no
 
 %configure	--with-add-fonts=/usr/share/X11/fonts/Type1,/usr/share/X11/fonts/TTF,/usr/local/share/fonts \
-		--disable-static --disable-docs
+		--disable-static --disable-docs --localstatedir=/var
 
 make %{?_smp_mflags}
 
@@ -71,7 +71,7 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
 umask 0022
 
-mkdir -p %{_localstatedir}/cache/fontconfig
+mkdir -p /var/cache/fontconfig
 
 # Force regeneration of all fontconfig cache files
 # The check for existance is needed on dual-arch installs (the second
@@ -99,13 +99,18 @@ fi
 %{_bindir}/fc-query
 %{_bindir}/fc-scan
 %{_bindir}/fc-validate
+%dir %{_datadir}/fontconfig
+%dir %{_fontconfig_templatedir}
 %{_fontconfig_templatedir}/*.conf
 %{_datadir}/xml/fontconfig
+%dir /etc/fonts
+%dir /etc/fonts/conf.d
+
 # fonts.conf is not supposed to be modified.
 # If you want to do so, you should use local.conf instead.
 %config %{_fontconfig_masterdir}/fonts.conf
 %config(noreplace) %{_fontconfig_confdir}/*.conf
-%dir %{_localstatedir}/cache/fontconfig
+%dir /var/cache/fontconfig
 
 %files devel
 %{_libdir}/libfontconfig.so
