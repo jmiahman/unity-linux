@@ -30,7 +30,8 @@ Requires(post): install-info
 Requires(preun): install-info
 
 BuildRequires: pcre-devel texinfo gettext
-BuildRequires: autoconf automake
+BuildRequires: autoconf automake texinfo
+Requires: pcre
 
 %description
 The GNU versions of commonly used grep utilities. Grep searches through
@@ -93,7 +94,7 @@ ln -s ../usr/bin/grep grep
 
 %preun
 if [ $1 = 0 ]; then
-	/usr/bin/install-info --quiet --info-dir=%{_infodir} --delete %{_infodir}/grep.info.gz || :
+/usr/bin/install-info --quiet --info-dir=%{_infodir} --delete %{_infodir}/grep.info.gz || :
 fi
 
 %files 
@@ -104,7 +105,7 @@ fi
 %{_bindir}/*
 %config(noreplace) %{_sysconfdir}/profile.d/colorgrep.*sh
 %config(noreplace) %{_sysconfdir}/GREP_COLORS
-#%{_infodir}/*.info*.gz
+%{_datadir}/info/*.info*.gz
 #%{_mandir}/*/*
 %{_libexecdir}/grepconf.sh
 

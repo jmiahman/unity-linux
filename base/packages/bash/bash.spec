@@ -55,7 +55,7 @@ Patch41:   privmode-setuid-fail.patch
 
 
 BuildRequires: readline-devel, ncurses-devel, bison, flex
-#Requires:	
+Requires: readline ncurses-libs	
 
 %description
 The GNU Bourne Again shell (Bash) is a shell or command language

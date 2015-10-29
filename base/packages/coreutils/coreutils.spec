@@ -11,6 +11,7 @@ URL:		http://www.gnu.org/software/coreutils/
 Source0:	ftp://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz	
 
 BuildRequires:	bash libacl-devel perl openssl-devel
+Requires: libcap libacl
 
 %description
 These are the GNU core utilities.  This package is the combination of

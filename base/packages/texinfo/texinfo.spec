@@ -39,7 +39,7 @@ rm -f ${RPM_BUILD_ROOT}/usr/share/info/dir
 rm -rf ${RPM_BUILD_ROOT}/usr/lib/charset.alias
 
 %files
-%{bindir}/*
+%{_bindir}/*
 %{_datadir}/texinfo/*
 %{_datadir}/texinfo/Texinfo/*
 %{_datadir}/texinfo/lib/Text-Unidecode/lib/Text/*
