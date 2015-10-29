@@ -9,6 +9,7 @@ Source0:    http://xorg.freedesktop.org/releases/individual/lib/libXpm-%{version
 
 BuildRequires: libxt util-macros
 BuildRequires: libx11-devel libxext-devel
+Requires: mdocml-docs
 
 %description
 X.Org Pixmap library..

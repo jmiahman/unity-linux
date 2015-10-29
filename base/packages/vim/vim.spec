@@ -55,7 +55,7 @@ source /etc/profile.d/vim.sh
 %files
 %dir %{_sysconfdir}/vim 
 %config(noreplace) %{_sysconfdir}/vim/vimrc
-%{_datadir}/*
+%{_datadir}/vim/*
 %{_bindir}/*
 
 %changelog

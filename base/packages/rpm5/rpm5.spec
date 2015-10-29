@@ -22,6 +22,7 @@ Patch7:		rpm-5.4.9-fix-verify-segfault.patch
 BuildRequires: expat-devel, python-devel 
 Requires: expat sqlite libxml2 
 Requires: libstdc++ db5.2-sql bzip2 libgcc
+Requires: beecrypt xz-libs popt
 
 %description
 RPM Package Manager (RPM) is a powerful command line driven
@@ -46,6 +47,7 @@ Summary:	Scripts and executable programs used to build packages.
 Group:		System Environment/Base
 Requires:	%{name} = %{version}-%{release}
 Requires:       %{name}-libs = %{version}-%{release}
+Requires: 	beecrypt xz-libs popt
 
 %description 	build
 The rpm-build package contains the scripts and executable programs

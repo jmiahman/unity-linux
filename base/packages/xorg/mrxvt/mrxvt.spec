@@ -21,6 +21,7 @@ BuildRequires:	libjpeg-turbo-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libx11-devel
 Requires:	ncurses-terminfo
+Requires:	mdocml-docs
 
 %description
 Mrxvt is a multi-tabbed color vt102 terminal emulator for X Window

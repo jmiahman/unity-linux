@@ -17,6 +17,7 @@ BuildRequires:	xorg-server-devel
 BuildRequires:	rpm-build
 %{?requires_xorg_xserver_xinput}
 Requires:	xorg-server
+Requires:	mdocml-docs
 
 %description
 X.org keyboard input drivers. They support the standard OS-provided

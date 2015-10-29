@@ -98,13 +98,18 @@ install -d $RPM_BUILD_ROOT/etc/dbus-1/system.d
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-addgroup -S messagebus 2>/dev/null
+getent passwd messagebus > /dev/null
+if [ $? -ne 0 ]; then
 adduser -S -H -h /dev/null -s /sbin/nologin -D messagebus -G messagebus 2>/dev/null
-exit 0
+fi
+
+getent group messagebus > /dev/null
+if [ $? -ne 0 ]; then
+addgroup -S messagebus 2>/dev/null
+fi
 
 %post
-exec dbus-uuidgen --ensure
-exit 0
+/usr/bin/dbus-uuidgen --ensure
 
 %files
 %defattr(644,root,root,755)

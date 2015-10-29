@@ -21,6 +21,7 @@ BuildRequires:	util-macros
 BuildRequires:	xorg-server-devel
 %{?requires_xorg_xserver_xinput}
 Requires:	libevdev
+Requires:	mdocml-docs
 Requires:	xorg-server >= 1.12
 
 %description

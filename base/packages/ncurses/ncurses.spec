@@ -21,6 +21,7 @@ discontinued 4.4 BSD classic curses library.
 %package terminfo
 Summary: Terminal descriptions
 Group: System Environment/Base
+Requires: %{name}-terminfo-base >= %{version}-%{release}
 
 %description terminfo
 This package contains additional terminal descriptions not found in

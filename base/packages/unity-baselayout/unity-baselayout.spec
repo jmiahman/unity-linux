@@ -21,7 +21,6 @@ Source10:	profile
 Source11:	protocols
 Source12:	services
 
-
 #BuildRequires:	
 #Requires:	
 
@@ -197,7 +196,7 @@ then
 	ln -s /etc/crontabs /var/spool/cron/crontabs
 fi
 
-if [ ! -L /var/spool/cron/crontabs ];
+if [ ! -e /etc/mtab ];
 then
 	ln -s /proc/mounts /etc/mtab
 fi

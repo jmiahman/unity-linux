@@ -17,6 +17,7 @@ BuildRequires:	util-macros
 BuildRequires:	xorg-server-devel
 %{?requires_xorg_xserver_xinput}
 Requires:	xorg-server
+Requires:	mdocml-docs
 
 %description
 X.org mouse input driver. It supports most available mouse types and

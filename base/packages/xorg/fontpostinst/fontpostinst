@@ -1,0 +1,199 @@
+#!/bin/sh
+
+# TODO:
+# Generating Fontmap for TTF fonts: http://docs.scribus.net/index.php?lang=en&page=gsfont
+
+# $Id$
+
+# Requires: /bin/sh textutils fileutils
+# optionally:
+#	mkfontdir, mkfontscale (XFree86)  (or ttmkfdir - for TTF only)
+#	fc-cache (fontconfig or XFree86-fontconfig)
+#	gnome-font-install (gnome-print)
+#	t1libconfig (t1lib)
+
+PROGRAM=${0##*/}
+
+FBASEDIR="/usr/share/fonts"
+
+MKFONTDIRBIN="/usr/bin/mkfontdir"
+MKFONTDIR="$MKFONTDIRBIN"
+if [ ! -x "$MKFONTDIRBIN" -a -x /usr/X11R6/bin/mkfontdir ]; then
+	MKFONTDIR="/usr/X11R6/bin/mkfontdir"
+fi
+MKFONTSCALEBIN="/usr/bin/mkfontscale"
+MKFONTSCALE="$MKFONTSCALEBIN"
+if [ ! -x "$MKFONTSCALEBIN" -a -x /usr/X11R6/bin/mkfontscale ]; then
+	MKFONTSCALEBIN="/usr/X11R6/bin/mkfontscale"
+fi
+MKTTFFONTSCALEBIN="$MKFONTSCALEBIN"
+MKTTFFONTSCALE="$MKTTFFONTSCALEBIN"
+if [ ! -x "$MKFONTSCALEBIN" -a -x /usr/bin/ttmkfdir ]; then
+	# fallback for X <= 4.2.x
+	MKTTFFONTSCALEBIN="/usr/bin/ttmkfdir"
+	MKTTFFONTSCALE="$MKFONTSCALEBIN -e /usr/share/fonts/encodings/encodings.dir"
+fi
+
+FCCACHEBIN="/usr/bin/fc-cache"
+if [ ! -x $FCCACHEBIN -a -x /usr/X11R6/bin/fc-cache ]; then
+	# use XFree86-fontconfig
+	FCCACHEBIN="/usr/X11R6/bin/fc-cache"
+fi
+if [ ! -x $FCCACHEBIN -a -x /usr/X11R6/bin/xftcache ]; then
+	# fallback for XFree86 4.[0-2]
+	FCCACHEBIN="/usr/X11R6/bin/xftcache"
+fi
+FCCACHE="$FCCACHEBIN ."
+
+GNOMEFONTINSTBIN="/usr/bin/gnome-font-install"
+if [ ! -x $GNOMEFONTINSTBIN -a -x /usr/X11R6/bin/gnome-font-install ]; then
+	# fallback for Ra
+	GNOMEFONTINSTBIN="/usr/X11R6/bin/gnome-font-install"
+fi
+GNOMEFONTINST="$GNOMEFONTINSTBIN --target $FBASEDIR/fontmap"
+
+T1LIBCONFIGBIN="/usr/bin/t1libconfig"
+T1LIBCONFIG="$T1LIBCONFIGBIN --force"
+
+if [ -z "$1" ]; then
+	echo >&2 "Usage: $PROGRAM TYPE [DIR]"
+	echo >&2 "  TYPE is one of:"
+	echo >&2 "    OTF, TTF, Type1, misc, 100dpi, 75dpi, cyrillic, local, CID, Speedo, PEX"
+	echo >&2 "  default DIR is $FBASEDIR/TYPE"
+	exit 1
+fi
+
+VERBOSE=0
+if [ "$1" = "-v" ]; then
+	VERBOSE=1
+	shift
+fi
+
+verb() {
+	if [ "$VERBOSE" = "1" ]; then
+		echo >&2 "$1"
+	fi
+}
+
+FTYPE="$1"
+if [ -z "$2" ]; then
+	FDIR="$FBASEDIR/$FTYPE"
+else
+	FDIR="$2"
+fi
+
+umask 022
+cd "$FDIR" || exit 0
+if [ "`echo fonts.alias.*`" != 'fonts.alias.*' ]; then
+	cat fonts.alias.* | LC_ALL=C sort -u > fonts.alias
+elif [ -f fonts.alias ]; then
+	mv -f fonts.alias fonts.alias-save
+fi
+verb "$PROGRAM: Updating for $FTYPE..."
+case "$FTYPE" in
+    OTF|TTF)
+	if [ -x $MKTTFFONTSCALEBIN ]; then
+		verb "$PROGRAM: Running $MKTTFFONTSCALEBIN."
+		$MKTTFFONTSCALE
+	fi
+	if [ -x $MKFONTDIRBIN ]; then
+		verb "$PROGRAM: Running $MKFONTDIRBIN."
+		$MKFONTDIR
+	fi
+	if [ -x $FCCACHEBIN ]; then
+		verb "$PROGRAM: Running $FCCACHEBIN."
+		$FCCACHE
+	fi
+	;;
+    Type1)
+	rm -f fonts.scale.bak Fontmap.bak
+	if [ "`echo fonts.scale.*`" != 'fonts.scale.*' ]; then
+		verb "$PROGRAM: Merging fonts.scale.* files."
+		cat fonts.scale.* 2>/dev/null | LC_ALL=C sort -u > fonts.scale.tmp
+		cat fonts.scale.tmp | wc -l | tr -d ' ' > fonts.scale
+		cat fonts.scale.tmp >> fonts.scale
+		rm -f fonts.scale.tmp
+	elif [ "`echo *.pf[ab]`" != '*.pf[ab]' ]; then
+		# no hints - try to generate
+		if [ -x $MKFONTSCALEBIN ]; then
+			verb "$PROGRAM: Running $MKFONTSCALEBIN."
+			$MKFONTSCALE
+		fi
+	elif [ -f fonts.scale ]; then
+		mv -f fonts.scale fonts.scale-save
+	fi
+	if [ -x $MKFONTDIRBIN ]; then
+		verb "$PROGRAM: Running $MKFONTDIRBIN."
+		$MKFONTDIR
+	fi
+	if [ -x $FCCACHEBIN ]; then
+		verb "$PROGRAM: Running $FCCACHEBIN."
+		$FCCACHE
+	fi
+	if [ "`echo Fontmap.*`" != 'Fontmap.*' ]; then
+		verb "$PROGRAM: Merging Fontmap.* files."
+		cat Fontmap.* > Fontmap
+	elif [ -f Fontmap ]; then
+		mv -f Fontmap Fontmap-save
+	fi
+	if [ -x $GNOMEFONTINSTBIN ]; then
+		verb "$PROGRAM: Running $GNOMEFONTINSTBIN."
+		$GNOMEFONTINST
+	fi
+	if [ -x $T1LIBCONFIGBIN ]; then
+		verb "$PROGRAM: Running $T1LIBCONFIGBIN."
+		$T1LIBCONFIG
+	fi
+	;;
+    CID|Speedo)
+	if [ "`echo fonts.scale.*`" != 'fonts.scale.*' ]; then
+		verb "$PROGRAM: Merging fonts.scale.* files."
+		cat fonts.scale.* 2>/dev/null | LC_ALL=C sort -u > fonts.scale.tmp
+		cat fonts.scale.tmp | wc -l | tr -d ' ' > fonts.scale
+		cat fonts.scale.tmp >> fonts.scale
+		rm -f fonts.scale.tmp
+	elif [ -f fonts.scale ]; then
+		mv -f fonts.scale fonts.scale-save
+	fi
+	if [ -x $MKFONTDIRBIN ]; then
+		verb "$PROGRAM: Running $MKFONTDIRBIN."
+		$MKFONTDIR
+	fi
+	;;
+    misc)
+	# special case - fonts needed for X server to start
+	if [ -x $MKFONTDIRBIN ]; then
+		verb "$PROGRAM: Running $MKFONTDIRBIN."
+		$MKFONTDIR
+	elif [ -f 6x13-ISO8859-1.pcf.gz -a -f cursor.pcf.gz ]; then
+		cat > fonts.dir <<EOF
+2
+6x13-ISO8859-1.pcf.gz -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+cursor.pcf.gz cursor
+EOF
+	fi
+	if [ -x $FCCACHEBIN ]; then
+		verb "$PROGRAM: Running $FCCACHEBIN."
+		$FCCACHE
+	fi
+	;;
+    100dpi|75dpi|cyrillic|local)
+	if [ -x $MKFONTDIRBIN ]; then
+		verb "$PROGRAM: Running $MKFONTDIRBIN."
+		$MKFONTDIR
+	fi
+	if [ -x $FCCACHEBIN ]; then
+		verb "$PROGRAM: Running $FCCACHEBIN."
+		$FCCACHE
+	fi
+	;;
+    PEX)
+	;;
+    *)
+	echo >&2 "Warning: \"$FTYPE\": unknown font type!" >&2
+	if [ -x $MKFONTDIRBIN ]; then
+		verb "$PROGRAM: Running $MKFONTDIRBIN."
+		$MKFONTDIR
+	fi
+esac
+exit 0

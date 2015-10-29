@@ -76,7 +76,7 @@ install -m755 %{SOURCE2} %{buildroot}/etc/init.d/udev-postmount
 %post
 /sbin/ldconfig
 /sbin/udevadm hwdb --update
-#bash /lib/udev/init-net-rules.sh || true
+
 %postun	-p /sbin/ldconfig
 
 %files 

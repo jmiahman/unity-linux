@@ -108,8 +108,8 @@ fi
 
 # fonts.conf is not supposed to be modified.
 # If you want to do so, you should use local.conf instead.
-%config %{_fontconfig_masterdir}/fonts.conf
-%config(noreplace) %{_fontconfig_confdir}/*.conf
+%{_fontconfig_masterdir}/fonts.conf
+%{_fontconfig_confdir}/*.conf
 %dir /var/cache/fontconfig
 
 %files devel

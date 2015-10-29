@@ -11,6 +11,7 @@ URL:		http://xorg.freedesktop.org/
 BuildRequires:	autoconf 
 BuildRequires:	automake
 BuildRequires:	util-macros
+Requires:	pkgconf
 
 %description
 X.org font package creation/installation utilities:
@@ -40,12 +41,12 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc COPYING ChangeLog README
-%{_bindir}/bdftruncate
-%{_bindir}/ucs2any
+%attr(0755, root, root) %{_bindir}/bdftruncate
+%attr(0755, root, root) %{_bindir}/ucs2any
 %dir %{_fontsdir}
 %{_fontsdir}/util
-%{_mandir}/man1/bdftruncate.1*
-%{_mandir}/man1/ucs2any.1*
+%{_datadir}/man/man1/bdftruncate.1*
+%{_datadir}/man/man1/ucs2any.1*
 %{_datadir}/aclocal/fontutil.m4
 %{_libdir}/pkgconfig/fontutil.pc
 

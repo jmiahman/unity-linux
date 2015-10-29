@@ -149,7 +149,9 @@ Requires:	xkbcomp
 Requires:	libxfont
 Requires:	libpciaccess
 Requires:	libxshmfence
-Suggests:	xkeyboard-config
+Requires:	xkeyboard-config
+Requires:	linux-pam
+Requires:	mdocml-docs
 # Usual desktop setups need least one video driver to run, see xorg.log which one exactly
 Suggests:	xorg-driver-video
 

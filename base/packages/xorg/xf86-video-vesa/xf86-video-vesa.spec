@@ -21,6 +21,7 @@ BuildRequires:	xorg-server-devel
 %{?requires_xorg_xserver_videodrv}
 Requires:	libpciaccess 
 Requires:	xorg-server 
+Requires:	mdocml-docs
 Provides:	xorg-driver-video
 
 %description
