@@ -146,7 +146,7 @@ function create_initrd
 	[ ! -f $sys_source/lib/modules/$kernel_rel/modules.dep ] && echo "Running depmod..." && chroot $sys_source depmod -a -b / $kernel_rel
 
 	echo "Copying kernel modules to initrd skeleton..."
-	copy_module loop overlay ext2 squashfs vfat rfkill drm cdrom isofs ahci 
+	copy_module loop overlay ext2 ext3 ext4 lvm xfs squashfs vfat rfkill drm cdrom isofs ahci 
 	copy_module mii p4-clockmod usb-storage atl2 i2c-algo-bit i2c-core
 	copy_modules_dir kernel/drivers/scsi kernel/drivers/ata kernel/drivers/cpufreq kernel/drivers/cdrom kernel/drivers/net/ethernet/atheros/ kernel/drivers/i2c
         copy_modules_dir kernel/drivers/gpu/drm kernel/fs/isofs

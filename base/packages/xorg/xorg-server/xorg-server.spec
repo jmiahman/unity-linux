@@ -5,7 +5,7 @@
 %bcond_without	record		# RECORD extension
 %bcond_with	xcsecurity	# XC-SECURITY extension (deprecated)
 %bcond_with	xf86bigfont	# XF86BigFont extension
-%bcond_without	dmx		# DMX DDX (Xdmx server)
+%bcond_with	dmx		# DMX DDX (Xdmx server)
 %bcond_without	wayland		# Wayland DDX (Xwayland server)
 %bcond_with	glamor		# glamor dix module
 %bcond_with	systemtap	# systemtap/dtrace probes
@@ -152,6 +152,8 @@ Requires:	libxshmfence
 Requires:	xkeyboard-config
 Requires:	linux-pam
 Requires:	mdocml-docs
+Requires:	libgcrypt
+Requires:	libgpg-error
 # Usual desktop setups need least one video driver to run, see xorg.log which one exactly
 Suggests:	xorg-driver-video
 
@@ -162,18 +164,18 @@ Suggests:	xorg-driver-video
 Xorg server is a generally used X server which uses display hardware.
 It requires proper driver for your display hardware.
 
-%package xdmx
-Summary:	Xdmx - distributed multi-head X server
-Group:		X11/Servers
-Requires:	pixman >= %{pixman_ver}
-Requires:	libx11
-Requires:	libxext
-Requires:	libxfont
-Requires:	libxi
-Requires:	libdmx
+#%package xdmx
+#Summary:	Xdmx - distributed multi-head X server
+#Group:		X11/Servers
+#Requires:	pixman >= %{pixman_ver}
+#Requires:	libx11
+#Requires:	libxext
+#Requires:	libxfont
+#Requires:	libxi
+#Requires:	libdmx
 
-%description xdmx
-Xdmx - distributed multi-head X server.
+#%description xdmx
+#Xdmx - distributed multi-head X server.
 
 %package xnest
 Summary:	Xnest - nested X server
@@ -378,39 +380,35 @@ export CFLAGS="$CFLAGS -D__gid_t=gid_t -D__uid_t=uid_t"
 export LDFLAGS="$LDFLAGS -Wl,-z,lazy"
 %configure \
 	--prefix=/usr \
-	--with-os-name="Unity/Linux" \
-	--with-os-vendor="Unity/Team" \
+	--with-os-name="Unity - Linux" \
+	--with-os-vendor="Unity - Team" \
 	--with-fontrootdir=%{_fontsdir} \
 	--with-log-dir=/var/log \
 	--with-default-font-path="%{_fontsdir}/misc,%{_fontsdir}/TTF,%{_fontsdir}/OTF,%{_fontsdir}/Type1,%{_fontsdir}/100dpi,%{_fontsdir}/75dpi" \
 	--with-xkb-output=/var/lib/xkb \
-	--disable-linux-acpi \
-	--disable-linux-apm \
-	--enable-aiglx \
-	%{?with_dbus:--enable-config-dbus} \
-	--enable-config-udev%{!?with_udev:=no} \
-	--enable-dga \
-	%{?with_dmx:--enable-dmx} \
-	--enable-dri2%{!?with_dri2:=no} \
 	%{?with_glamor:--enable-glamor} \
-	--enable-glx-tls \
-	--enable-install-libxf86config \
-	--enable-kdrive \
-	%{?with_libunwind:--enable-libunwind} \
-	%{?with_record:--enable-record} \
-	%{?with_xcsecurity:--enable-xcsecurity} \
-	--enable-xephyr \
-	%{?with_xf86bigfont:--enable-xf86bigfont} \
-	--disable-xfake \
-	--enable-xfbdev \
-	--disable-xselinux \
-	%{?with_wayland:--enable-xwayland} \
-	%{!?with_systemtap:--without-dtrace} \
-	--without-fop \
-	--disable-systemd-logind \
 	--without-systemd-daemon \
+	--enable-aiglx \
+	--enable-composite \
+	--enable-config-udev \
+	--enable-dri \
+	--enable-dri2 \
+	--enable-glx-tls \
+	--enable-ipv6 \
+	--enable-xfbdev \
+	--enable-kdrive \
+	--enable-xorg \
+	--enable-xv \
+	--enable-xres \
+	--enable-xace \
+	--enable-xnest \
+	--enable-xephyr \
+	--disable-config-hal \
+	--disable-dmx \
+	--disable-tslib \
+	--disable-systemd-logind \
 
-%{__make} -j1
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -593,8 +591,8 @@ fi
 %defattr(644,root,root,755)
 %doc doc/{Xinput,Xserver-spec}.html %{?with_systemtap:doc/dtrace/Xserver-DTrace.html}
 %{_includedir}/xorg
-%{_libdir}/libxf86config.a
-%{_libdir}/libxf86config.la
+#%{_libdir}/libxf86config.a
+#%{_libdir}/libxf86config.la
 %{_datadir}/aclocal/xorg-server.m4
 %{_libdir}/pkgconfig/xorg-server.pc
 

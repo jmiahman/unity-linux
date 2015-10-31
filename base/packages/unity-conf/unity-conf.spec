@@ -8,8 +8,9 @@ License:	GPL
 URL:		http://www.url.com
 Source0:	%{name}-%{version}.tar.gz
 
-#BuildRequires:	
-Requires:	blkid syslinux-extlinux tzdata	
+BuildRequires:	make
+Requires:	blkid syslinux-extlinux 
+Requires:	tzdata sfdisk tar
 
 %description
 Unity CLI configuration management scripts

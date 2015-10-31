@@ -1,0 +1,21 @@
+diff -Naur twm-1.0.9/src/system.twmrc twm-1.0.9_new/src/system.twmrc
+--- twm-1.0.9/src/system.twmrc	2015-04-17 05:36:39.000000000 +0000
++++ twm-1.0.9_new/src/system.twmrc	2015-10-29 18:41:14.269315008 +0000
+@@ -68,7 +68,7 @@
+ #
+ menu "defops"
+ {
+-"Twm"	f.title
++"Unity Twm"	f.title
+ "Iconify"	f.iconify
+ "Resize"	f.resize
+ "Move"		f.move
+@@ -80,7 +80,7 @@
+ "Show Iconmgr"	f.showiconmgr
+ "Hide Iconmgr"	f.hideiconmgr
+ ""		f.nop
+-"Xterm"		f.exec "exec xterm &"
++"mrxvt"		f.exec "exec mrxvt &"
+ ""		f.nop
+ "Kill"		f.destroy
+ "Delete"	f.delete

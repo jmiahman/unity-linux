@@ -3,8 +3,8 @@
 # simple script to setup x basic org server
 # you will still need a window manager and login manager or xinit
 
-base_pkgs="xorg-server xf86-video-vesa xf86-video-modesetting
-	xf86-input-evdev xf86-input-mouse xf86-input-keyboard udev"
+base_pkgs="xorg-server xf86-video-vesa
+	xf86-input-evdev xf86-input-mouse xf86-input-keyboard eudev"
 
 # TODO: detect graphics card and pick proper xf86-video-* driver based on that
 
@@ -21,9 +21,11 @@ yum install $base_pkgs $@
 rc-update -q del mdev sysinit
 rc-update -q add udev sysinit
 rc-update -q add udev-postmount default
-
+rc-update -q add udev-trigger default
+rc-update -q add udev-settle default
 if ! rc-service -q udev status; then
 	rc-service udev start
 	rc-service udev-postmount start
 fi
-
+rc-service udev-trigger start
+rc-service udev-settle start

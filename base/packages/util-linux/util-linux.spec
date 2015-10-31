@@ -19,6 +19,14 @@ utilities that are necessary for a Linux system to function. Among
 others, Util-linux contains the fdisk configuration tool and the login
 program.
 
+%package libs                                                                                   
+Summary: Shared libs for %{name}                                                         
+Group: System Environment/Base                                                                       
+License: LGPLv2+                                                                                     
+                                                                                                     
+%description libs                                                                                
+These are shared libs used for mutliple %{name} programs
+
 %package -n blkid
 Summary: Block device identification tool.
 Group: System Environment/Base
@@ -117,6 +125,7 @@ Summary: Curses based partition table manipulator from util-linux.
 Group: System Environment/Base
 License: LGPLv2+
 Requires: pkgconfig
+Requires: %{name}-libs
 
 %description -n cfdisk
 cfdisk is a curses based program for partitioning any hard disk drive.
@@ -127,6 +136,7 @@ Summary: Partition table manipulator from util-linux
 Group: System Environment/Base
 License: LGPLv2+
 Requires: pkgconfig
+Requires: %{name}-libs
 
 %description -n sfdisk
 sfdisk has four (main) uses: list the size of a partition, list the partitions on a device, check the partitions on a device, and - very dangerous - repartition a device.
@@ -193,9 +203,6 @@ rm -f %{buildroot}/usr/lib/*.la \
 /usr/sbin/*
 /bin/*
 
-/%{_lib}/libfdisk.so.*
-/%{_lib}/libsmartcols.so.*
-
 %exclude /sbin/blkid
 %exclude %{_libdir}/libblkid.so
 %exclude %{_includedir}/blkid
@@ -210,6 +217,10 @@ rm -f %{buildroot}/usr/lib/*.la \
 %exclude /sbin/sfdisk
 %exclude %{_bindir}/mcookie
 #%exclude %{_libdir}/python*/site-packages/libmount/*
+
+%files libs
+/%{_lib}/libfdisk.so.*
+/%{_lib}/libsmartcols.so.*
 
 %files -n blkid
 /sbin/blkid

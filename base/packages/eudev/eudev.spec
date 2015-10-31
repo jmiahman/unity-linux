@@ -81,16 +81,6 @@ install -m755 %{SOURCE2} %{buildroot}/etc/init.d/udev-postmount
 
 %files 
 %defattr(-,root,root)
-#%config %{_sysconfdir}/udev/hwdb.d/20-OUI.hwdb
-#%config %{_sysconfdir}/udev/hwdb.d/20-acpi-vendor.hwdb
-#%config %{_sysconfdir}/udev/hwdb.d/20-bluetooth-vendor-product.hwdb
-#%config %{_sysconfdir}/udev/hwdb.d/20-pci-classes.hwdb
-#%config %{_sysconfdir}/udev/hwdb.d/20-pci-vendor-model.hwdb
-#%config %{_sysconfdir}/udev/hwdb.d/20-sdio-classes.hwdb
-#%config %{_sysconfdir}/udev/hwdb.d/20-sdio-vendor-model.hwdb
-#%config %{_sysconfdir}/udev/hwdb.d/20-usb-classes.hwdb
-#%config %{_sysconfdir}/udev/hwdb.d/20-usb-vendor-model.hwdb
-#%config %{_sysconfdir}/udev/udev.conf
 /lib/udev/accelerometer
 /lib/udev/ata_id
 /lib/udev/cdrom_id
@@ -128,6 +118,7 @@ install -m755 %{SOURCE2} %{buildroot}/etc/init.d/udev-postmount
 /etc/init.d/udev-postmount
 %dir /%{_lib}/udev
 %dir /etc/udev
+/etc/udev/*
 %dir /etc/udev/hwdb.d
 %dir /%{_lib}/udev/rules.d
 

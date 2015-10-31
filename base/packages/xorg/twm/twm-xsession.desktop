@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=XSession
+Exec=twm
+TryExec=twm
+Name=TWM
+Comment=The Tab Window Manager
+Comment[nl]=De Tab Window Manager
+Comment[sv]=FlikfĂśnsterhanteraren
+Comment[pl]=Prosty zarządca okien twm
+# vi: encoding=utf-8

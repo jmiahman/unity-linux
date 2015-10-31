@@ -12,7 +12,7 @@ load_module()
 #		       	|| echo "Error: module $module not loaded!"
 #	done
 # Lets load all the drivers for now
-	for i in $(find /lib/modules/`uname -r`/ -name *.ko | grep -o '[^/]*$' | cut -d. -f1 | grep -v scsi_debug )
+	for i in $(find /lib/modules/`uname -r`/ -name *.ko | grep -o '[^/]*$' | cut -d. -f1 | grep -v scsi_debug | grep -v evbug )
 	do
 		modprobe $i
 	done &> /dev/null

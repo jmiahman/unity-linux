@@ -98,6 +98,7 @@ install -m 0755 -d \
 	usr/share/aclocal \
 	usr/share/applications \
 	usr/share/pixmaps \
+	usr/share/xsessions \
 	var/cache/misc \
 	var/lib/misc \
 	var/lock/subsys \
@@ -195,11 +196,13 @@ if [ ! -L /var/spool/cron/crontabs ];
 then
 	ln -s /etc/crontabs /var/spool/cron/crontabs
 fi
+exit 0
 
 if [ ! -e /etc/mtab ];
 then
 	ln -s /proc/mounts /etc/mtab
 fi
+exit 0
 
 %files
 %dir /bin
@@ -210,6 +213,7 @@ fi
 %dir /usr/share/doc
 %dir /usr/share/applications
 %dir /usr/share/pixmaps
+%dir /usr/share/xsessions
 /bin/
 /usr/bin
 /dev

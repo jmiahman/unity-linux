@@ -1,0 +1,11 @@
+--- yum-utils-1.1.31/yum-builddep.py~	2011-08-10 18:20:19.000000000 +0300
++++ yum-utils-1.1.31/yum-builddep.py	2014-06-15 15:08:36.255675879 +0300
+@@ -75,7 +75,7 @@
+         # off for repos :)
+         if (opts.nogpgcheck or
+             not self.conf.localpkg_gpgcheck or not self.conf.gpgcheck):
+-            self.ts.pushVSFlags((rpm._RPMVSF_NOSIGNATURES|rpm._RPMVSF_NODIGESTS))
++            self.ts.pushVSFlags(rpm.RPMVSF_NODSAHEADER)
+ 
+         # Check if there is anything to do.
+         if len(self.cmds) < 1: 
