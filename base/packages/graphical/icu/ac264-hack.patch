@@ -1,0 +1,14 @@
+--- icu/source/configure.ac~	2009-09-21 21:51:51.000000000 +0300
++++ icu/source/configure.ac	2009-09-21 21:51:55.877963019 +0300
+@@ -517,6 +517,11 @@
+ 
+ AC_SUBST(U_HAVE_DIRENT_H)
+ 
++dnl this AC_LINK_IFELSE is early here so that ac 2.64 wouldn't define the `ac_fn_cxx_try_link' in if..else condition
++dnl this is a hack but at this time i don't know what is the real fix
++AC_LANG_PUSH([C++])
++AC_LINK_IFELSE([AC_LANG_PROGRAM()])
++AC_LANG_POP([C++])
+ 
+ AC_ARG_WITH(iostream,
+ 	[  --with-iostream=version specify the version of iostream to use (none, old, std, auto) [default=auto]],

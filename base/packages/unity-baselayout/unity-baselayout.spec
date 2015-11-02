@@ -70,6 +70,7 @@ install -m 0755 -d \
 	etc/periodic/weekly \
 	etc/skel \
 	etc/sysctl.d \
+	etc/xdg/autostart \
 	home \
 	media/cdrom \
 	media/floppy \
@@ -214,6 +215,7 @@ exit 0
 %dir /usr/share/applications
 %dir /usr/share/pixmaps
 %dir /usr/share/xsessions
+%dir /etc/xdg/autostart
 /bin/
 /usr/bin
 /dev
@@ -248,5 +250,6 @@ exit 0
 /etc/TZ
 /etc/crontabs/root
 /etc/profile.d/
+
 
 %changelog

@@ -1,3 +1,5 @@
+%define         perl_vendorarch %{_libdir}/perl5/vendor_perl
+
 Name:           perl-xml-parser
 Version:        2.44
 Release:        1%{?dist}
@@ -25,11 +27,13 @@ creation time.
 %setup -q -n XML-Parser-%{version} 
 
 %build
-perl Makefile.PL
+perl Makefile.PL INSTALLDIRS=vendor
 make
 
 %install
-make install
+rm -rf %{buildroot}
+
+make pure_install DESTDIR=%{buildroot}
 
 %check
 make test
@@ -39,6 +43,5 @@ make test
 %{perl_vendorarch}/XML/
 %{perl_vendorarch}/auto/XML/
 %{_mandir}/man3/*.3*
-
 
 %changelog
