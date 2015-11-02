@@ -1,0 +1,16 @@
+#%PAM-1.0
+auth		required	pam_listfile.so item=user sense=deny file=/etc/security/blacklist.lightdm onerr=succeed
+# Allow access without authentication
+auth		required	pam_permit.so
+
+account		required	pam_shells.so
+account		required	pam_nologin.so
+account		required 	pam_access.so
+account		include		system-auth
+
+# Can't change password
+password	required	pam_deny.so
+
+session		optional	pam_keyinit.so force revoke
+session		include		system-auth
+session		optional	pam_console.so

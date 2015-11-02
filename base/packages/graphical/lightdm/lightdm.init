@@ -1,0 +1,80 @@
+#!/bin/sh
+#
+# lightdm:		Starts the Lightdm Display Manager
+# chkconfig:	5 95 05
+#
+# description:	Starts and stops the Lightdm Display Manager at startup and \
+#		shutdown..
+# hide:		true
+#
+# Source function library
+. /etc/rc.d/init.d/functions
+
+upstart_controlled
+
+pidfile=/var/run/lightdm.pid
+
+start() {
+	# Check if the service is already running?
+	if [ -f /var/lock/subsys/lightdm ]; then
+		msg_already_running "Lightdm Display Manager"
+		return
+	fi
+
+	msg_starting "Lightdm Display Manager"
+	daemon --pidfile $pidfile --fork /usr/sbin/lightdm --pidfile $pidfile
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/lightdm
+}
+
+stop() {
+	if [ ! -f /var/lock/subsys/lightdm ]; then
+		msg_not_running "Lightdm Display Manager"
+		return
+	fi
+
+	# Stop daemons.
+	msg_stopping "Lightdm Display Manager"
+	killproc --pidfile $pidfile lightdm
+	rm -f /var/lock/subsys/lightdm
+}
+
+condrestart() {
+	if [ ! -f /var/lock/subsys/lightdm ]; then
+		msg_not_running "Lightdm Display Manager"
+		RETVAL=$1
+		return
+	fi
+
+	stop
+	start
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	stop
+	start
+	;;
+  try-restart)
+	condrestart 0
+	;;
+  force-reload)
+	condrestart 7
+	;;
+  status)
+	status --pidfile $pidfile lightdm
+	RETVAL=$?
+	;;
+  *)
+	msg_usage "$0 {start|stop|restart|try-restart|force-reload|status}"
+	exit 3
+esac
+
+exit $RETVAL

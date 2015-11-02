@@ -1,0 +1,23 @@
+--- lightdm-1.9.14/data/lightdm.conf~	2014-04-04 00:15:51.000000000 +0300
++++ lightdm-1.9.14/data/lightdm.conf	2014-04-04 00:16:14.981378601 +0300
+@@ -18,9 +18,9 @@
+ #
+ [LightDM]
+ #start-default-seat=true
+-#greeter-user=lightdm
++greeter-user=xdm
+ #minimum-display-number=0
+-#minimum-vt=7
++minimum-vt=7
+ #lock-memory=true
+ #user-authority-in-system-dir=false
+ #guest-account-script=guest-account
+@@ -93,7 +93,7 @@
+ #user-session=default
+ #allow-guest=true
+ #guest-session=
+-#session-wrapper=lightdm-session
++session-wrapper=/etc/X11/xinit/xinitrc
+ #greeter-wrapper=
+ #guest-wrapper=
+ #display-setup-script=

@@ -1,0 +1,11 @@
+--- configure.ac.orig	2014-07-21 19:43:48.848134193 +0200
++++ configure.ac	2014-07-21 19:44:07.934800963 +0200
+@@ -134,7 +134,7 @@
+         Qt5Gui
+     ],
+     [compile_liblightdm_qt5=yes
+-     AC_CHECK_TOOLS(MOC5, [moc])
++     AC_CHECK_TOOLS(MOC5, [moc-qt5 moc])
+      if test x"$(readlink $(which $MOC5))" = xqtchooser; then
+          MOC5="$MOC5 --qt=qt5"
+      fi
