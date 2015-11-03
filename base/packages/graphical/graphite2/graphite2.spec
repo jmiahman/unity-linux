@@ -77,7 +77,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc ChangeLog doc/*.txt
 %attr(755,root,root) %{_libdir}/libgraphite2.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgraphite2.so.3
+%attr(755,root,root) %{_libdir}/libgraphite2.so.3
 
 %files devel
 %defattr(644,root,root,755)

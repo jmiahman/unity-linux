@@ -88,6 +88,7 @@ install -m 0755 -d \
 	usr/lib \
         usr/lib/firmware \
         usr/lib/mdev \
+	usr/lib/X11 \
 	usr/libexec \
 	usr/local/bin \
 	usr/local/lib \
@@ -209,6 +210,7 @@ exit 0
 %dir /bin
 %dir /etc/network
 %dir /usr/doc
+%dir /usr/lib/X11
 %dir /usr/share/info
 %dir /usr/share/man
 %dir /usr/share/doc

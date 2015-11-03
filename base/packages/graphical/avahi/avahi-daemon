@@ -1,0 +1,107 @@
+#!/bin/sh
+#
+# avahi-daemon:	Starts the Avahi daemon
+#
+# chkconfig:	345 34 66
+#
+# description:	This is a daemon which runs on client machines to perform \
+#		Zeroconf service discovery on a network. avahi-daemon must be \
+#		running on systems  that use Avahi for service discovery. \
+#		Avahi-daemon should not be running otherwise.
+#
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network ]; then
+		msg_network_down "avahi-daemon"
+		exit 1
+	fi
+else
+	exit 0
+fi
+
+start() {
+	# Check if the service is already running?
+	if [ -f /var/lock/subsys/avahi-daemon ]; then
+		msg_already_running "avahi-daemon"
+		return
+	fi
+
+	msg_starting "avahi-daemon"
+	_modprobe capability
+	daemon /usr/sbin/avahi-daemon -D
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/avahi-daemon
+}
+
+stop() {
+	if [ ! -f /var/lock/subsys/avahi-daemon ]; then
+		msg_not_running "avahi-daemon"
+		return
+	fi
+
+	# Stop daemons.
+	msg_stopping "avahi-daemon"
+	avahi-daemon -k
+	rm -f /var/lock/subsys/avahi-daemon
+	ok
+}
+
+reload() {
+	if [ ! -f /var/lock/subsys/avahi-daemon ]; then
+		msg_not_running "avahi-daemon"
+		RETVAL=7
+		return
+	fi
+
+	msg_reloading "avahi-daemon"
+	avahi-daemon -r
+	RETVAL=$?
+}
+
+condrestart() {
+	if [ ! -f /var/lock/subsys/avahi-daemon ]; then
+		msg_not_running "avahi-daemon"
+		RETVAL=$1
+		return
+	fi
+
+	stop
+	start
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+  	start
+	;;
+  stop)
+  	stop
+	;;
+  restart)
+	stop
+	start
+	;;
+  try-restart)
+	condrestart 0
+	;;
+  reload|force-reload)
+  	reload
+	;;
+  status)
+	status avahi-daemon
+	RETVAL=$?
+	;;
+  *)
+	msg_usage "$0 {start|stop|restart|try-restart|reload|force-reload|status}"
+	exit 3
+esac
+
+exit $RETVAL
