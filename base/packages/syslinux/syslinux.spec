@@ -17,10 +17,10 @@ BuildRequires: nasm, perl
 BuildRequires: libuuid-devel, linux-headers, gnu-efi-devel
 Requires: syslinux-nonlinux = %{version}-%{release}
 %ifarch %{ix86}
-Requires: mtools, musl-devel
+Requires: mtools, musl
 %endif
 %ifarch x86_64
-Requires: mtools, musl-devel
+Requires: mtools, musl
 %endif
 
 # NOTE: extlinux belongs in /sbin, not in /usr/sbin, since it is typically
