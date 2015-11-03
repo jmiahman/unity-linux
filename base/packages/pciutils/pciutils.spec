@@ -16,6 +16,7 @@ License:	GPLv2+
 URL:		http://atrey.karlin.mff.cuni.cz/~mj/pciutils.shtml
 ExclusiveOS:	Linux
 Requires:	hwdata
+Requires:	wget
 Requires:	%{name}-libs = %{version}-%{release}
 BuildRequires:	sed kmod-devel
 Summary: PCI bus related utilities
