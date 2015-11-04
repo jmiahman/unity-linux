@@ -9,7 +9,7 @@
 # - resurrect static if it's useful (using plain xorg target? dri doesn't support static)
 #
 # conditional build:
-%bcond_with	gallium		# gallium drivers
+%bcond_without	gallium		# gallium drivers
 %bcond_with	gallium_intel	# gallium i915 driver (instead of plain dri; doesn't work with aiglx)
 %bcond_without	gallium_nouveau	# gallium nouveau driver
 %bcond_without	gallium_radeon	# gallium radeon drivers
@@ -19,7 +19,7 @@
 %bcond_without	nine		# nine direct3d 9+ state tracker (for wine)
 %bcond_without	opencl		# opencl support
 %bcond_without	ocl_icd		# opencl as icd (installable client driver)
-%bcond_without	omx		# openmax (bellagio omxil) support
+%bcond_with	omx		# openmax (bellagio omxil) support
 %bcond_with	va		# va library
 %bcond_without	wayland		# wayland egl
 %bcond_without	xa		# xa state tracker (for vmwgfx xorg driver)
@@ -70,7 +70,7 @@ Source0:	ftp://ftp.freedesktop.org/pub/mesa/%{version}/mesa-%{version}.tar.xz
 Url:		http://www.mesa3d.org/
 buildrequires:	autoconf >= 2.60
 buildrequires:	automake
-%{?with_opencl:buildrequires:	clang-devel}
+#%{?with_opencl:buildrequires:	clang-devel}
 buildrequires:	expat-devel
 buildrequires:	gcc 
 %{?with_opencl:buildrequires:	gcc-c++}
@@ -82,7 +82,7 @@ buildrequires:	libtool
 buildrequires:	libvdpau-devel
 buildrequires:	libxcb-devel 
 %{?with_gallium_radeon:buildrequires:	llvm-devel}
-%{?with_opencl:buildrequires:	llvm-libclc}
+#%{?with_opencl:buildrequires:	llvm-libclc}
 # for sha1 (could use also libmd/libsha1/libgcrypt/openssl instead)
 #buildrequires:	nettle-devel
 #%{?with_ocl_icd:buildrequires:	ocl-icd-devel}
@@ -111,8 +111,8 @@ buildrequires:	glproto
 buildrequires:	presentproto
 buildrequires:	makedepend
 %if %{with gallium}
-buildrequires:	xextproto-devel 
-buildrequires:	xserver-server-devel
+buildrequires:	xextproto 
+buildrequires:	xorg-server-devel
 %endif
 
 # libGLESv1_cm, libGLESv2, libGL, libOSMesa:
@@ -826,11 +826,11 @@ gallium_drivers=$(echo $gallium_drivers | xargs | tr ' ' ',')
 %if %{with gallium}
 	--enable-gallium-llvm \
 	--enable-llvm-shared-libs \
-	%{__enable egl gallium-egl} \
-	%{__enable gbm gallium-gbm} \
-	%{__enable ocl_icd opencl-icd} \
+	%{?with_egl:--enable-gallium-egl} \
+	%{?with_gbm:--enable-gallium-gbm} \
+	%{?with_ocl_icd:--enable-opencl-icd} \
 	%{?with_nine:--enable-nine} \
-	%{__enable opencl} \
+	%{?with_opencl:--enable-opencl} \
 	--enable-vdpau \
 	%{?with_omx:--enable-omx} \
 	%{?with_xa:--enable-xa} \
@@ -914,7 +914,7 @@ rm -rf %{buildroot}
 %files libegl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libEGL.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libEGL.so.1
+%attr(755,root,root) %{_libdir}/libEGL.so.1
 
 %files libegl-devel
 %defattr(644,root,root,755)
@@ -938,7 +938,7 @@ rm -rf %{buildroot}
 %defattr(644,root,root,755)
 %doc docs/{*.html,readme.uvd,patents.txt,relnotes/*.html}
 %attr(755,root,root) %{_libdir}/libGL.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libGL.so.1
+%attr(755,root,root) %{_libdir}/libGL.so.1
 # symlink for binary apps which fail to conform linux opengl abi
 # (and dlopen libGL.so instead of libGL.so.1; the same does mesa libEGL)
 %attr(755,root,root) %{_libdir}/libGL.so
@@ -969,9 +969,9 @@ rm -rf %{buildroot}
 %files libgles
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libGLESv1_CM.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libGLESv1_CM.so.1
+%attr(755,root,root) %{_libdir}/libGLESv1_CM.so.1
 %attr(755,root,root) %{_libdir}/libGLESv2.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libGLESv2.so.2
+%attr(755,root,root) %{_libdir}/libGLESv2.so.2
 
 %files libgles-devel
 %defattr(644,root,root,755)
@@ -986,7 +986,7 @@ rm -rf %{buildroot}
 %files libosmesa
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libOSMesa.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libOSMesa.so.8
+%attr(755,root,root) %{_libdir}/libOSMesa.so.8
 
 %files libosmesa-devel
 %defattr(644,root,root,755)
@@ -1007,12 +1007,12 @@ rm -rf %{buildroot}
 /etc/opencl/vendors/mesa.icd
 %attr(755,root,root) %{_libdir}/libmesaopencl.so
 %attr(755,root,root) %{_libdir}/libmesaopencl.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libmesaopencl.so.1
+%attr(755,root,root) %{_libdir}/libmesaopencl.so.1
 %else
 %files libopencl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libopencl.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libopencl.so.1
+%attr(755,root,root) %{_libdir}/libopencl.so.1
 
 %files libopencl-devel
 %defattr(644,root,root,755)
@@ -1025,7 +1025,7 @@ rm -rf %{buildroot}
 %files libopenvg
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libopenvg.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libopenvg.so.1
+%attr(755,root,root) %{_libdir}/libopenvg.so.1
 
 %files libopenvg-devel
 %defattr(644,root,root,755)
@@ -1039,14 +1039,14 @@ rm -rf %{buildroot}
 %files libxvmc-nouveau
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libxvmcnouveau.so.1.0.0
-%attr(755,root,root) %ghost %{_libdir}/libxvmcnouveau.so.1
+%attr(755,root,root) %{_libdir}/libxvmcnouveau.so.1
 %endif
 
 %if %{with gallium_radeon}
 %files libxvmc-r600
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libxvmcr600.so.1.0.0
-%attr(755,root,root) %ghost %{_libdir}/libxvmcr600.so.1
+%attr(755,root,root) %{_libdir}/libxvmcr600.so.1
 %endif
 
 %if %{with va}
@@ -1060,7 +1060,7 @@ rm -rf %{buildroot}
 %files libgbm
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgbm.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgbm.so.1
+%attr(755,root,root) %{_libdir}/libgbm.so.1
 %if %{with gallium}
 %dir %{_libdir}/gallium-pipe
 %endif
@@ -1119,7 +1119,7 @@ rm -rf %{buildroot}
 %files libwayland-egl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libwayland-egl.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libwayland-egl.so.1
+%attr(755,root,root) %{_libdir}/libwayland-egl.so.1
 
 %files libwayland-egl-devel
 %defattr(644,root,root,755)
@@ -1131,7 +1131,7 @@ rm -rf %{buildroot}
 %files libxatracker
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libxatracker.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libxatracker.so.2
+%attr(755,root,root) %{_libdir}/libxatracker.so.2
 
 %files libxatracker-devel
 %defattr(644,root,root,755)
@@ -1249,3 +1249,5 @@ rm -rf %{buildroot}
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/bellagio/libomx_mesa.so
 %endif
+
+%changelog

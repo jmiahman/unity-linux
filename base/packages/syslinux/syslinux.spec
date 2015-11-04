@@ -163,6 +163,7 @@ rm -rf %{buildroot}
 %{_datadir}/syslinux/dosutil/*
 %dir %{_datadir}/syslinux/diag/
 %{_datadir}/syslinux/diag/*
+%exclude %{_datadir}/syslinux/syslinux64.exe
 %ifarch %{ix86}
 %{_datadir}/syslinux/syslinux.exe
 %else

@@ -89,6 +89,7 @@ install -m 0755 -d \
         usr/lib/firmware \
         usr/lib/mdev \
 	usr/lib/X11 \
+	usr/lib/pkcs11 \
 	usr/libexec \
 	usr/local/bin \
 	usr/local/lib \

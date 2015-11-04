@@ -1,58 +1,43 @@
 Summary:	Bullet - collision detection and rigid body dynamics library
-Summary(pl.UTF-8):	Bullet - biblioteka wykrywania kolizji oraz dynamiki ciała sztywnego
 Name:		bullet
 Version:	2.83.6
 Release:	1
 License:	Zlib (BSD-like)
 Group:		Libraries
-#Source0Download: https://github.com/bulletphysics/bullet3/releases
 Source0:	https://github.com/bulletphysics/bullet3/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	44cb2464336a2082b2c144194c2a2668
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-format.patch
 URL:		http://bulletphysics.org/wordpress/
-BuildRequires:	libopencl-devel
-BuildRequires:	libgl-devel >= 3.0
+#BuildRequires:	libopencl-devel
+BuildRequires:	mesa-libgl-devel
 BuildRequires:	opengl-glu-devel
-BuildRequires:	OpenGL-glut-devel
-BuildRequires:	cmake >= 2.6
+BuildRequires:	opengl-glut-devel
+BuildRequires:	cmake 
 BuildRequires:	libstdc++-devel
-BuildRequires:	rpmbuild(macros) >= 1.600
-BuildRequires:	unzip
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+BuildRequires:	rpm-build 
+#BuildRequires:	unzip
 
 %description
 Bullet is a collision detection and rigid nody dynamics library.
 
-%description -l pl.UTF-8
-Bullet to biblioteka wykrywania kolizji oraz dynamiki ciała sztywnego.
-
 %package devel
 Summary:	Header files for bullet libraries
-Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek bullet
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	OpenCL-devel
-Requires:	OpenGL-devel >= 3.0
-Requires:	OpenGL-GLU-devel
-Requires:	OpenGL-glut-devel
+#Requires:	opencl-devel
+Requires:	opengl-devel
+Requires:	opengl-glu-devel
+Requires:	opengl-glut-devel
 
 %description devel
 Header files for bullet libraries.
 
-%description devel -l pl.UTF-8
-Pliki nagłówkowe bibliotek bullet.
-
 %package doc
 Summary:	Bullet libraries documentation
-Summary(pl.UTF-8):	Dokumentacja do bibliotek bullet
 Group:		Documentation
 
 %description doc
 Bullet libraries documentation.
-
-%description doc -l pl.UTF-8
-Dokumentacja do bibliotek bullet.
 
 %prep
 %setup -q -n bullet3-%{version}
@@ -62,7 +47,7 @@ Dokumentacja do bibliotek bullet.
 %build
 install -d pkgbuild
 cd pkgbuild
-%cmake .. \
+cmake .. \
 	-DBUILD_CPU_DEMOS=OFF \
 	-DBUILD_EXTRAS=ON \
 	-DBUILD_OPENGL3_DEMOS=OFF \
@@ -127,3 +112,5 @@ rm -rf $RPM_BUILD_ROOT
 %files doc
 %defattr(644,root,root,755)
 %doc docs/{BulletQuickstart,Bullet_User_Manual,GPU_rigidbody_using_OpenCL}.pdf
+
+%changelog

@@ -1,0 +1,11 @@
+--- bullet3-2.83.6/examples/Importers/ImportURDFDemo/ImportURDFSetup.cpp.orig	2015-08-11 18:17:42.000000000 +0200
++++ bullet3-2.83.6/examples/Importers/ImportURDFDemo/ImportURDFSetup.cpp	2015-10-06 21:19:15.195329529 +0200
+@@ -140,7 +140,7 @@
+ 		{
+ 			count=0;
+ 		}
+-		sprintf(m_fileName,gFileNameArray[count++].c_str());
++		strcpy(m_fileName,gFileNameArray[count++].c_str());
+ 	}
+ }
+ 

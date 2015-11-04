@@ -84,8 +84,11 @@ rm %{buildroot}/usr/lib/*.la
 %{_bindir}/%{name}-config
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/*.pc
-/usr/share/aclocal/guile.m4
-%{_includedir}/guile/
+%{_datadir}/aclocal/guile.m4
+%{_includedir}/*.h
+%dir %{_includedir}/libguile/
+%{_includedir}/libguile/*.h
+%{_includedir}/guile/*.h
 %dir %{_includedir}/guile/
 #%{_mandir}/*/*
 
