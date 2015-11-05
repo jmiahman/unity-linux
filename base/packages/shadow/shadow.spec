@@ -36,6 +36,8 @@ are used for managing group accounts.
 	--infodir=/usr/share/info \
 	--localstatedir=/var \
 	--without-nscd \
+	--without-chsh \
+	--without-chfn \
 	--without-nologin \
 	--disable-nls \
 
@@ -60,6 +62,10 @@ touch %{buildroot}/etc/login.defs
 # avoid conflict with man-pages
 rm %{buildroot}/usr/share/man/man3/getspnam.3* \
 	%{buildroot}/usr/share/man/man5/passwd.5*
+
+#Provided by util-linux
+rm %{buildroot}%{_bindir}/chsh
+rm %{buildroot}%{_bindir}/chfn
 
 %files
 /bin/groups
@@ -95,9 +101,7 @@ rm %{buildroot}/usr/share/man/man3/getspnam.3* \
 /usr/bin/chage
 /usr/bin/faillog
 /usr/bin/newgidmap
-/usr/bin/chfn
 /usr/bin/passwd
-/usr/bin/chsh
 /usr/bin/gpasswd
 /usr/bin/newgrp
 

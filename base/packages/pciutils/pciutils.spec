@@ -106,7 +106,8 @@ install -p lspci setpci $RPM_BUILD_ROOT/sbin
 install -p update-pciids $RPM_BUILD_ROOT/%{_sbindir}
 install -p -m 644 lspci.8 setpci.8 update-pciids.8 $RPM_BUILD_ROOT%{_mandir}/man8
 install -p lib/libpci.so.* $RPM_BUILD_ROOT/%{_lib}/
-ln -s ../../%{_lib}/$(basename $RPM_BUILD_ROOT/%{_lib}/*.so.*.*.*) $RPM_BUILD_ROOT%{_libdir}/libpci.so
+ln -sf ../../%{_lib}/$(basename $RPM_BUILD_ROOT/%{_lib}/*.so.*.*.*) $RPM_BUILD_ROOT%{_libdir}/libpci.so
+ln -sf ../../%{_lib}/$(basename $RPM_BUILD_ROOT/%{_lib}/*.so.*.*.*) $RPM_BUILD_ROOT%{_libdir}/libpci.so.3
 
 #mv lib/libpci.a.toinstall lib/libpci.a
 #install -p -m 644 lib/libpci.a $RPM_BUILD_ROOT%{_libdir}
@@ -132,6 +133,7 @@ install -p lib/libpci.pc $RPM_BUILD_ROOT%{_libdir}/pkgconfig
 %doc COPYING
 %defattr(-,root,root,-)
 /%{_lib}/libpci.so.*
+/usr/lib/libpci.so.*
 
 #%files devel-static
 #%defattr(-,root,root,-)

@@ -1,4 +1,6 @@
-%{!?python_sitearch: %global python_sitearch %(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+%{!?python_sitearch: %global python_sitearch \
+%(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+
 
 Name:           python-iniparse
 Version:        0.4
