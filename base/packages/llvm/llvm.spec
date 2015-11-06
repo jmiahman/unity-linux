@@ -1,3 +1,5 @@
+%bcond_without  clang
+
 Name:           llvm
 Version:        3.6.2
 Release:        1%{?dist}
@@ -241,7 +243,7 @@ sed -ri "/ifeq.*CompilerTargetArch/s#i386#i686#g" projects/compiler-rt/make/plat
 
 mkdir build
 cd build
-ln -s ../configure .
+ln -sf ../configure .
 # clang is lovely and all, but unity builds with gcc
 # -fno-devirtualize shouldn't be necessary, but gcc has scary template-related
 # bugs that make it so.  gcc 5 ought to be fixed.
@@ -340,12 +342,10 @@ mkdir -p %{buildroot}%{_mandir}/man1
 cp -p tools/clang/tools/scan-build/scan-build.1 %{buildroot}%{_mandir}/man1/
 
 # scan-build requires clang in search path
-ln -s ../../../bin/clang %{buildroot}%{_libexecdir}/clang-analyzer/scan-build/clang
+ln -sf ../../../bin/clang %{buildroot}%{_libexecdir}/clang-analyzer/scan-build/clang
 
-# launchers in /bin
-for f in scan-{build,view}; do
-  ln -s %{_libexecdir}/clang-analyzer/$f/$f %{buildroot}%{_bindir}/$f
-done
+ln -sf %{_libexecdir}/clang-analyzer/scan-view/scan-view %{buildroot}%{_bindir}/scan-view
+ln -sf %{_libexecdir}/clang-analyzer/scan-build/scan-build %{buildroot}%{_bindir}/scan-build
 %endif
 
 # Get rid of erroneously installed example files.
@@ -380,24 +380,24 @@ mkdir -p %{buildroot}%{_docdir}
 #%endif
 
 # clang
-%if %{with clang}
-cd tools/clang/docs/
-make -f Makefile.sphinx man
-cd -
-cp tools/clang/docs/_build/man/clang.1 %{buildroot}%{_mandir}/man1/clang.1
+#%if %{with clang}
+#cd tools/clang/docs/
+#make -f Makefile.sphinx man
+#cd -
+#cp tools/clang/docs/_build/man/clang.1 %{buildroot}%{_mandir}/man1/clang.1
 
 #mkdir -p %{buildroot}%{llvmdocdir clang}
 #for f in LICENSE.TXT NOTES.txt README.txt CODE_OWNERS.TXT; do
 #  cp tools/clang/$f %{buildroot}%{llvmdocdir clang}/
 #done
-%endif
+#%endif
 
 # clang-apidoc
-%if %{with clang}
+#%if %{with clang}
 #%if %{with doxygen}
 #cp -ar tools/clang/docs/doxygen/html %{buildroot}%{llvmdocdir clang-apidoc}
 #%endif
-%endif
+#%endif
 
 # lldb
 #%if %{with lldb}
@@ -488,13 +488,13 @@ file %{buildroot}%{_libdir}/%{name}/*.so | awk -F: '$2~/ELF/{print $1}' | xargs 
 %{_bindir}/macho-dump
 %{_bindir}/opt
 %if %{with clang}
-%exclude %{_mandir}/man1/clang.1.*
-#%exclude %{_mandir}/man1/scan-build.1.*
+%exclude %{_mandir}/man1/clang.1*
+#%exclude %{_mandir}/man1/scan-build.1*
 %endif
 %if %{with lldb}
-#%exclude %{_mandir}/man1/lldb.1.*
+#%exclude %{_mandir}/man1/lldb.1*
 %endif
-#%doc %{_mandir}/man1/*.1.*
+#%doc %{_mandir}/man1/*.1*
 
 %files devel
 #%doc %{llvmdocdir %{name}-devel}/
@@ -524,7 +524,7 @@ file %{buildroot}%{_libdir}/%{name}/*.so | awk -F: '$2~/ELF/{print $1}' | xargs 
 %{_bindir}/clang*
 %{_bindir}/c-index-test
 %{_prefix}/lib/clang
-%doc %{_mandir}/man1/clang.1.*
+#%doc %{_mandir}/man1/clang.1*
 
 %files -n clang-libs
 %{_libdir}/%{name}/libclang.so
@@ -535,7 +535,7 @@ file %{buildroot}%{_libdir}/%{name}/*.so | awk -F: '$2~/ELF/{print $1}' | xargs 
 %{_includedir}/clang-c
 
 %files -n clang-analyzer
-#%{_mandir}/man1/scan-build.1.*
+#%{_mandir}/man1/scan-build.1*
 %{_bindir}/scan-build
 %{_bindir}/scan-view
 %{_libexecdir}/clang-analyzer
@@ -549,13 +549,13 @@ file %{buildroot}%{_libdir}/%{name}/*.so | awk -F: '$2~/ELF/{print $1}' | xargs 
 %{_libdir}/%{name}/liblldb.so
 # XXX double check this
 #{python2_sitearch}/*
-#%doc %{_mandir}/man1/lldb.1.*
+#%doc %{_mandir}/man1/lldb.1*
 
 %files -n lldb-devel
 %{_includedir}/lldb
 %endif
 
-%files docs
+#%files docs
 #%doc %{llvmdocdir %{name}-doc}/
 
 %changelog
