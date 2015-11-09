@@ -1,0 +1,14 @@
+--- rpm-4.12.0.1/misc/fts.h	2014-06-30 08:47:14.046503415 +0000
++++ rpm-4.12.0.1/misc/fts.h	2015-11-09 06:14:56.777629701 +0000
+@@ -40,6 +40,11 @@
+ 
+ #   define __THROW
+ 
++#if defined(__musl__) 
++# define _D_EXACT_NAMLEN(d) ((d)->d_reclen) 
++# define        _LARGEFILE64_SOURCE 
++#endif 
++
+ #if defined(hpux)
+ # define _D_EXACT_NAMLEN(d) ((d)->d_namlen)
+ # define	_INCLUDE_POSIX_SOURCE

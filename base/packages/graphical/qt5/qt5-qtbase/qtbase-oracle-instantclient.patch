@@ -1,0 +1,14 @@
+--- qtbase-opensource-src-5.3.0/src/sql/drivers/oci/qsql_oci.pri.orig	2014-05-15 19:12:11.000000000 +0200
++++ qtbase-opensource-src-5.3.0/src/sql/drivers/oci/qsql_oci.pri	2014-06-01 13:15:50.625305132 +0200
+@@ -7,3 +7,4 @@
+     LIBS *= -loci
+ }
+ mac:QMAKE_LFLAGS += -Wl,-flat_namespace,-U,_environ
++QMAKE_CXXFLAGS += -I/usr/include/oracle/client
+--- qtbase-opensource-src-5.3.0/config.tests/unix/oci/oci.pro.orig	2014-05-15 19:12:18.000000000 +0200
++++ qtbase-opensource-src-5.3.0/config.tests/unix/oci/oci.pro	2014-06-01 13:17:02.585303633 +0200
+@@ -1,3 +1,4 @@
+ SOURCES = oci.cpp
+ CONFIG -= qt dylib
+ LIBS += -lclntsh
++QMAKE_CXXFLAGS += -I/usr/include/oracle/client

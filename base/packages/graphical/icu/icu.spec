@@ -1,164 +1,196 @@
-#
-# Conditional build:
-%bcond_without	static_libs	# don't build static libraries
-%define _pkgconfigdir %{_libdir}/pkgconfig
+Name:      icu
+Version:   56.1
+Release:   1%{?dist}
+Summary:   International Components for Unicode
+Group:     Development/Tools
+License:   MIT and UCD and Public Domain
+URL:       http://www.icu-project.org/
+Source0:   http://download.icu-project.org/files/icu4c/56.1/icu4c-56_1-src.tgz
+Source1:   icu-config.sh
+Autoreq: 0
 
-%define		ver	%(echo %{version} | tr . _)
-Summary:	International Components for Unicode
-Name:		icu
-Version:	55.1
-Release:	1
-License:	MIT-like
-Group:		Libraries
-Source0:	http://download.icu-project.org/files/icu4c/%{version}/%{name}4c-%{ver}-src.tgz
+BuildRequires: doxygen, autoconf, python
 
-Patch1:		CVE-2015-1270.patch 
-Patch2:		icu-timezone.patch
-Patch3:		ac264-hack.patch
+Requires: lib%{name} = %{version}-%{release}
 
-URL:		http://www.icu-project.org/
-BuildRequires:	autoconf
-BuildRequires:	libstdc++-devel
-Requires:	libicu = %{version}-%{release}
+#Patch1: icu.8198.revert.icu5431.patch
+#Patch2: icu.8800.freeserif.crash.patch
+#Patch3: icu.7601.Indic-ccmp.patch
+#Patch4: gennorm2-man.patch
+Patch5: icuinfo-man.patch
+#Patch6: armv7hl-disable-tests.patch
+
+Patch0:         icu-timezone.patch
+Patch1:         ac264-hack.patch
 
 %description
-ICU is a set of C and C++ libraries that provides robust and
-full-featured Unicode and locale support. The library provides
-calendar support, conversions for many character sets, language
-sensitive collation, date and time formatting, support for many
-locales, message catalogs and resources, message formatting,
-normalization, number and currency formatting, time zones support,
-transliteration, word, line and sentence breaking, etc.
+Tools and utilities for developing with icu.
 
-This package contains the Unicode character database and derived
-properties, along with converters and time zones data.
+%package -n lib%{name}
+Summary: International Components for Unicode - libraries
+Group:   System Environment/Libraries
 
-%package -n libicu
-Summary:	International Components for Unicode (libraries)
-Group:		Libraries
+%description -n lib%{name}
+The International Components for Unicode (ICU) libraries provide
+robust and full-featured Unicode services on a wide variety of
+platforms. ICU supports the most current version of the Unicode
+standard, and they provide support for supplementary Unicode
+characters (needed for GB 18030 repertoire support).
+As computing environments become more heterogeneous, software
+portability becomes more important. ICU lets you produce the same
+results across all the various platforms you support, without
+sacrificing performance. It offers great flexibility to extend and
+customize the supplied services.
 
-%description -n libicu
-ICU is a set of C and C++ libraries that provides robust and
-full-featured Unicode support. This package contains the runtime
-libraries for ICU. It does not contain any of the data files needed at
-runtime and present in the `icu' package.
+%package  -n lib%{name}-devel
+Summary:  Development files for International Components for Unicode
+Group:    Development/Libraries
+Requires: lib%{name}%{?_isa} = %{version}-%{release}
+Requires: pkgconfig
 
-%package -n libicu-devel
-Summary:	International Components for Unicode (development files)
-Group:		Development/Libraries
-Requires:	libicu = %{version}-%{release}
+%description -n lib%{name}-devel
+Includes and definitions for developing with icu.
 
-%description -n libicu-devel
-ICU is a set of C and C++ libraries that provides robust and
-full-featured Unicode support. This package contains the development
-files for ICU.
+%package -n lib%{name}-doc
+Summary: Documentation for International Components for Unicode
+Group:   Documentation
+BuildArch: noarch
 
-%package -n libicu-static
-Summary:	International Components for Unicode (static libraries)
-Group:		Development/Libraries
-Requires:	libicu-devel = %{version}-%{release}
+%description -n lib%{name}-doc
+%{summary}.
 
-%description -n libicu-static
-ICU is a set of C and C++ libraries that provides robust and
-full-featured Unicode support. This package contains the static 
-libraries for ICU.
+%{!?endian: %global endian %(%{__python} -c "import sys;print (0 if sys.byteorder=='big' else 1)")}
+# " this line just fixes syntax highlighting for vim that is confused by the above and continues literal
 
 %prep
 %setup -q -n %{name}
-%patch1 -p0
-%patch2 -p0
-%patch3 -p1
+
+%patch0 -p0                                                                                      
+%patch1 -p1
+
+#%patch1 -p2 -R -b .icu8198.revert.icu5431.patch
+#%patch2 -p1 -b .icu8800.freeserif.crash.patch
+#%patch3 -p1 -b .icu7601.Indic-ccmp.patch
+#%patch4 -p1 -b .gennorm2-man.patch
+%patch5 -p1 -b .icuinfo-man.patch
+#%ifarch armv7hl
+#%patch6 -p1 -b .armv7hl-disable-tests.patch
+#%endif
+
 
 %build
 cd source
-%{__autoconf}
-%configure \
-	--sbindir=%{_bindir} \
-	--with-data-packaging=library \
-	%{?with_static_libs:--enable-static} \
-	--disable-samples
+autoconf
+CFLAGS='%optflags -fno-strict-aliasing'
+CXXFLAGS='%optflags -fno-strict-aliasing'
+# Endian: BE=0 LE=1
+%if ! 0%{?endian}
+CPPFLAGS='-DU_IS_BIG_ENDIAN=1'
+%endif
+#rhbz856594 do not use --disable-renaming or cope with the mess
+export CC='gcc' \
+ %configure --with-data-packaging=library --disable-samples
+#rhbz#225896
+sed -i 's|-nodefaultlibs -nostdlib||' config/mh-linux
+#rhbz#681941
+sed -i 's|^LIBS =.*|LIBS = -L../lib -licuuc -lpthread -lm|' i18n/Makefile
+sed -i 's|^LIBS =.*|LIBS = -nostdlib -L../lib -licuuc -licui18n -lc -lgcc|' io/Makefile
+sed -i 's|^LIBS =.*|LIBS = -nostdlib -L../lib -licuuc -lc|' layout/Makefile
+sed -i 's|^LIBS =.*|LIBS = -nostdlib -L../lib -licuuc -licule -lc|' layoutex/Makefile
+sed -i 's|^LIBS =.*|LIBS = -nostdlib -L../../lib -licutu -licuuc -lc|' tools/ctestfw/Makefile
+# As of ICU 52.1 the -nostdlib in tools/toolutil/Makefile results in undefined reference to `__dso_handle'
+sed -i 's|^LIBS =.*|LIBS = -L../../lib -licui18n -licuuc -lpthread -lc|' tools/toolutil/Makefile
+#rhbz#813484
+sed -i 's| \$(docfilesdir)/installdox||' Makefile
+# There is no source/doc/html/search/ directory
+sed -i '/^\s\+\$(INSTALL_DATA) \$(docsrchfiles) \$(DESTDIR)\$(docdir)\/\$(docsubsrchdir)\s*$/d' Makefile
+# rhbz#856594 The configure --disable-renaming and possibly other options
+# result in icu/source/uconfig.h.prepend being created, include that content in
+# icu/source/common/unicode/uconfig.h to propagate to consumer packages.
+test -f uconfig.h.prepend && sed -e '/^#define __UCONFIG_H__/ r uconfig.h.prepend' -i common/unicode/uconfig.h
 
-%{__make} \
-	VERBOSE=1
+make %{?_smp_mflags}
+make %{?_smp_mflags} doc
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT source/__docs
+make %{?_smp_mflags} -C source install DESTDIR=$RPM_BUILD_ROOT
+make %{?_smp_mflags} -C source install-doc docdir=__docs
+chmod +x $RPM_BUILD_ROOT%{_libdir}/*.so.*
 
-%{__make} -C source install \
-	DESTDIR=$RPM_BUILD_ROOT
+#Fedora's create way of multi-arch may need for future use
+#(
+# cd $RPM_BUILD_ROOT%{_bindir}
+# mv icu-config icu-config-%{__isa_bits}
+#)
+#install -p -m755 -D %{SOURCE1} $RPM_BUILD_ROOT%{_bindir}/icu-config
 
-for f in icu-i18n icu-io icu-le icu-lx icu-uc ; do
-sed -i \
-	-e 's/\$(THREADSCXXFLAGS)//' \
-	-e 's/\$(THREADSCFLAGS)//' \
-	-e 's/\$(THREADSCPPFLAGS)/-D_REENTRANT/' $RPM_BUILD_ROOT%{_pkgconfigdir}/${f}.pc
-done
+# not installed
+rm $RPM_BUILD_ROOT/usr/lib/icu/current
 
-# help rpm to generate deps
-chmod +x $RPM_BUILD_ROOT%{_libdir}/lib*.so.*.*
+%check
+# test to ensure that -j(X>1) didn't "break" man pages. b.f.u #2357
+if grep -q @VERSION@ source/tools/*/*.8 source/tools/*/*.1 source/config/*.1; then
+    exit 1
+fi
+make %{?_smp_mflags} -C source check
 
-# rpm is too stupid sometimes and fails on symlinks to symlinked resources
-# (reporting unresolved dependency at install time)
-for f in Makefile.inc pkgdata.inc ; do
-	ln -sf %{version}/${f} $RPM_BUILD_ROOT%{_libdir}/%{name}/${f}
-done
+%post -n lib%{name} -p /sbin/ldconfig
 
-%{__rm} $RPM_BUILD_ROOT%{_datadir}/icu/%{version}/license.html
-
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-%post	-n libicu -p /sbin/ldconfig
-%postun	-n libicu -p /sbin/ldconfig
+%postun -n lib%{name} -p /sbin/ldconfig
 
 %files
-%defattr(644,root,root,755)
-%doc license.html readme.html
-%attr(755,root,root) %{_bindir}/derb
-%attr(755,root,root) %{_bindir}/gen*
-%attr(755,root,root) %{_bindir}/icuinfo
-%attr(755,root,root) %{_bindir}/icupkg
-%attr(755,root,root) %{_bindir}/makeconv
-%attr(755,root,root) %{_bindir}/pkgdata
-%attr(755,root,root) %{_bindir}/uconv
+%defattr(-,root,root,-)
+%{_bindir}/derb
+%{_bindir}/genbrk
+%{_bindir}/gencfu
+%{_bindir}/gencnval
+%{_bindir}/gendict
+%{_bindir}/genrb
+%{_bindir}/makeconv
+%{_bindir}/pkgdata
+%{_bindir}/uconv
+%{_sbindir}/*
 %{_mandir}/man1/derb.1*
-%{_mandir}/man1/gen*.1*
+%{_mandir}/man1/gencfu.1*
+%{_mandir}/man1/gencnval.1*
+%{_mandir}/man1/gendict.1*
+%{_mandir}/man1/genrb.1*
+%{_mandir}/man1/genbrk.1*
 %{_mandir}/man1/makeconv.1*
 %{_mandir}/man1/pkgdata.1*
 %{_mandir}/man1/uconv.1*
-%{_mandir}/man8/gen*.8*
-%{_mandir}/man8/icupkg.8*
+%{_mandir}/man8/*.8*
 
-%files -n libicu
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libicu*.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libicu*.so.55
+%files -n lib%{name}
+%defattr(-,root,root,-)
+%doc license.html readme.html
+%{_libdir}/*.so.*
 
-%files -n libicu-devel
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/icu-config
-%attr(755,root,root) %{_libdir}/libicu*.so
-%{_pkgconfigdir}/icu-i18n.pc
-%{_pkgconfigdir}/icu-io.pc
-%{_pkgconfigdir}/icu-le.pc
-%{_pkgconfigdir}/icu-lx.pc
-%{_pkgconfigdir}/icu-uc.pc
-%{_includedir}/unicode
+%files -n lib%{name}-devel
+%defattr(-,root,root,-)
+%{_bindir}/%{name}-config*
+%{_bindir}/icuinfo
+%{_mandir}/man1/%{name}-config.1*
+%{_mandir}/man1/icuinfo.1*
 %{_includedir}/layout
-%dir %{_libdir}/%{name}
-%{_libdir}/%{name}/*.inc
-%dir %{_libdir}/%{name}/current
-%dir %{_libdir}/%{name}/%{version}
-%{_libdir}/%{name}/%{version}/*.inc
+%{_includedir}/unicode
+%{_libdir}/*.so
+%{_libdir}/pkgconfig/*.pc
+%{_libdir}/%{name}
+#%dir %{_libdir}/%{name}/current
+#%{_libdir}/%{name}/current/Makefile.inc
+#%{_libdir}/%{name}/current/pkgdata.inc
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/%{version}
+%{_datadir}/%{name}/%{version}/install-sh
+%{_datadir}/%{name}/%{version}/mkinstalldirs
 %{_datadir}/%{name}/%{version}/config
-%attr(755,root,root) %{_datadir}/%{name}/%{version}/install-sh
-%attr(755,root,root) %{_datadir}/%{name}/%{version}/mkinstalldirs
-%{_mandir}/man1/icu-config.1*
+%doc %{_datadir}/%{name}/%{version}/license.html
 
-%if %{with static_libs}
-%files -n libicu-static
-%defattr(644,root,root,755)
-%{_libdir}/libicu*.a
-%endif
+%files -n lib%{name}-doc
+%defattr(-,root,root,-)
+%doc license.html readme.html
+%doc source/__docs/%{name}/html/*
+
+%changelog

@@ -78,7 +78,11 @@ Patch43:        ada-shared.patch
 Patch44:        ada-musl.patch
 
 
-#BuildRequires: binutils, gettext, bison, flex, texinfo
+BuildRequires: binutils, gettext, bison, flex, texinfo
+Requires: lib%{name} = %{version}
+Requires: mpc
+Requires: mpfr
+Requires: gmp
 
 %description
 The gcc package contains C compiler from the GNU Compiler Collection,

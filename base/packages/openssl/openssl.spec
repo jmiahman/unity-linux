@@ -54,6 +54,7 @@ SSL Shared Libraries
 Summary: Files for development of applications which will use OpenSSL
 Group: Development/Libraries
 Requires: libssl = %{version}
+Requires: libcrypto = %{version}
 
 %description devel
 OpenSSL is a toolkit for supporting cryptography. The openssl-devel

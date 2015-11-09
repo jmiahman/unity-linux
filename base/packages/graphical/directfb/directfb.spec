@@ -5,7 +5,7 @@ Release: 1%{?dist}
 License: GPL
 Group: System/Libraries
 URL: http://www.directfb.org/
-Source0: http://www.directfb.org/downloads/Core/DirectFB-1.4/DirectFB-%{version}.tar.gz
+Source0: http://sources.buildroot.net/DirectFB-%{version}.tar.gz
 
 Patch0:		DirectFB-1.7.5-flags.patch
 Patch1:		DirectFB-1.6.3-pkgconfig.patch 

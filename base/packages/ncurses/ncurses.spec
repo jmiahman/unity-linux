@@ -37,6 +37,7 @@ For NCurses these wide-character libraries are usable in both multibyte and trad
 %package libs
 Summary: NCurses libraries
 Group: System Environment/Libraries
+Requires: ncurses-terminfo
 
 %description libs
 The curses library routines are a terminal-independent method of

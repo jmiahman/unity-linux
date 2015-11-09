@@ -34,6 +34,7 @@ Libintl is a library that provides native language support to programs. It is pa
 %package devel 
 Group:		Development/Tools
 Summary:	Development files and headers for Gettext.
+Requires:	%{name} = %{version}
                                                                                               
 %description devel
 Development files and headers for Gettext.
@@ -64,6 +65,7 @@ make -j1 DESTDIR=%{buildroot} install
 %{_bindir}/*
 %{_libdir}/*.so*
 %{_libdir}/gettext/*
+%dir %{_libdir}/gettext
 
 %files -n libintl
 %{_libdir}/libintl.so.8.1.3
@@ -207,7 +209,6 @@ make -j1 DESTDIR=%{buildroot} install
 %{_libdir}/libgettextlib.so
 %{_libdir}/libasprintf.so
 %{_libdir}/libgettextsrc.so
-%dir %{_libdir}/gettext
 %dir %{_datadir}/gettext
 %dir %{_datadir}/gettext/intl
 %dir %{_datadir}/gettext/po

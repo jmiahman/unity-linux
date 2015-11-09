@@ -1,0 +1,13 @@
+diff -urN qtbase-opensource-src-5.3.2.orig/src/network/ssl/qsslsocket_openssl.cpp qtbase-opensource-src-5.3.2/src/network/ssl/qsslsocket_openssl.cpp
+--- qtbase-opensource-src-5.3.2.orig/src/network/ssl/qsslsocket_openssl.cpp	2014-12-31 13:35:17.485983733 +0100
++++ qtbase-opensource-src-5.3.2/src/network/ssl/qsslsocket_openssl.cpp	2014-12-31 13:36:25.965981516 +0100
+@@ -731,8 +731,9 @@
+         while (it.hasNext())
+             systemCerts.append(QSslCertificate::fromPath(it.next(), platformEncodingFormat));
+ # ifndef Q_OS_ANDROID
+         systemCerts.append(QSslCertificate::fromPath(QLatin1String("/etc/pki/tls/certs/ca-bundle.crt"), QSsl::Pem)); // Fedora, Mandriva
+         systemCerts.append(QSslCertificate::fromPath(QLatin1String("/usr/local/share/certs/ca-root-nss.crt"), QSsl::Pem)); // FreeBSD's ca_root_nss
++        systemCerts.append(QSslCertificate::fromPath(QLatin1String("/etc/certs/ca-certificates.crt"), QSsl::Pem)); // PLD
+ # endif
+     }
+ #endif

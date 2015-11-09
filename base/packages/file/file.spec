@@ -17,6 +17,16 @@ type of data contained by the file.  File can identify many different
 file types, including ELF binaries, system libraries, RPM packages, and
 different graphics formats.
 
+%package        devel                                                   
+Summary:        Development files for %{name}                           
+Group:          Development/Libraries                                   
+Requires:       %{name} = %{version}-%{release}                         
+Requires:       pkgconfig                                               
+                                                                        
+%description    devel                                                   
+The %{name}-devel package contains libraries and header files for       
+developing applications that use %{name}. 
+
 %prep
 %setup -q
 
@@ -40,5 +50,9 @@ rm %{buildroot}/usr/lib/*.la
 /usr/lib/libmagic.so.1
 %dir /usr/share/misc/
 /usr/share/misc/magic.mgc
+
+%files devel
+%{_includedir}/*.h
+%{_libdir}/libmagic.so
 
 %changelog

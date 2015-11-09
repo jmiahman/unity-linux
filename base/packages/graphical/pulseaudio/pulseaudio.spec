@@ -24,6 +24,7 @@ BuildRequires:  libx11-devel
 BuildRequires:  libice-devel
 BuildRequires:  dbus-devel
 
+PreReq: shadow
 Requires: libattr
 Requires: libuuid
 Requires: util-linux
@@ -157,15 +158,17 @@ install -D -m755 %{SOURCE1} \
 install -D -m644 %{SOURCE2} \
 	%{buildroot}/etc/conf.d/%{name}
 
-%pre
+%pre -p /bin/sh
 getent passwd pulse > /dev/null
 if [ $? -ne 0 ]; then
 adduser -S -H -h /dev/null -s /sbin/nologin -D pulse -G pulse 2>/dev/null
+exit 0
 fi
 
 getent group pulse > /dev/null
 if [ $? -ne 0 ]; then
 addgroup -S pulse 2>/dev/null
+exit 0
 fi
 
 %post -p /sbin/ldconfig

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+getent group pulse > /dev/null                                                               
+if [ $? -ne 0 ]; then                                                                        
+addgroup -S pulse 2>/dev/null                                                                
+fi
+
+echo $? 
