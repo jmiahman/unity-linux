@@ -5,8 +5,9 @@ Release:	1
 License:	Zlib (BSD-like)
 Group:		Libraries
 Source0:	https://github.com/bulletphysics/bullet3/archive/%{version}/%{name}-%{version}.tar.gz
-Patch0:		%{name}-link.patch
-Patch1:		%{name}-format.patch
+Patch0:         %{name}-musl.patch
+Patch1:		%{name}-link.patch
+Patch2:		%{name}-format.patch
 URL:		http://bulletphysics.org/wordpress/
 #BuildRequires:	libopencl-devel
 BuildRequires:	mesa-libgl-devel
@@ -15,7 +16,6 @@ BuildRequires:	opengl-glut-devel
 BuildRequires:	cmake 
 BuildRequires:	libstdc++-devel
 BuildRequires:	rpm-build 
-#BuildRequires:	unzip
 
 %description
 Bullet is a collision detection and rigid nody dynamics library.
@@ -41,17 +41,23 @@ Bullet libraries documentation.
 
 %prep
 %setup -q -n bullet3-%{version}
-%patch0 -p1
+%patch0 -p0
 %patch1 -p1
+%patch2 -p1
 
 %build
+#export CXXFLAGS="-O2 -DNDEBUG -fPIC"
 install -d pkgbuild
 cd pkgbuild
-cmake .. \
-	-DBUILD_CPU_DEMOS=OFF \
-	-DBUILD_EXTRAS=ON \
-	-DBUILD_OPENGL3_DEMOS=OFF \
-	-DINSTALL_EXTRA_LIBS=ON
+%cmake \
+	-DBUILD_SHARED_LIBS=1 \
+	-DBUILD_DEMOS=0 \
+	-DBUILD_MULTITHREADING=1 \
+	-DBUILD_EXTRAS=1 \
+	-DINSTLAL_LIBS=1 \
+	-DINSTALL_EXTRA_LIBS=1 \
+	-DINCLUDE_INSTALL_DIR:PATH=%{_includedir}/bullet \
+..
 
 %{__make}
 
@@ -107,7 +113,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libLinearMath.so
 %{_includedir}/bullet
 %{_libdir}/cmake/bullet
-%{_pkgconfigdir}/bullet.pc
+%{_libdir}/pkgconfig/bullet.pc
 
 %files doc
 %defattr(644,root,root,755)
