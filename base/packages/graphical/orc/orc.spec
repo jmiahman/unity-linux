@@ -3,6 +3,10 @@
 %bcond_with	static_libs	# static libraries build
 %bcond_with     apidocs         # disable gtk-doc
 
+%define _pkgconfigdir %{_libdir}/pkgconfig
+%define _aclocaldir %{_datadir}/aclocal
+
+
 %define	libver	0.4
 Summary:	The Oil Runtime Compiler
 Name:		orc

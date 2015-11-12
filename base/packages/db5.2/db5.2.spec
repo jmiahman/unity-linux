@@ -3,9 +3,9 @@
 %bcond_with	java		# don't build Java bindings
 %bcond_with	tcl		# don't build Tcl bindings
 %bcond_with	static_libs	# don't build static libraries
-%bcond_with	sqlite3		# build Sqlite3 API libraries
-%bcond_with	default_db	# use this db as default system db
-%bcond_with	rpm_db		# install library to rootfs for /bin/rpm
+%bcond_without	sqlite3		# build Sqlite3 API libraries
+%bcond_without	default_db	# use this db as default system db
+%bcond_without	rpm_db		# install library to rootfs for /bin/rpm
 
 %if %{with java}
 %include	/usr/lib/rpm/macros.java

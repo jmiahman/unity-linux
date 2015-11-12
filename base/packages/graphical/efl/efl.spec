@@ -11,7 +11,7 @@
 %bcond_without	gstreamer	# GStreamer support
 %bcond_with	gesture		# Xgesture support in Ecore_X
 %bcond_without	harfbuzz	# HarfBuzz complex text shaping and layouting support
-%bcond_without	ibus		# IBus input module
+%bcond_with	ibus		# IBus input module
 %bcond_without	luajit		# LuaJIT as Lua engine (Lua 5.1 interpreter if disabled)
 %bcond_with	pixman		# pixman for software rendering
 %bcond_without	scim		# SCIM input module
@@ -20,9 +20,9 @@
 %bcond_without	wayland		# Wayland display server support
 %bcond_with	wayland_egl	# Wayland display server support [only with GLES instead of GL]
 %bcond_with	xcb		# use XCB API instead of Xlib
-%bcond_without	xine		# Xine support
+%bcond_with	xine		# Xine support
 %bcond_with	gnutls		# use GnuTLS as crypto library (default is OpenSSL)
-%bcond_without	static_libs	# static libraries build
+%bcond_with	static_libs	# static libraries build
 #
 %ifnarch %{ix86} %{x8664} arm mips ppc
 %undefine	with_luajit
@@ -37,8 +37,8 @@ Group:		Libraries
 Source0:	https://download.enlightenment.org/rel/libs/efl/%{name}-%{version}.tar.bz2
 URL:		https://www.enlightenment.org/docs/efl/start
 %{?with_egl:BuildRequires:	egl-devel}
-BuildRequires:	OpenGL-GLX-devel
-%{?with_sdl:BuildRequires:	sdl-devel >= 1.2.0}
+BuildRequires:	mesa-libgl
+%{?with_sdl:BuildRequires:	sdl-devel}
 BuildRequires:	avahi-devel
 BuildRequires:	bullet-devel
 BuildRequires:	dbus-devel
@@ -68,7 +68,7 @@ BuildRequires:	libwebp-devel
 %{!?with_luajit:BuildRequires:	lua51 >= 5.1.0}
 %{?with_luajit:BuildRequires:	luajit >= 2.0.0}
 BuildRequires:	libtool
-BuildRequires:	openjpeg2-devel >= 2
+BuildRequires:	openjpeg-devel >= 2
 %{!?with_gnutls:BuildRequires:	openssl-devel}
 %if %{with pixman} || %{with xcb}
 BuildRequires:	pixman-devel
@@ -93,7 +93,7 @@ BuildRequires:	xcb-util-keysyms-devel
 BuildRequires:	xcb-util-wm-devel
 %else
 BuildRequires:	libx11-devel
-BuildRequires:	libxScrnSaver-devel
+BuildRequires:	libxscrnsaver-devel
 BuildRequires:	libxcomposite-devel
 BuildRequires:	libxcursor-devel
 BuildRequires:	libxdamage-devel

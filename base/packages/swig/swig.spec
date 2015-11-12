@@ -37,20 +37,23 @@ This package contains documentation for SWIG and useful examples
 
 make %{?_smp_mflags}
 
-
 %install
 make DESTDIR=%{buildroot} install
 install -D -m644 LICENSE %{buildroot}/usr/share/licenses/%{name}/LICENSE
 install -D -m644 LICENSE-UNIVERSITIES %{buildroot}/usr/share/licenses/%{name}/LICENSE-UNIVERSITIES
 
 
+#unpackaged files for now
+rm %{buildroot}/usr/share/licenses/swig/LICENSE
+rm %{buildroot}/usr/share/licenses/swig/LICENSE-UNIVERSITIES
+
 %files
 %{_bindir}/*
 %{_datadir}/swig
-#%{_mandir}/man1/ccache-swig.1*
+%{_mandir}/man1/ccache-swig.1*
 #%{_mandir}/man1/swig.1*
-#%doc ANNOUNCE CHANGES CHANGES.current LICENSE LICENSE-GPL
-#%doc LICENSE-UNIVERSITIES COPYRIGHT README TODO
+%doc ANNOUNCE CHANGES CHANGES.current LICENSE LICENSE-GPL
+%doc LICENSE-UNIVERSITIES COPYRIGHT README TODO
 
 %files doc
 %doc Doc Examples LICENSE LICENSE-GPL LICENSE-UNIVERSITIES COPYRIGHT

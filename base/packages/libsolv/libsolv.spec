@@ -1,55 +1,24 @@
 %{!?python_sitelib: %global python_sitelib %(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
+%define _libdir /usr/lib
+
 %global gitrev 1f9abfb5b1bb18a8f46887fa2541957e74132567
 %global shortcommit %(c=%{gitrev}; echo ${c:0:7})
 #%filter_provides_in %{perl_vendorarch}/.*\.so$
 #%filter_provides_in %{python2_sitearch}/.*\.so$
-%if 0%{?fedora}
-%bcond_without python3
-%filter_provides_in %{python3_sitearch}/.*\.so$
-%global _cmake_opts \\\
-            -DCMAKE_BUILD_TYPE=RelWithDebInfo \\\
-            -DENABLE_PERL=1 \\\
-            -DENABLE_PYTHON=1 \\\
-            -DUSE_VENDORDIRS=1 \\\
-            -DFEDORA=1 \\\
-            -DENABLE_DEBIAN=1 \\\
-            -DENABLE_ARCHREPO=1 \\\
-            -DENABLE_LZMA_COMPRESSION=1 \\\
-            -DMULTI_SEMANTICS=1 \\\
-            -DENABLE_COMPLEX_DEPS=1 \\\
-            %{nil}
-#%else
-#%bcond_with python3
-#%global _cmake_opts \\\
-#            -DCMAKE_BUILD_TYPE=RelWithDebInfo \\\
-#            -DENABLE_LZMA_COMPRESSION=1 \\\
-#            -DENABLE_RPMDB=1 \\\
-#            %{nil}
-%endif
 
 %global _cmake_opts \\\
-	-DENABLE_APPDATA=OFF \\\
-	-DENABLE_BZIP2_COMPRESSION=OFF \\\
-	-DENABLE_LZMA_COMPRESSION=OFF \\\
-	-DENABLE_HELIXREPO=OFF \\\
-	-DENABLE_PYTHON=ON \\\
-	-DENABLE_PUBKEY=ON \\\
-	-DENABLE_RPMDB=1 \\\
-        -DSUSE=1 \\\
-	-DENABLE_RPMDB_BYRPMHEADER=1 \\\
-	-DPythonLibs_FIND_VERSION=2 \\\
-	-DPythonLibs_FIND_VERSION_MAJOR=2 \\\
-	-DRPM5=ON \\\
-	-DUSE_VENDORDIRS=ON \\\
+	-DFEDORA=1 \\\
+	-DENABLE_PYTHON=1 \\\
+	-DENABLE_LZMA_COMPRESSION=1 \\\
+	-DENABLE_COMPLEX_DEPS=1 \\\
         %{nil}
 
 #%filter_provides_in %{ruby_vendorarch}/.*\.so$
 #%filter_setup
 
 Name:		libsolv
-Version:	0.6.8
-#Release:	1.git%{shortcommit}%{?dist}
+Version:	0.6.14
 Release:	1%{?dist}
 License:	BSD
 Url:		https://github.com/openSUSE/libsolv
@@ -60,7 +29,6 @@ Summary:	Package dependency solver
 BuildRequires:	cmake expat-devel rpm-devel zlib-devel
 BuildRequires:	perl python-devel
 BuildRequires:  xz-devel
-#BuildRequires:	libdb-devel
 #BuildRequires:  swig
 
 Patch0:		libsolv-fopencookie.patch 
@@ -127,7 +95,7 @@ Perl bindings for sat solver.
 %prep
 %setup -q -n libsolv-%{version}
 %patch0 -p1
-%patch1 -p1
+#%patch1 -p1
 
 %build
 cmake %_cmake_opts \
@@ -142,8 +110,8 @@ rm -rf %{buildroot}/usr/lib64
 
 
 
-#%check
-#make ARGS="-V" test
+%check
+make ARGS="-V" test
 
 %post -p /sbin/ldconfig
 

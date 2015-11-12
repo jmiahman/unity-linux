@@ -37,7 +37,7 @@ For NCurses these wide-character libraries are usable in both multibyte and trad
 %package libs
 Summary: NCurses libraries
 Group: System Environment/Libraries
-Requires: ncurses-terminfo
+Requires: ncurses-terminfoi = %{version}
 
 %description libs
 The curses library routines are a terminal-independent method of
@@ -59,6 +59,8 @@ descriptions are included in the ncurses-term package.
 %package devel
 Summary: Development files for the ncurses library
 Group: Development/Libraries
+Requires: ncurses-libs = %{version}
+Requires: ncurses-widec-libs = %{version}
 
 %description devel
 The header files and libraries for developing applications that use

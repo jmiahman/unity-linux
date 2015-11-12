@@ -1,0 +1,11 @@
+--- libtheora-1.1.1/examples/Makefile.am~	2009-08-31 20:18:36.000000000 +0000
++++ libtheora-1.1.1/examples/Makefile.am	2014-12-30 17:16:19.505697021 +0000
+@@ -22,7 +22,7 @@
+ 
+ player_example_SOURCES = player_example.c
+ player_example_CFLAGS = $(SDL_CFLAGS) $(OGG_CFLAGS) $(VORBIS_CFLAGS)
+-player_example_LDADD = $(LDADDDEC) $(SDL_LIBS) $(VORBIS_LIBS) $(OSS_LIBS)
++player_example_LDADD = $(LDADDDEC) $(SDL_LIBS) $(VORBIS_LIBS) $(OSS_LIBS) -lm
+ 
+ encoder_example_SOURCES = encoder_example.c
+ EXTRA_encoder_example_SOURCES = getopt.c getopt1.c getopt.h

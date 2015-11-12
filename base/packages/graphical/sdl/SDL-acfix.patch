@@ -1,0 +1,11 @@
+--- SDL-1.2.14/configure.in~	2009-10-17 17:35:03.000000000 +0000
++++ SDL-1.2.14/configure.in	2009-10-21 09:49:21.000000000 +0000
+@@ -890,7 +890,7 @@
+ CheckIPod()
+ {
+     AC_ARG_ENABLE(ipod,
+-AC_HELP_STRING([--enable-ipod], [configure SDL to work with iPodLinux [[default=no]]]),
++AC_HELP_STRING([--enable-ipod], [configure SDL to work with iPodLinux @<:@default=yes on arm-elf@:>@]),
+         , enable_ipod=no)
+ 
+     if test x$enable_ipod = xyes; then

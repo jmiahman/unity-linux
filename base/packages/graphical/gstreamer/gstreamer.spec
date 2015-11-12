@@ -1,39 +1,39 @@
-Summary:	GStreamer Streaming-media framework runtime
-Name:		gstreamer
-Version:	0.10.36
-Release:	7
-License:	LGPL v2+
-Group:		Libraries
-Source0:	http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-%{version}.tar.xz
-
-#Patch0:		gstreamer-without_ps_pdf.patch
-#Patch1:		gstreamer-eps.patch
-#Patch2:		gstreamer-inspect-rpm-format.patch
-Patch3:		bison3.patch
-
-URL:		http://gstreamer.net/
-BuildRequires:	autoconf
-BuildRequires:	automake
-BuildRequires:	bison >= 1.875
-BuildRequires:	flex
-BuildRequires:	gettext
-BuildRequires:	glib-devel
-BuildRequires:	gobject-introspection-devel >= 0.6.8
-BuildRequires:	libtool
-BuildRequires:	libxml2-devel
-BuildRequires:	nasm
-BuildRequires:	perl
-BuildRequires:	pkgconfig 
-BuildRequires:	python
-BuildRequires:	tar
-BuildRequires:	xmlto
-BuildRequires:	xz
-Requires:	glib
-
-%define		__gst_inspect	%{_bindir}/gst-inspect-0.10
-%define		vmajor		%(echo %{version} | cut -d. -f1,2)
+%define _pkgconfigdir %{_libdir}/pkgconfig
+%define _aclocaldir %{_datadir}/aclocal
 %define		_gstlibdir	%{_libdir}/gstreamer-%{vmajor}
 %define		_gstincludedir	%{_includedir}/gstreamer-%{vmajor}
+
+
+# TODO: suid/capabilities for ptp-helper?
+%define		vmajor		1.0
+
+Summary:	GStreamer Streaming-media framework runtime
+Name:		gstreamer
+Version:	1.6.1
+Release:	1
+License:	LGPL v2+
+Group:		Libraries
+Source0:	http://gstreamer.freedesktop.org/src/gstreamer/%{name}-%{version}.tar.xz
+# Source0-md5:	e72e2dc2ee06bfc045bb6010c89de520
+Patch0:		%{name}-without_ps_pdf.patch
+Patch1:		%{name}-eps.patch
+Patch2:		%{name}-inspect-rpm-format.patch
+URL:		http://gstreamer.net/
+BuildRequires:	bison >= 1.875
+BuildRequires:	flex >= 2.5.31
+BuildRequires:	gettext >= 0.17
+BuildRequires:	glib-devel >= 2.32.0
+BuildRequires:	gobject-introspection-devel >= 1.31.1
+BuildRequires:	libcap-devel
+BuildRequires:	libtool >= 2.2.6
+BuildRequires:	nasm
+BuildRequires:	perl
+BuildRequires:	pkgconfig >= 0.9.0
+BuildRequires:	python >= 2.1
+BuildRequires:	tar >= 1.22
+BuildRequires:	xmlto
+BuildRequires:	xz
+Requires:	glib >= 2.32.0
 
 %description
 GStreamer is a streaming-media framework, based on graphs of filters
@@ -47,8 +47,8 @@ installing new plugins.
 Summary:	Include files for GStreamer streaming-media framework
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	glib-devel
-Requires:	libxml2-devel
+Requires:	glib-devel >= 2.32.0
+Obsoletes:	gstreamer-plugins-bad-devel < 0.10.10
 
 %description devel
 This package contains the includes files necessary to develop
@@ -62,21 +62,31 @@ Requires:	%{name}-devel = %{version}-%{release}
 %description static
 Static versions of GStreamer libraries.
 
+%package apidocs
+Summary:	GStreamer API documentation
+Group:		Documentation
+Requires:	gtk-doc-common
+BuildArch:	noarch
+
+%description apidocs
+GStreamer API documentation.
+
+%package -n bash-completion-gstreamer
+Summary:	Bash completion for GStreamer utilities
+Group:		Applications/Shells
+Requires:	%{name} = %{version}-%{release}
+Requires:	bash-completion >= 2.0
+
+%description -n bash-completion-gstreamer
+Bash completion for GStreamer utilities: gst-inspect and gst-launch.
+
 %prep
-%setup -q -n gstreamer-%{version}
-#%patch0 -p1
-#%patch1 -p1
-#%patch2 -p1
-%patch3 -p1
+%setup -q
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
-# po/Makefile.in.in is modified
-#{__gettextize}
-%{__libtoolize}
-%{__aclocal} -I common/m4 -I m4 -I .
-%{__autoconf}
-%{__autoheader}
-%{__automake} --add-missing
 %configure \
 	--disable-examples \
 	--disable-pspdf \
@@ -84,19 +94,29 @@ Static versions of GStreamer libraries.
 	--disable-tests \
 	--disable-docbook \
 	--disable-gtk-doc \
+	--disable-static
 
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT%{_docdir}/%{name}-devel-%{version}
+install -d $RPM_BUILD_ROOT%{rpmlibdir}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+#mv $RPM_BUILD_ROOT%{_docdir}/%{name}-%{vmajor} \
+#mv $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version} \
+#mv $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/faq \
+#mv $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/manual \
+#mv $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/pwg \
+#	$RPM_BUILD_ROOT%{_docdir}/%{name}-devel-%{version}
 
 # no *.la for modules - shut up check files
 %{__rm} $RPM_BUILD_ROOT%{_gstlibdir}/lib*.la
-# *.la for libs kept - no .private dependencies in *.pc
+# obsoleted by pkg-config
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libgst*.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -106,84 +126,75 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README TODO
-# generic launchers
-%attr(755,root,root) %{_bindir}/gst-feedback
-%attr(755,root,root) %{_bindir}/gst-inspect
-%attr(755,root,root) %{_bindir}/gst-launch
-%attr(755,root,root) %{_bindir}/gst-typefind
-%attr(755,root,root) %{_bindir}/gst-xmlinspect
-%attr(755,root,root) %{_bindir}/gst-xmllaunch
-# versioned
-%attr(755,root,root) %{_bindir}/gst-feedback-0.10
-%attr(755,root,root) %{_bindir}/gst-inspect-0.10
-%attr(755,root,root) %{_bindir}/gst-launch-0.10
-%attr(755,root,root) %{_bindir}/gst-typefind-0.10
-%attr(755,root,root) %{_bindir}/gst-xmlinspect-0.10
-%attr(755,root,root) %{_bindir}/gst-xmllaunch-0.10
-%attr(755,root,root) %{_libdir}/libgstbase-0.10.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgstbase-0.10.so.0
-%attr(755,root,root) %{_libdir}/libgstcheck-0.10.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgstcheck-0.10.so.0
-%attr(755,root,root) %{_libdir}/libgstcontroller-0.10.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgstcontroller-0.10.so.0
-%attr(755,root,root) %{_libdir}/libgstdataprotocol-0.10.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgstdataprotocol-0.10.so.0
-%attr(755,root,root) %{_libdir}/libgstnet-0.10.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgstnet-0.10.so.0
-%attr(755,root,root) %{_libdir}/libgstreamer-0.10.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgstreamer-0.10.so.0
+%doc AUTHORS ChangeLog MAINTAINERS NEWS README RELEASE
+%attr(755,root,root) %{_bindir}/gst-inspect-1.0
+%attr(755,root,root) %{_bindir}/gst-launch-1.0
+%attr(755,root,root) %{_bindir}/gst-typefind-1.0
+%attr(755,root,root) %{_libdir}/libgstbase-%{vmajor}.so.*.*.*
+%attr(755,root,root) %{_libdir}/libgstbase-%{vmajor}.so.0
+%attr(755,root,root) %{_libdir}/libgstcheck-%{vmajor}.so.*.*.*
+%attr(755,root,root) %{_libdir}/libgstcheck-%{vmajor}.so.0
+%attr(755,root,root) %{_libdir}/libgstcontroller-%{vmajor}.so.*.*.*
+%attr(755,root,root) %{_libdir}/libgstcontroller-%{vmajor}.so.0
+%attr(755,root,root) %{_libdir}/libgstnet-%{vmajor}.so.*.*.*
+%attr(755,root,root) %{_libdir}/libgstnet-%{vmajor}.so.0
+%attr(755,root,root) %{_libdir}/libgstreamer-%{vmajor}.so.*.*.*
+%attr(755,root,root) %{_libdir}/libgstreamer-%{vmajor}.so.0
 %dir %{_gstlibdir}
-#%attr(755,root,root) %{_gstlibdir}/gst-plugin-scanner
+%dir /usr/libexec/gstreamer-1.0/
+%attr(755,root,root) /usr/libexec/gstreamer-1.0/gst-plugin-scanner
+%attr(755,root,root) /usr/libexec/gstreamer-1.0/gst-ptp-helper
 %attr(755,root,root) %{_gstlibdir}/libgstcoreelements.so
-%attr(755,root,root) %{_gstlibdir}/libgstcoreindexers.so
-%{_mandir}/man1/gst-feedback-0.10.1*
-%{_mandir}/man1/gst-inspect-0.10.1*
-%{_mandir}/man1/gst-launch-0.10.1*
-%{_mandir}/man1/gst-typefind-0.10.1*
-%{_mandir}/man1/gst-xmlinspect-0.10.1*
-%{_mandir}/man1/gst-xmllaunch-0.10.1*
-%{_libdir}/girepository-1.0/Gst-0.10.typelib
-%{_libdir}/girepository-1.0/GstBase-0.10.typelib
-%{_libdir}/girepository-1.0/GstCheck-0.10.typelib
-%{_libdir}/girepository-1.0/GstController-0.10.typelib
-%{_libdir}/girepository-1.0/GstNet-0.10.typelib
+%{_mandir}/man1/gst-inspect-1.0.1*
+%{_mandir}/man1/gst-launch-1.0.1*
+%{_mandir}/man1/gst-typefind-1.0.1*
+%{_libdir}/girepository-1.0/Gst-%{vmajor}.typelib
+%{_libdir}/girepository-1.0/GstBase-%{vmajor}.typelib
+%{_libdir}/girepository-1.0/GstCheck-%{vmajor}.typelib
+%{_libdir}/girepository-1.0/GstController-%{vmajor}.typelib
+%{_libdir}/girepository-1.0/GstNet-%{vmajor}.typelib
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libgstbase-0.10.so
-%attr(755,root,root) %{_libdir}/libgstcheck-0.10.so
-%attr(755,root,root) %{_libdir}/libgstcontroller-0.10.so
-%attr(755,root,root) %{_libdir}/libgstdataprotocol-0.10.so
-%attr(755,root,root) %{_libdir}/libgstnet-0.10.so
-%attr(755,root,root) %{_libdir}/libgstreamer-0.10.so
-%{_libdir}/libgstbase-0.10.la
-%{_libdir}/libgstcheck-0.10.la
-%{_libdir}/libgstcontroller-0.10.la
-%{_libdir}/libgstdataprotocol-0.10.la
-%{_libdir}/libgstnet-0.10.la
-%{_libdir}/libgstreamer-0.10.la
+%attr(755,root,root) %{_libdir}/libgstbase-%{vmajor}.so
+%attr(755,root,root) %{_libdir}/libgstcheck-%{vmajor}.so
+%attr(755,root,root) %{_libdir}/libgstcontroller-%{vmajor}.so
+%attr(755,root,root) %{_libdir}/libgstnet-%{vmajor}.so
+%attr(755,root,root) %{_libdir}/libgstreamer-%{vmajor}.so
+%{_docdir}/%{name}-devel-%{version}
 %{_gstincludedir}
-%{_pkgconfigdir}/gstreamer-0.10.pc
-%{_pkgconfigdir}/gstreamer-base-0.10.pc
-%{_pkgconfigdir}/gstreamer-check-0.10.pc
-%{_pkgconfigdir}/gstreamer-controller-0.10.pc
-%{_pkgconfigdir}/gstreamer-dataprotocol-0.10.pc
-%{_pkgconfigdir}/gstreamer-net-0.10.pc
-%{_aclocaldir}/gst-element-check-0.10.m4
-%{_datadir}/gir-1.0/Gst-0.10.gir
-%{_datadir}/gir-1.0/GstBase-0.10.gir
-%{_datadir}/gir-1.0/GstCheck-0.10.gir
-%{_datadir}/gir-1.0/GstController-0.10.gir
-%{_datadir}/gir-1.0/GstNet-0.10.gir
+%{_gstlibdir}/include
+%{_pkgconfigdir}/gstreamer-%{vmajor}.pc
+%{_pkgconfigdir}/gstreamer-base-%{vmajor}.pc
+%{_pkgconfigdir}/gstreamer-check-%{vmajor}.pc
+%{_pkgconfigdir}/gstreamer-controller-%{vmajor}.pc
+%{_pkgconfigdir}/gstreamer-net-%{vmajor}.pc
+%{_aclocaldir}/gst-element-check-%{vmajor}.m4
+%{_datadir}/gir-1.0/Gst-%{vmajor}.gir
+%{_datadir}/gir-1.0/GstBase-%{vmajor}.gir
+%{_datadir}/gir-1.0/GstCheck-%{vmajor}.gir
+%{_datadir}/gir-1.0/GstController-%{vmajor}.gir
+%{_datadir}/gir-1.0/GstNet-%{vmajor}.gir
 
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/libgstbase-0.10.a
-%{_libdir}/libgstcheck-0.10.a
-%{_libdir}/libgstcontroller-0.10.a
-%{_libdir}/libgstdataprotocol-0.10.a
-%{_libdir}/libgstnet-0.10.a
-%{_libdir}/libgstreamer-0.10.a
+#%files static
+#%defattr(644,root,root,755)
+#%{_libdir}/libgstbase-%{vmajor}.a
+#%{_libdir}/libgstcheck-%{vmajor}.a
+#%{_libdir}/libgstcontroller-%{vmajor}.a
+#%{_libdir}/libgstnet-%{vmajor}.a
+#%{_libdir}/libgstreamer-%{vmajor}.a
+
+#%files apidocs
+#%defattr(644,root,root,755)
+#%{_gtkdocdir}/gstreamer-%{vmajor}
+#%{_gtkdocdir}/gstreamer-libs-%{vmajor}
+#%{_gtkdocdir}/gstreamer-plugins-%{vmajor}
+
+#%files -n bash-completion-gstreamer
+#%defattr(644,root,root,755)
+#%{_datadir}/bash-completion/completions/gst-inspect-1.0
+#%{_datadir}/bash-completion/completions/gst-launch-1.0
+#%attr(755,root,root) %{_datadir}/bash-completion/helpers/gst
+#%attr(755,root,root) %{_datadir}/bash-completion/helpers/gst-completion-helper-1.0
 
 %changelog

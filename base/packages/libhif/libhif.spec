@@ -40,13 +40,14 @@ GLib headers and libraries for libhif.
 # for patch2
 #rm -f configure
 
-%patch0 -p1
+#%patch0 -p1
 
 %build
 %configure \
         --disable-gtk-doc \
         --disable-static \
         --disable-silent-rules \
+	--disable-gtk-doc \
 	--enable-dnf-yumdb \
 
 make %{?_smp_mflags}
@@ -58,6 +59,7 @@ mkdir -p %{buildroot}/usr/bin/
 %__cp %{_builddir}/%{name}-%{version}/libhif/hif-cmd %{buildroot}/usr/bin/
 
 rm -f $RPM_BUILD_ROOT%{_libdir}/libhif*.la
+rm -rf $RPM_BUILD_ROOT/usr/share/gtk-doc
 
 %post -p /sbin/ldconfig
 
@@ -75,6 +77,6 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libhif*.la
 %dir %{_includedir}/libhif
 %{_includedir}/libhif/*.h
 #%{_datadir}/gtk-doc
-#%{_datadir}/gir-1.0/*.gir
+%{_datadir}/gir-1.0/*.gir
 
 %changelog
