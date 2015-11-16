@@ -114,7 +114,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/gdk-pixbuf-csource
 %{_bindir}/gdk-pixbuf-query-loaders
 %attr(755,root,root) %{_libdir}/libgdk_pixbuf-2.0.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgdk_pixbuf-2.0.so.*
+%attr(755,root,root) %{_libdir}/libgdk_pixbuf-2.0.so.*
 %attr(755,root,root) %{_libdir}/libgdk_pixbuf_xlib-2.0.so.*.*.*
 %attr(755,root,root) %{_libdir}/libgdk_pixbuf_xlib-2.0.so.*
 %dir %{_libdir}/gdk-pixbuf-2.0
@@ -126,7 +126,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %dir %{_includedir}/gdk-pixbuf-2.0
 %dir %{_includedir}/gdk-pixbuf-2.0/gdk-pixbuf
-%{_includedir}/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf*.h
+%{_includedir}/gdk-pixbuf-2.0/gdk-pixbuf/*.h
 %attr(755,root,root) %{_libdir}/libgdk_pixbuf_xlib-2.0.so
 %attr(755,root,root) %{_libdir}/libgdk_pixbuf-2.0.so
 %attr(755,root,root) %{_libdir}/pkgconfig/*.pc
@@ -154,7 +154,7 @@ rm -rf $RPM_BUILD_ROOT
 %files gnome
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgnomecanvaspixbuf.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgnomecanvaspixbuf.so.1
+%attr(755,root,root) %{_libdir}/libgnomecanvaspixbuf.so.1
 
 %files gnome-devel
 %defattr(644,root,root,755)

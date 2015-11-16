@@ -1,3 +1,4 @@
+%define         _pkgconfigdir   %{_libdir}/pkgconfig
 #
 # Conditional build:
 %bcond_with	static_libs	# static library
@@ -97,13 +98,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS NEWS README
 %attr(755,root,root) %{_libdir}/libatk-bridge-2.0.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libatk-bridge-2.0.so.0
+%attr(755,root,root) %{_libdir}/libatk-bridge-2.0.so.0
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libatk-bridge-2.0.so
 %{_includedir}/at-spi2-atk
-%{_pkgconfigdir}/atk-bridge-2.0.pc
+%{_pkgconfigdir}/*.pc
 
 %if %{with static_libs}
 %files static

@@ -106,7 +106,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc ChangeLog
 %attr(755,root,root) %{_libdir}/libatk-1.0.so
 %{_includedir}/atk-1.0
-%{_libdir}/pkgconfig/atk.pc
+%{_libdir}/pkgconfig/*.pc
 %{_datadir}/gir-1.0/Atk-1.0.gir
 
 %if %{with static_libs}

@@ -1,3 +1,4 @@
+%define         _pkgconfigdir   %{_libdir}/pkgconfig
 #
 # Conditional build:
 %bcond_with	apidocs		# disable gtk-doc
@@ -63,7 +64,7 @@ Requires:	glib-devel
 Requires:	harfbuzz-devel
 %{?with_libthai:Requires:	libthai-devel}
 Requires:	libx11-devel
-Requires:	libxft-devel >= 2.1.0
+Requires:	libxft-devel
 
 %description devel
 Header files for Pango libraries.
