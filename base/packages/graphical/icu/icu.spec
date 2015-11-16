@@ -79,6 +79,8 @@ BuildArch: noarch
 
 
 %build
+export CC=gcc
+export CXX=g++
 cd source
 autoconf
 CFLAGS='%optflags -fno-strict-aliasing'
@@ -125,8 +127,12 @@ chmod +x $RPM_BUILD_ROOT%{_libdir}/*.so.*
 #)
 #install -p -m755 -D %{SOURCE1} $RPM_BUILD_ROOT%{_bindir}/icu-config
 
-# not installed
-rm $RPM_BUILD_ROOT/usr/lib/icu/current
+# rpm is too stupid sometimes and fails on symlinks to symlinked resources
+# (reporting unresolved dependency at install time)
+for f in Makefile.inc pkgdata.inc ; do
+        ln -sf %{version}/${f} $RPM_BUILD_ROOT%{_libdir}/%{name}/${f}
+done
+
 
 %check
 # test to ensure that -j(X>1) didn't "break" man pages. b.f.u #2357
@@ -178,9 +184,7 @@ make %{?_smp_mflags} -C source check
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/%{name}
-#%dir %{_libdir}/%{name}/current
-#%{_libdir}/%{name}/current/Makefile.inc
-#%{_libdir}/%{name}/current/pkgdata.inc
+%{_libdir}/%{name}/current
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/%{version}
 %{_datadir}/%{name}/%{version}/install-sh

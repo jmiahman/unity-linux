@@ -2,7 +2,7 @@
 %define         _docdir         %{_datadir}/doc
 %define         specflags       -fno-strict-aliasing
 %define         qt5dir          %{_libdir}/qt5
-
+%define		_examplesdir    %{_prefix}/%{_lib}/qt5/examples
 
 
 # Conditional build:
@@ -58,19 +58,19 @@
 %undefine	with_qm
 %endif
 
-%define		icu_abi		55
+%define		icu_abi		56
 %define		next_icu_abi	%(echo $((%{icu_abi} + 1)))
 
 %define		orgname		qtbase
 Summary:	Qt5 - base components
 Name:		qt5-%{orgname}
 Version:	5.5.0
-Release:	0.1
+Release:	1%{?dist}
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
 Source0:	http://download.qt-project.org/official_releases/qt/5.5/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
-Source1:	http://download.qt-project.org/official_releases/qt/5.5/%{version}/submodules/qttranslations-opensource-src-%{version}.tar.xz
+#Source1:	http://download.qt-project.org/official_releases/qt/5.5/%{version}/submodules/qttranslations-opensource-src-%{version}.tar.xz
 # Source1-md5:	423cccbace459623a9a173cede968cbe
 Patch0:		qtbase-oracle-instantclient.patch
 Patch1:		%{name}-system_cacerts.patch
@@ -84,7 +84,7 @@ URL:		http://qt-project.org/
 %{?with_openvg:BuildRequires:	Mesa-libOpenVG-devel}
 %{?with_kms:BuildRequires:	Mesa-libgbm-devel}
 BuildRequires:	mesa-libgl-devel
-%{?with_kms:BuildRequires:	OpenGLESv2-devel}
+%{?with_kms:BuildRequires:	openglesv2-devel}
 BuildRequires:	alsa-lib-devel
 %{?with_gtk:BuildRequires:	atk-devel}
 %{?with_cups:BuildRequires:	cups-devel}
@@ -324,7 +324,7 @@ Group:		Development/Libraries
 Requires:	mesa-libgl-devel
 Requires:	qt5core-devel = %{version}-%{release}
 Requires:	qt5gui-devel = %{version}-%{release}
-Requires:	qt5openGL = %{version}-%{release}
+Requires:	qt5opengl = %{version}-%{release}
 Requires:	qt5widgets-devel = %{version}-%{release}
 
 %description -n qt5opengl-devel
@@ -333,7 +333,7 @@ Header files for Qt5 OpenGL library.
 %package -n qt5openglextensions-devel
 Summary:	Qt5 OpenGLExtensions library - development files
 Group:		Development/Libraries
-Requires:	OpenGL-devel
+Requires:	mesa-libgl-devel
 Requires:	qt5core-devel = %{version}-%{release}
 Requires:	qt5gui-devel = %{version}-%{release}
 
@@ -620,7 +620,7 @@ COMMONOPT=" \
 	-plugindir %{qt5dir}/plugins \
 	-datadir %{_datadir}/qt5 \
 	-sysconfdir %{_sysconfdir}/qt5 \
-	-examplesdir %{_examplesdir}/qt5 \
+	-examplesdir %{_examplesdir} \
 %if %{with mysql}
 	-I/usr/include/mysql \
 %endif
@@ -728,7 +728,10 @@ cd ..
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/etc/qt5,%{_bindir},%{_pkgconfigdir}}
+install -d $RPM_BUILD_ROOT/etc/qt5
+install -d $RPM_BUILD_ROOT/%{_bindir}
+install -d $RPM_BUILD_ROOT/%{_pkgconfigdir}
+install -d $RPM_BUILD_ROOT/%{_libdir}/qt5/plugins/platformthemes
 
 # for QtSolutions (qtlockedfile, qtsingleapplication, etc)
 install -d $RPM_BUILD_ROOT%{_includedir}/qt5/QtSolutions
@@ -753,7 +756,8 @@ install -d $RPM_BUILD_ROOT%{qt5dir}/plugins/iconengines
 
 # kill unnecessary -L%{_libdir} from *.la, *.prl, *.pc
 %{__sed} -i -e "s,-L%{_libdir} \?,,g" \
-	$RPM_BUILD_ROOT%{_libdir}/*.{la,prl} \
+	$RPM_BUILD_ROOT%{_libdir}/*.prl \
+	$RPM_BUILD_ROOT%{_libdir}/*.la \
 	$RPM_BUILD_ROOT%{_pkgconfigdir}/*.pc
 
 # useless symlinks
@@ -796,18 +800,18 @@ ifecho_tree() {
 }
 
 echo "%defattr(644,root,root,755)" > examples.files
-ifecho_tree examples %{_examplesdir}/qt5/corelib
-ifecho_tree examples %{_examplesdir}/qt5/dbus
-ifecho_tree examples %{_examplesdir}/qt5/gui
-ifecho_tree examples %{_examplesdir}/qt5/network
-ifecho_tree examples %{_examplesdir}/qt5/opengl
-ifecho_tree examples %{_examplesdir}/qt5/qpa
-ifecho_tree examples %{_examplesdir}/qt5/qtconcurrent
-ifecho_tree examples %{_examplesdir}/qt5/qtestlib
-ifecho_tree examples %{_examplesdir}/qt5/sql
-ifecho_tree examples %{_examplesdir}/qt5/touch
-ifecho_tree examples %{_examplesdir}/qt5/widgets
-ifecho_tree examples %{_examplesdir}/qt5/xml
+ifecho_tree examples %{_examplesdir}/corelib
+ifecho_tree examples %{_examplesdir}/dbus
+ifecho_tree examples %{_examplesdir}/gui
+ifecho_tree examples %{_examplesdir}/network
+ifecho_tree examples %{_examplesdir}/opengl
+ifecho_tree examples %{_examplesdir}/qpa
+ifecho_tree examples %{_examplesdir}/qtconcurrent
+ifecho_tree examples %{_examplesdir}/qtestlib
+ifecho_tree examples %{_examplesdir}/sql
+ifecho_tree examples %{_examplesdir}/touch
+ifecho_tree examples %{_examplesdir}/widgets
+ifecho_tree examples %{_examplesdir}/xml
 
 # find_lang --with-qm supports only PLD qt3/qt4 specific %{_datadir}/locale/*/LC_MESSAGES layout
 find_qt5_qm()
@@ -817,12 +821,6 @@ find_qt5_qm()
 		sed -e "s:^$RPM_BUILD_ROOT::" \
 		    -e 's:\(.*/'$name'_\)\([a-z][a-z][a-z]\?\)\(_[A-Z][A-Z]\)\?\(\.qm\)$:%lang(\2\3) \1\2\3\4:'
 }
-
-echo '%defattr(644,root,root,755)' > qtbase.lang
-%if %{with qm}
-find_qt5_qm qt >> qtbase.lang
-find_qt5_qm qtbase >> qtbase.lang
-%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -842,11 +840,11 @@ rm -rf $RPM_BUILD_ROOT
 %post	-n qt5network -p /sbin/ldconfig
 %postun	-n qt5network -p /sbin/ldconfig
 
-%post	-n qt5openGL -p /sbin/ldconfig
-%postun	-n qt5openGL -p /sbin/ldconfig
+%post	-n qt5opengl -p /sbin/ldconfig
+%postun	-n qt5opengl -p /sbin/ldconfig
 
-%post	-n qt5printSupport -p /sbin/ldconfig
-%postun	-n qt5printSupport -p /sbin/ldconfig
+%post	-n qt5printsupport -p /sbin/ldconfig
+%postun	-n qt5printsupport -p /sbin/ldconfig
 
 %post	-n qt5sql -p /sbin/ldconfig
 %postun	-n qt5sql -p /sbin/ldconfig
@@ -883,7 +881,7 @@ rm -rf $RPM_BUILD_ROOT
 %{qt5dir}/mkspecs/modules/qt_lib_concurrent.pri
 %{qt5dir}/mkspecs/modules/qt_lib_concurrent_private.pri
 
-%files -n qtc5ore -f qtbase.lang
+%files -n qt5core 
 %defattr(644,root,root,755)
 %doc LGPL_EXCEPTION.txt header.* dist/{README,changes-*}
 %attr(755,root,root) %{_libdir}/libQt5Core.so.*.*.*
@@ -972,13 +970,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QTsLibPlugin.cmake
 %endif
 
-%if %{with directfb}
-%files -n qt5gui-platform-directfb
-%defattr(644,root,root,755)
+#%if %{with directfb}
+#%files -n qt5gui-platform-directfb
+#%defattr(644,root,root,755)
 # R: DirectFB fontconfig freetype
-%attr(755,root,root) %{qt5dir}/plugins/platforms/libqdirectfb.so
-%{_libdir}/cmake/Qt5Gui/Qt5Gui_QDirectFbIntegrationPlugin.cmake
-%endif
+#%attr(755,root,root) %{qt5dir}/plugins/platforms/libqdirectfb.so
+#%{_libdir}/cmake/Qt5Gui/Qt5Gui_QDirectFbIntegrationPlugin.cmake
+#%endif
 
 %if %{with kms}
 %files -n qt5gui-platform-kms
@@ -1091,29 +1089,29 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/Qt5PlatformSupport.pc
 %{qt5dir}/mkspecs/modules/qt_lib_platformsupport_private.pri
 
-%files -n qt5printsupport
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libQt5PrintSupport.so.*.*.*
-%attr(755,root,root) %{_libdir}/libQt5PrintSupport.so.5
+#%files -n qt5printsupport
+#%defattr(644,root,root,755)
+#%attr(755,root,root) %{_libdir}/libQt5PrintSupport.so.*.*.*
+#%attr(755,root,root) %{_libdir}/libQt5PrintSupport.so.5
 # loaded from src/printsupport/kernel/qplatformprintplugin.cpp
-%dir %{qt5dir}/plugins/printsupport
-%if %{with cups}
-%attr(755,root,root) %{qt5dir}/plugins/printsupport/libcupsprintersupport.so
-%endif
+#%dir %{qt5dir}/plugins/printsupport
+#%if %{with cups}
+#%attr(755,root,root) %{qt5dir}/plugins/printsupport/libcupsprintersupport.so
+#%endif
 
-%files -n qt5printsupport-devel
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libQt5PrintSupport.so
-%{_libdir}/libQt5PrintSupport.prl
-%{_includedir}/qt5/QtPrintSupport
-%{_pkgconfigdir}/Qt5PrintSupport.pc
-%dir %{_libdir}/cmake/Qt5PrintSupport
-%{_libdir}/cmake/Qt5PrintSupport/Qt5PrintSupportConfig*.cmake
-%if %{with cups}
-%{_libdir}/cmake/Qt5PrintSupport/Qt5PrintSupport_QCupsPrinterSupportPlugin.cmake
-%endif
-%{qt5dir}/mkspecs/modules/qt_lib_printsupport.pri
-%{qt5dir}/mkspecs/modules/qt_lib_printsupport_private.pri
+#%files -n qt5printsupport-devel
+#%defattr(644,root,root,755)
+#%attr(755,root,root) %{_libdir}/libQt5PrintSupport.so
+#%{_libdir}/libQt5PrintSupport.prl
+#%{_includedir}/qt5/QtPrintSupport
+#%{_pkgconfigdir}/Qt5PrintSupport.pc
+#%dir %{_libdir}/cmake/Qt5PrintSupport
+#%{_libdir}/cmake/Qt5PrintSupport/Qt5PrintSupportConfig*.cmake
+#%if %{with cups}
+#%{_libdir}/cmake/Qt5PrintSupport/Qt5PrintSupport_QCupsPrinterSupportPlugin.cmake
+#%endif
+#%{qt5dir}/mkspecs/modules/qt_lib_printsupport.pri
+#%{qt5dir}/mkspecs/modules/qt_lib_printsupport_private.pri
 
 %files -n qt5sql
 %defattr(644,root,root,755)
@@ -1294,10 +1292,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/qt5-doc/qtxml.qch
 %endif
 
-%files examples -f examples.files
-%dir %{_examplesdir}/qt5
-%doc %{_examplesdir}/qt5/README
-%{_examplesdir}/qt5/examples.pro
+%files examples
+%dir %{_examplesdir}
+%doc %{_examplesdir}/README
+%{_examplesdir}/examples.pro
 
 %files -n qt5-build
 %defattr(644,root,root,755)
