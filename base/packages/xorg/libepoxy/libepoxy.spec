@@ -56,7 +56,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc COPYING README.md
-%attr(755,root,root) %ghost %{_libdir}/libepoxy.so.0
+%attr(755,root,root) %{_libdir}/libepoxy.so.0
 %attr(755,root,root) %{_libdir}/libepoxy.so.*.*
 
 %files devel

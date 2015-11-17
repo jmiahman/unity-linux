@@ -1,7 +1,7 @@
 %define _target_platform %{_arch}-unity-linux-musl
 
 Name:		glib	
-Version:	2.45.7
+Version:	2.46.2
 Release:	1%{?dist}
 Summary:	A library of handy utility functions
 
@@ -54,6 +54,7 @@ rm %{buildroot}/usr/lib/*.la
 %files
 #%doc COPYING
 #%doc AUTHORS ChangeLog NEWS README
+%dir %{_datadir}/glib-2.0/schemas
 %{_libdir}/lib*.so.*
 
 %files devel
@@ -64,5 +65,7 @@ rm %{buildroot}/usr/lib/*.la
 %{_includedir}/*
 #%{_mandir}/man1/*
 %{_datadir}/aclocal/*
-
+%dir %{_datadir}/glib-2.0
+%dir %{_datadir}/glib-2.0/codegen
+%{_datadir}/glib-2.0/codegen/*.py*
 %changelog

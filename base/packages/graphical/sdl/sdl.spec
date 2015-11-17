@@ -87,7 +87,7 @@ Requires:	sdl = %{version}-%{release}
 %{?with_svga:Requires:	svgalib-devel >= 1.4.0}
 Requires:	tslib-devel
 Requires:	libx11-devel
-Suggests:	OpenGL-GLU-devel
+Suggests:	glu-devel
 
 %description devel
 SDL - Header files.
