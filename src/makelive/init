@@ -1,4 +1,6 @@
 #!/bin/busybox ash
+# Licensed Under BSD
+# - JMiahMan (Jeremiah Summers) 2015 For Unity-Linux
 
 load_module()
 {
