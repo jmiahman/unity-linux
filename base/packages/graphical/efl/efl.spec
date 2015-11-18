@@ -6,7 +6,7 @@
 #
 # Conditional build:
 %bcond_without	drm		# DRM engine
-%bcond_without	egl		# EGL rendering support
+%bcond_with	egl		# EGL rendering support
 %bcond_without	fb		# Linux FrameBuffer support
 %bcond_without	gstreamer	# GStreamer support
 %bcond_with	gesture		# Xgesture support in Ecore_X
@@ -14,7 +14,7 @@
 %bcond_with	ibus		# IBus input module
 %bcond_without	luajit		# LuaJIT as Lua engine (Lua 5.1 interpreter if disabled)
 %bcond_with	pixman		# pixman for software rendering
-%bcond_without	scim		# SCIM input module
+%bcond_with	scim		# SCIM input module
 %bcond_without	sdl		# SDL support
 %bcond_with	systemd		# systemd journal support in Eina, daemon support in Ecore
 %bcond_without	wayland		# Wayland display server support
@@ -30,11 +30,11 @@
 %define 	_pkgconfigdir	%{_libdir}/pkgconfig
 Summary:	EFL - The Enlightenment Foundation Libraries
 Name:		efl
-Version:	1.10.3
+Version:	1.16.0
 Release:	1
 License:	LGPL v2.1+, BSD (depends on component)
 Group:		Libraries
-Source0:	https://download.enlightenment.org/rel/libs/efl/%{name}-%{version}.tar.bz2
+Source0:	https://download.enlightenment.org/rel/libs/efl/%{name}-%{version}.tar.xz
 URL:		https://www.enlightenment.org/docs/efl/start
 %{?with_egl:BuildRequires:	egl-devel}
 BuildRequires:	mesa-libgl
@@ -116,7 +116,7 @@ BuildRequires:	wayland-devel
 #BuildRequires:	ender-devel >= 0.0.6
 
 # it used to be linux-gnu-ARCH before...
-%define		arch_tag	v-1.10
+%define		arch_tag	v-1.16
 
 %description
 EFL - The Enlightenment Foundation Libraries.
@@ -129,16 +129,6 @@ URL:		http://trac.enlightenment.org/e/wiki/Ecore
 Requires:	eina = %{version}-%{release}
 Requires:	eo = %{version}-%{release}
 %{?with_systemd:Requires:	systemd-libs >= 1:192}
-Obsoletes:	ecore-config
-Obsoletes:	ecore-config-devel
-Obsoletes:	ecore-config-static
-Obsoletes:	ecore-directfb
-Obsoletes:	ecore-directfb-devel
-Obsoletes:	ecore-directfb-static
-Obsoletes:	ecore-desktop
-Obsoletes:	ecore-job
-Obsoletes:	ecore-libs
-Obsoletes:	ecore-txt
 
 %description -n ecore
 Ecore is the event/X abstraction layer that makes doing selections,
@@ -154,7 +144,7 @@ URL:		http://trac.enlightenment.org/e/wiki/Ecore
 Requires:	ecore = %{version}-%{release}
 Requires:	eina-devel = %{version}-%{release}
 Requires:	eo-devel = %{version}-%{release}
-Requires:	glib2-devel >= 2.0
+Requires:	glib-devel >= 2.0
 %{?with_systemd:Requires:	systemd-devel >= 1:192}
 
 %description -n ecore-devel
@@ -329,7 +319,7 @@ Group:		Libraries
 URL:		http://trac.enlightenment.org/e/wiki/Ecore
 Requires:	ecore-input = %{version}-%{release}
 Requires:	libdrm
-Requires:	eudev-libs
+Requires:	eudev
 Requires:	libxkbcommon
 
 %description -n ecore-drm
@@ -454,7 +444,9 @@ URL:		http://trac.enlightenment.org/e/wiki/Ecore
 Requires:	ecore-evas = %{version}-%{release}
 Requires:	ecore-input-evas = %{version}-%{release}
 Requires:	ecore-wayland = %{version}-%{release}
+%if %{with wayland_egl}
 Requires:	evas-engine-wayland_egl = %{version}-%{release}
+%endif
 Requires:	evas-engine-wayland_shm = %{version}-%{release}
 
 %description -n ecore-evas-engine-wayland
@@ -577,7 +569,6 @@ Requires:	ecore-evas = %{version}-%{release}
 Requires:	ecore-imf = %{version}-%{release}
 Requires:	ecore-x = %{version}-%{release}
 Requires:	ibus 
-Obsoletes:	ecore-module-ibus
 
 %description -n ecore-imf-module-ibus
 Ecore IMF IBus input method module.
@@ -591,7 +582,6 @@ Requires:	ecore-evas = %{version}-%{release}
 Requires:	ecore-imf = %{version}-%{release}
 Requires:	ecore-x = %{version}-%{release}
 Requires:	scim
-Obsoletes:	ecore-module-scim
 
 %description -n ecore-imf-module-scim
 Ecore IMF SCIM input method module.
@@ -615,7 +605,6 @@ Group:		Libraries
 URL:		http://trac.enlightenment.org/e/wiki/Ecore
 Requires:	ecore-imf = %{version}-%{release}
 Requires:	ecore-x = %{version}-%{release}
-Obsoletes:	ecore-module-xim
 
 %description -n ecore-imf-module-xim
 Ecore IMF XIM input method module.
@@ -755,7 +744,7 @@ License:	BSD
 Group:		Libraries
 URL:		http://trac.enlightenment.org/e/wiki/Ecore
 Requires:	ecore-input = %{version}-%{release}
-Requires:	SDL >= 1.2.0
+Requires:	sdl >= 1.2.0
 
 %description -n ecore-sdl
 Ecore SDL library.
@@ -767,7 +756,7 @@ Group:		Development/Libraries
 URL:		http://trac.enlightenment.org/e/wiki/Ecore
 Requires:	ecore-input-devel = %{version}-%{release}
 Requires:	ecore-sdl = %{version}-%{release}
-Requires:	SDL-devel >= 1.2.0
+Requires:	sdl-devel >= 1.2.0
 
 %description -n ecore-sdl-devel
 Header file for Ecore SDL library.
@@ -787,7 +776,7 @@ Summary:	Ecore Wayland library
 Group:		Libraries
 Requires:	ecore = %{version}-%{release}
 Requires:	ecore-input = %{version}-%{release}
-Requires:	wayland 
+Requires:	libwayland-server 
 Requires:	libxkbcommon
 
 %description -n ecore-wayland
@@ -1001,7 +990,7 @@ Requires:	eina-devel = %{version}-%{release}
 %{?with_gnutls:Requires:	gnutls-devel}
 %{?with_gnutls:Requires:	libgcrypt-devel}
 %{!?with_gnutls:Requires:	openssl-devel}
-Requires:	libjpeg-devel
+Requires:	libjpeg-turbo-devel
 Requires:	zlib-devel
 
 %description -n eet-devel
@@ -1036,8 +1025,7 @@ URL:		http://trac.enlightenment.org/e/wiki/Eeze
 Requires:	ecore-file = %{version}-%{release}
 Requires:	eet = %{version}-%{release}
 Requires:	libmount 
-Requires:	eudev-libs
-Obsoletes:	enlightenment-utils-eeze
+Requires:	eudev
 
 %description -n eeze
 Eeze is a library for manipulating devices through udev with a simple
@@ -1467,7 +1455,6 @@ Group:		Applications/Graphics
 URL:		http://trac.enlightenment.org/e/wiki/Ethumb
 Requires:	dbus
 Requires:	ethumb-libs = %{version}-%{release}
-Obsoletes:	ethumb-plugin-epdf
 
 %description -n ethumb
 Ethumb is a thumbnail generation library. Features:
@@ -1543,27 +1530,6 @@ Provides:	evas-loader-eet = %{version}-%{release}
 Provides:	evas-loader-pmaps = %{version}-%{release}
 Provides:	evas-loader-xpm = %{version}-%{release}
 Provides:	evas-saver-eet = %{version}-%{release}
-# packages merged in
-Obsoletes:	evas-engine-buffer < %{version}-%{release}
-Obsoletes:	evas-engine-software_generic < %{version}-%{release}
-Obsoletes:	evas-libs
-Obsoletes:	evas-loader-eet < %{version}-%{release}
-Obsoletes:	evas-loader-pmaps < %{version}-%{release}
-Obsoletes:	evas-loader-xpm < %{version}-%{release}
-Obsoletes:	evas-saver-eet < %{version}-%{release}
-# obsolete packages
-Obsoletes:	evas-engine-directfb
-Obsoletes:	evas-engine-software_8
-Obsoletes:	evas-engine-software_8_x11
-Obsoletes:	evas-engine-software_16
-Obsoletes:	evas-engine-software_16_sdl
-Obsoletes:	evas-engine-software_16_x11
-Obsoletes:	evas-engine-software_qtopia
-Obsoletes:	evas-engine-xrender_x11
-Obsoletes:	evas-engine-xrender_xcb
-Obsoletes:	evas-loader-edb
-Obsoletes:	evas-loader-svg
-Obsoletes:	evas-saver-edb
 
 %description -n evas
 Evas is a clean display canvas API for several target display systems
@@ -1654,7 +1620,6 @@ License:	BSD
 Group:		Libraries
 URL:		http://trac.enlightenment.org/e/wiki/Evas
 Requires:	evas = %{version}-%{release}
-Obsoletes:	evas-engine-software_xcb
 
 %description -n evas-engine-software_x11
 Software X11 rendering engine module for Evas.
@@ -1681,7 +1646,7 @@ Requires:	evas = %{version}-%{release}
 %description -n evas-engine-wayland_shm
 Wayland SHM rendering engine module for Evas.
 
-# loaders:
+# image_loaders:
 %package -n evas-loader-gif
 Summary:	GIF Image loader module for Evas
 License:	BSD
@@ -1743,7 +1708,7 @@ Requires:	evas = %{version}-%{release}
 %description -n evas-loader-webp
 WebP Image loader module for Evas.
 
-# savers:
+# image_savers:
 %package -n evas-saver-jpeg
 Summary:	JPEG Image saver module for Evas
 License:	BSD
@@ -1789,7 +1754,6 @@ WebP Image saver module for Evas.
 Summary:	EDC syntax support for Vim
 Group:		Applications/Editors/Vim
 Requires:	vim-rt
-Obsoletes:	vim-syntax-edc
 
 %description -n vim-addon-efl
 EDC syntax support for Vim.
@@ -1808,10 +1772,11 @@ EDC syntax support for Vim.
 	%{!?with_ibus:--disable-ibus} \
 	--enable-image-loader-gif \
 	--enable-image-loader-jpeg \
-	--enable-image-loader-jp2k \
+	--disable-image-loader-jp2k \
 	--enable-image-loader-png \
 	--enable-image-loader-tiff \
 	--enable-image-loader-webp \
+	--disable-neon \
 	%{!?with_luajit:--enable-lua-old} \
 	--enable-multisense \
 	%{?with_pixman:--enable-pixman} \
@@ -1824,7 +1789,8 @@ EDC syntax support for Vim.
 	%{?with_xine:--enable-xine} \
 	--enable-xinput22 \
 	--with-crypto=%{?with_gnutls:gnutls}%{!?with_gnutls:openssl} \
-	--with-x11=%{?with_xcb:xcb}%{!?with_xcb:xlib}
+	--with-x11=%{?with_xcb:xcb}%{!?with_xcb:xlib} \
+	--enable-i-really-know-what-i-am-doing-and-that-this-will-probably-break-things-and-i-will-fix-them-myself-and-send-patches-aba
 
 %{__make}
 
@@ -1834,13 +1800,13 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT%{_datadir}/vim/vimfiles
-cp -pr data/edje/vim/autoload $RPM_BUILD_ROOT%{_datadir}/vim
-cp -pr data/edje/vim/ftdetect $RPM_BUILD_ROOT%{_datadir}/vim/vimfiles
-cp -pr data/edje/vim/ftplugin $RPM_BUILD_ROOT%{_datadir}/vim/vimfiles
-cp -pr data/edje/vim/indent $RPM_BUILD_ROOT%{_datadir}/vim/vimfiles
-cp -pr data/edje/vim/snippets $RPM_BUILD_ROOT%{_datadir}/vim/vimfiles
-cp -pr data/edje/vim/syntax $RPM_BUILD_ROOT%{_datadir}/vim/vimfiles
+#install -d $RPM_BUILD_ROOT%{_datadir}/vim/vimfiles
+#cp -pr data/edje/vim/autoload $RPM_BUILD_ROOT%{_datadir}/vim
+#cp -pr data/edje/vim/ftdetect $RPM_BUILD_ROOT%{_datadir}/vim/vimfiles
+#cp -pr data/edje/vim/ftplugin $RPM_BUILD_ROOT%{_datadir}/vim/vimfiles
+#cp -pr data/edje/vim/indent $RPM_BUILD_ROOT%{_datadir}/vim/vimfiles
+#cp -pr data/edje/vim/snippets $RPM_BUILD_ROOT%{_datadir}/vim/vimfiles
+#cp -pr data/edje/vim/syntax $RPM_BUILD_ROOT%{_datadir}/vim/vimfiles
 
 # obsoleted by pkg-config
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/lib*.la
@@ -1949,7 +1915,7 @@ rm -rf $RPM_BUILD_ROOT
 %post	-n evas -p /sbin/ldconfig
 %postun	-n evas -p /sbin/ldconfig
 
-%files -n ecore -f efl.lang
+%files -n ecore
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libecore.so.*.*.*
 %attr(755,root,root) %{_libdir}/libecore.so.1
@@ -1984,11 +1950,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ecore/system/systemd/%{arch_tag}/module.so
 %endif
 
-%files -n ecore-system-upower
-%defattr(644,root,root,755)
-%dir %{_libdir}/ecore/system/upower
-%dir %{_libdir}/ecore/system/upower/%{arch_tag}
-%attr(755,root,root) %{_libdir}/ecore/system/upower/%{arch_tag}/module.so
+#%files -n ecore-system-upower
+#%defattr(644,root,root,755)
+#%dir %{_libdir}/ecore/system/upower
+#%dir %{_libdir}/ecore/system/upower/%{arch_tag}
+#%attr(755,root,root) %{_libdir}/ecore/system/upower/%{arch_tag}/module.so
 
 %files -n ecore-audio
 %defattr(644,root,root,755)
@@ -2050,10 +2016,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libecore_drm.so.*.*.*
 %attr(755,root,root) %{_libdir}/libecore_drm.so.1
-%dir %{_libdir}/ecore_drm
-%dir %{_libdir}/ecore_drm/bin
-%dir %{_libdir}/ecore_drm/bin/%{arch_tag}
-%attr(755,root,root) %{_libdir}/ecore_drm/bin/%{arch_tag}/ecore_drm_launch
+#%dir %{_libdir}/ecore_drm
+#%dir %{_libdir}/ecore_drm/bin
+#%dir %{_libdir}/ecore_drm/bin/%{arch_tag}
+#%attr(755,root,root) %{_libdir}/ecore_drm/bin/%{arch_tag}/ecore_drm_launch
 
 %files -n ecore-drm-devel
 %defattr(644,root,root,755)
@@ -2087,11 +2053,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libecore_evas.a
 %endif
 
-%files -n ecore-evas-engine-drm
-%defattr(644,root,root,755)
-%dir %{_libdir}/ecore_evas/engines/drm
-%dir %{_libdir}/ecore_evas/engines/drm/%{arch_tag}
-%attr(755,root,root) %{_libdir}/ecore_evas/engines/drm/%{arch_tag}/module.so
+#%files -n ecore-evas-engine-drm
+#%defattr(644,root,root,755)
+#%dir %{_libdir}/ecore_evas/engines/drm
+#%dir %{_libdir}/ecore_evas/engines/drm/%{arch_tag}
+#%attr(755,root,root) %{_libdir}/ecore_evas/engines/drm/%{arch_tag}/module.so
 
 %files -n ecore-evas-engine-extn
 %defattr(644,root,root,755)
@@ -2456,7 +2422,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with systemd}
 %{systemduserunitdir}/efreet.service
 %endif
-%{_datadir}/dbus-1/services/org.enlightenment.Efreet.service
+#%{_datadir}/dbus-1/services/org.enlightenment.Efreet.service
 %{_datadir}/efreet
 
 %files -n efreet-libs
@@ -2658,9 +2624,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/eolian.pc
 %{_libdir}/cmake/Eolian
 
-%files -n eolian-static
-%defattr(644,root,root,755)
-%{_libdir}/libeolian.a
+#%files -n eolian-static
+#%defattr(644,root,root,755)
+#%{_libdir}/libeolian.a
 
 %files -n eolian-cxx-devel
 %defattr(644,root,root,755)
@@ -2751,8 +2717,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/evas/cserve2/bin/%{arch_tag}/evas_cserve2_slave
 %dir %{_libdir}/evas/modules
 %dir %{_libdir}/evas/modules/engines
-%dir %{_libdir}/evas/modules/loaders
-%dir %{_libdir}/evas/modules/savers
+%dir %{_libdir}/evas/modules/image_loaders
+%dir %{_libdir}/evas/modules/image_savers
 %{_datadir}/evas
 
 %files -n evas-devel
@@ -2839,75 +2805,75 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n evas-loader-gif
 %defattr(644,root,root,755)
-%dir %{_libdir}/evas/modules/loaders/gif
-%dir %{_libdir}/evas/modules/loaders/gif/%{arch_tag}
-%attr(755,root,root) %{_libdir}/evas/modules/loaders/gif/%{arch_tag}/module.so
+%dir %{_libdir}/evas/modules/image_loaders/gif
+%dir %{_libdir}/evas/modules/image_loaders/gif/%{arch_tag}
+%attr(755,root,root) %{_libdir}/evas/modules/image_loaders/gif/%{arch_tag}/module.so
 
-%files -n evas-loader-jp2k
-%defattr(644,root,root,755)
-%dir %{_libdir}/evas/modules/loaders/jp2k
-%dir %{_libdir}/evas/modules/loaders/jp2k/%{arch_tag}
-%attr(755,root,root) %{_libdir}/evas/modules/loaders/jp2k/%{arch_tag}/module.so
+#%files -n evas-loader-jp2k
+#%defattr(644,root,root,755)
+#%dir %{_libdir}/evas/modules/image_loaders/jp2k
+#%dir %{_libdir}/evas/modules/image_loaders/jp2k/%{arch_tag}
+#%attr(755,root,root) %{_libdir}/evas/modules/image_loaders/jp2k/%{arch_tag}/module.so
 
 %files -n evas-loader-jpeg
 %defattr(644,root,root,755)
-%dir %{_libdir}/evas/modules/loaders/jpeg
-%dir %{_libdir}/evas/modules/loaders/jpeg/%{arch_tag}
-%attr(755,root,root) %{_libdir}/evas/modules/loaders/jpeg/%{arch_tag}/module.so
+%dir %{_libdir}/evas/modules/image_loaders/jpeg
+%dir %{_libdir}/evas/modules/image_loaders/jpeg/%{arch_tag}
+%attr(755,root,root) %{_libdir}/evas/modules/image_loaders/jpeg/%{arch_tag}/module.so
 
 %files -n evas-loader-png
 %defattr(644,root,root,755)
-%dir %{_libdir}/evas/modules/loaders/png
-%dir %{_libdir}/evas/modules/loaders/png/%{arch_tag}
-%attr(755,root,root) %{_libdir}/evas/modules/loaders/png/%{arch_tag}/module.so
+%dir %{_libdir}/evas/modules/image_loaders/png
+%dir %{_libdir}/evas/modules/image_loaders/png/%{arch_tag}
+%attr(755,root,root) %{_libdir}/evas/modules/image_loaders/png/%{arch_tag}/module.so
 
 %files -n evas-loader-tiff
 %defattr(644,root,root,755)
-%dir %{_libdir}/evas/modules/loaders/tiff
-%dir %{_libdir}/evas/modules/loaders/tiff/%{arch_tag}
-%attr(755,root,root) %{_libdir}/evas/modules/loaders/tiff/%{arch_tag}/module.so
+%dir %{_libdir}/evas/modules/image_loaders/tiff
+%dir %{_libdir}/evas/modules/image_loaders/tiff/%{arch_tag}
+%attr(755,root,root) %{_libdir}/evas/modules/image_loaders/tiff/%{arch_tag}/module.so
 
 %files -n evas-loader-webp
 %defattr(644,root,root,755)
-%dir %{_libdir}/evas/modules/loaders/webp
-%dir %{_libdir}/evas/modules/loaders/webp/%{arch_tag}
-%attr(755,root,root) %{_libdir}/evas/modules/loaders/webp/%{arch_tag}/module.so
+%dir %{_libdir}/evas/modules/image_loaders/webp
+%dir %{_libdir}/evas/modules/image_loaders/webp/%{arch_tag}
+%attr(755,root,root) %{_libdir}/evas/modules/image_loaders/webp/%{arch_tag}/module.so
 
 %files -n evas-saver-jpeg
 %defattr(644,root,root,755)
-%dir %{_libdir}/evas/modules/savers/jpeg
-%dir %{_libdir}/evas/modules/savers/jpeg/%{arch_tag}
-%attr(755,root,root) %{_libdir}/evas/modules/savers/jpeg/%{arch_tag}/module.so
+%dir %{_libdir}/evas/modules/image_savers/jpeg
+%dir %{_libdir}/evas/modules/image_savers/jpeg/%{arch_tag}
+%attr(755,root,root) %{_libdir}/evas/modules/image_savers/jpeg/%{arch_tag}/module.so
 
 %files -n evas-saver-png
 %defattr(644,root,root,755)
-%dir %{_libdir}/evas/modules/savers/png
-%dir %{_libdir}/evas/modules/savers/png/%{arch_tag}
-%attr(755,root,root) %{_libdir}/evas/modules/savers/png/%{arch_tag}/module.so
+%dir %{_libdir}/evas/modules/image_savers/png
+%dir %{_libdir}/evas/modules/image_savers/png/%{arch_tag}
+%attr(755,root,root) %{_libdir}/evas/modules/image_savers/png/%{arch_tag}/module.so
 
 %files -n evas-saver-tiff
 %defattr(644,root,root,755)
-%dir %{_libdir}/evas/modules/savers/tiff
-%dir %{_libdir}/evas/modules/savers/tiff/%{arch_tag}
-%attr(755,root,root) %{_libdir}/evas/modules/savers/tiff/%{arch_tag}/module.so
+%dir %{_libdir}/evas/modules/image_savers/tiff
+%dir %{_libdir}/evas/modules/image_savers/tiff/%{arch_tag}
+%attr(755,root,root) %{_libdir}/evas/modules/image_savers/tiff/%{arch_tag}/module.so
 
 %files -n evas-saver-webp
 %defattr(644,root,root,755)
-%dir %{_libdir}/evas/modules/savers/webp
-%dir %{_libdir}/evas/modules/savers/webp/%{arch_tag}
-%attr(755,root,root) %{_libdir}/evas/modules/savers/webp/%{arch_tag}/module.so
+%dir %{_libdir}/evas/modules/image_savers/webp
+%dir %{_libdir}/evas/modules/image_savers/webp/%{arch_tag}
+%attr(755,root,root) %{_libdir}/evas/modules/image_savers/webp/%{arch_tag}/module.so
 
-%files -n vim-addon-efl
-%defattr(644,root,root,755)
-%doc data/edje/vim/plugin-info.txt
-%{_datadir}/vim/autoload/edccomplete.vim
-%{_datadir}/vim/vimfiles/ftdetect/edc.vim
-%{_datadir}/vim/vimfiles/ftplugin/edc.vim
-%{_datadir}/vim/vimfiles/indent/edc.vim
+#%files -n vim-addon-efl
+#%defattr(644,root,root,755)
+#%doc data/edje/vim/plugin-info.txt
+#%{_datadir}/vim/autoload/edccomplete.vim
+#%{_datadir}/vim/vimfiles/ftdetect/edc.vim
+#%{_datadir}/vim/vimfiles/ftplugin/edc.vim
+#%{_datadir}/vim/vimfiles/indent/edc.vim
 # owner?
-%dir %{_datadir}/vim/vimfiles/snippets
-%{_datadir}/vim/vimfiles/snippets/edc.snippets
-%{_datadir}/vim/vimfiles/syntax/edc.vim
-%{_datadir}/vim/vimfiles/syntax/embryo.vim
+#%dir %{_datadir}/vim/vimfiles/snippets
+#%{_datadir}/vim/vimfiles/snippets/edc.snippets
+#%{_datadir}/vim/vimfiles/syntax/edc.vim
+#%{_datadir}/vim/vimfiles/syntax/embryo.vim
 
 %changelog

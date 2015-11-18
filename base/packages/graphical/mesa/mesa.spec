@@ -375,7 +375,7 @@ summary:	mesa implementation of xvmc api for nvidia adapters
 license:	mit
 group:		libraries
 requires:	libdrm >= %{libdrm_ver}
-requires:	xorg-lib-libxvmc >= 1.0.6
+requires:	libxvmc >= 1.0.6
 conflicts:	mesa-libxvmc
 
 %description libxvmc-nouveau
@@ -386,7 +386,7 @@ summary:	mesa implementation of xvmc api for ati radeon r600 series adapters
 license:	mit
 group:		libraries
 requires:	libdrm >= %{libdrm_ver}
-requires:	xorg-lib-libxvmc >= 1.0.6
+requires:	libxvmc >= 1.0.6
 conflicts:	mesa-libxvmc
 
 %description libxvmc-r600

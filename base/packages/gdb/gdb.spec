@@ -51,6 +51,7 @@ rm -f %{buildroot}/usr/share/info/dir
 # those are provided by binutils
 rm -rf %{buildroot}/usr/include
 rm -rf %{buildroot}/usr/lib
+install -d %{buildroot}%{_datadir}/gdb/auto-load/usr/lib
 
 %files
 #%doc
@@ -99,6 +100,9 @@ rm -rf %{buildroot}/usr/lib
 %dir %{_datadir}/gdb/python/gdb/printer
 %dir %{_datadir}/gdb/syscalls
 %dir %{_datadir}/gdb/system-gdbinit
+%dir %{_datadir}/gdb/auto-load
+%dir %{_datadir}/gdb/auto-load/usr
+%dir %{_datadir}/gdb/auto-load/usr/lib
 
 %changelog
 

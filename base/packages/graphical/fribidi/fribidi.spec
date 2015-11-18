@@ -65,14 +65,14 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
 %attr(755,root,root) %{_bindir}/fribidi
 %attr(755,root,root) %{_libdir}/libfribidi.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libfribidi.so.0
+%attr(755,root,root) %{_libdir}/libfribidi.so.0
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libfribidi.so
 %{_libdir}/libfribidi.la
 %{_includedir}/fribidi
-%{_pkgconfigdir}/fribidi.pc
+%{_libdir}/pkgconfig/fribidi.pc
 %{_mandir}/man3/fribidi_*.3*
 
 %if %{with static_libs}
@@ -80,3 +80,5 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libfribidi.a
 %endif
+
+%changelog

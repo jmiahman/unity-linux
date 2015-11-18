@@ -1,3 +1,7 @@
+%define _pkgconfigdir %{_libdir}/pkgconfig
+%define _aclocaldir %{_datadir}/aclocal
+
+
 #
 # Conditional build:
 %bcond_with	apidocs		# disable gtk-doc

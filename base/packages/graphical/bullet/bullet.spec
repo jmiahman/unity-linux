@@ -56,7 +56,7 @@ cd pkgbuild
 	-DBUILD_EXTRAS=1 \
 	-DINSTLAL_LIBS=1 \
 	-DINSTALL_EXTRA_LIBS=1 \
-	-DINCLUDE_INSTALL_DIR:PATH=%{_includedir}/bullet \
+	-DINCLUDE_INSTALL_DIR:PATH=%{_includedir}/ \
 ..
 
 %{__make}
@@ -111,7 +111,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libGIMPACTUtils.so
 %attr(755,root,root) %{_libdir}/libHACD.so
 %attr(755,root,root) %{_libdir}/libLinearMath.so
-%{_includedir}/bullet
+%{_includedir}/
 %{_libdir}/cmake/bullet
 %{_libdir}/pkgconfig/bullet.pc
 

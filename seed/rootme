@@ -21,7 +21,7 @@ if [ ! -f "./usr/bin/busybox" ]; then
 fi
 
 if [ ! "$(ls -A ./root/packages)" ]; then
-        mount --bind ../unity-linux/base/packages/ root/packages
+        mount --bind ../unity-linux/ root/packages
 fi
 
 if [ ! "$(ls -A ./root/rpms)" ]; then

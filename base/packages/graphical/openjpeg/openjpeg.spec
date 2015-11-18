@@ -1,3 +1,5 @@
+%define 	_includedir	/usr/include
+
 Summary:	An open-source JPEG 2000 codec
 Name:		openjpeg
 Version:	2.1.0
@@ -43,8 +45,8 @@ OpenJPEG 2 codec programs.
 
 %prep
 %setup -q -n openjpeg-%{version}
-%patch0 -p1
-%patch1 -p1
+#%patch0 -p1
+#%patch1 -p1
 
 %build
 %cmake . \
@@ -63,6 +65,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/openjpeg-2.1
 #%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/html
 
+ln -sf %{_includedir}/openjpeg-2.1/* %{buildroot}%{_includedir}/
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -79,6 +83,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libopenjp2.so
 %{_includedir}/openjpeg-2.1
+%{_includedir}/*.h
 %dir %{_libdir}/openjpeg-2.1
 %{_libdir}/openjpeg-2.1/OpenJPEG*.cmake
 %{_libdir}/pkgconfig/libopenjp2.pc
@@ -92,3 +97,5 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/opj_compress.1*
 %{_mandir}/man1/opj_decompress.1*
 %{_mandir}/man1/opj_dump.1*
+
+%changelog

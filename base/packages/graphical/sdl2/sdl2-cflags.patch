@@ -1,0 +1,23 @@
+--- SDL2-2.0.3/configure.in.orig	2014-03-16 03:31:42.000000000 +0100
++++ SDL2-2.0.3/configure.in	2014-05-18 08:29:43.394208085 +0200
+@@ -1265,6 +1265,10 @@
+             AC_DEFINE(SDL_VIDEO_DRIVER_MIR, 1, [ ])
+             SOURCES="$SOURCES $srcdir/src/video/mir/*.c"
+             EXTRA_CFLAGS="$EXTRA_CFLAGS $MIR_CFLAGS"
++
++            # Needed so SDL applications can include SDL_syswm.h
++            SDL_CFLAGS="$SDL_CFLAGS $MIR_CFLAGS"
++
+             AC_ARG_ENABLE(mir-shared,
+ AC_HELP_STRING([--enable-mir-shared], [dynamically load Mir support [[default=maybe]]]),
+                           , enable_mir_shared=maybe)
+@@ -1762,6 +1766,9 @@
+             SOURCES="$SOURCES $srcdir/src/video/directfb/*.c"
+             EXTRA_CFLAGS="$EXTRA_CFLAGS $DIRECTFB_CFLAGS"
+ 
++            # Needed so SDL applications can include SDL_syswm.h
++            SDL_CFLAGS="$SDL_CFLAGS $DIRECTFB_CFLAGS"
++
+             AC_MSG_CHECKING(for directfb dynamic loading support)
+             directfb_shared=no
+             directfb_lib=[`find_lib "libdirectfb.so.*" "$DIRECTFB_LIBS"`]
