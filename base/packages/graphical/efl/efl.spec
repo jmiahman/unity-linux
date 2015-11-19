@@ -994,28 +994,92 @@ Requires:	libjpeg-turbo-devel
 Requires:	zlib-devel
 
 %description -n eet-devel
-Header files for Eet library.
 
 %package -n eet-static
-Summary:	Static Eet library
-License:	BSD
-Group:		Development/Libraries
-URL:		http://trac.enlightenment.org/e/wiki/Eet
-Requires:	eet-devel = %{version}-%{release}
+Summary:        Static Eet library
+License:        BSD
+Group:          Development/Libraries
+URL:            http://trac.enlightenment.org/e/wiki/Eet
+Requires:       eet-devel = %{version}-%{release}
 
 %description -n eet-static
 Static Eet library.
 
 %package -n eet-cxx-devel
-Summary:	C++ API for Eet library
-Group:		Development/Libraries
-URL:		http://trac.enlightenment.org/e/wiki/Eet
-Requires:	eet-devel = %{version}-%{release}
-Requires:	eina-cxx-devel = %{version}-%{release}
-Requires:	eo-cxx-devel = %{version}-%{release}
+Summary:        C++ API for Eet library
+Group:          Development/Libraries
+URL:            http://trac.enlightenment.org/e/wiki/Eet
+Requires:       eet-devel = %{version}-%{release}
+Requires:       eina-cxx-devel = %{version}-%{release}
+Requires:       eo-cxx-devel = %{version}-%{release}
 
 %description -n eet-cxx-devel
 C++ API for Eet library.
+
+%package -n emile
+Summary:	Emile provides a library to bring together serialization, compression and ciphering.
+License:	BSD
+Group:		Libraries
+URL:		http://trac.enlightenment.org/e/wiki/Eet
+Requires:	eina = %{version}-%{release}
+%{?with_gnutls:Requires:	gnutls}
+%{?with_gnutls:Requires:	libgcrypt}
+Requires:	zlib
+
+%description -n emile
+Emile provides a library to bring together serialization, compression and ciphering.
+It is a low-level library and can be used by anything above Eina. It came along with a
+lot re-factoring of our current code base to make use of it and de-duplicate a lot of
+existing code. More refactoring is expected in ecore_con_ssl ciphering and general
+image compression.
+
+%package -n emile-devel
+Summary:	Header files for Emile library
+License:	BSD
+Group:		Development/Libraries
+URL:		http://trac.enlightenment.org/e/wiki/Eet
+Requires:	emile = %{version}-%{release}
+Requires:	eina-devel = %{version}-%{release}
+%{?with_gnutls:Requires:	gnutls-devel}
+%{?with_gnutls:Requires:	libgcrypt-devel}
+%{!?with_gnutls:Requires:	openssl-devel}
+Requires:	libjpeg-turbo-devel
+Requires:	zlib-devel
+
+%description -n emile-devel
+Header files for Emile library.
+
+%package -n ector
+Summary:        Ector provides a new retained rendering library that is used by Evas. 
+License:        BSD
+Group:          Libraries
+Requires:       eina = %{version}-%{release}
+%{?with_gnutls:Requires:        gnutls}
+%{?with_gnutls:Requires:        libgcrypt}
+Requires:       zlib
+
+%description -n ector
+Ector provides a new retained rendering library that is used by Evas to
+provide Evas_Object_VG. This is a new Evas_Object that provides a vector graphics
+scene graph following the SVG specification. It will be considered a bug
+if some behaviour does not follow the SVG standard. Evas_Object_VG provides 3
+kind of objects for now: shape, as well as linear and radial gradients.
+
+%package -n ector-devel
+Summary:        Header files for Ector library
+License:        BSD
+Group:          Development/Libraries
+Requires:       ector = %{version}-%{release}
+Requires:       eina-devel = %{version}-%{release}
+%{?with_gnutls:Requires:        gnutls-devel}
+%{?with_gnutls:Requires:        libgcrypt-devel}
+%{!?with_gnutls:Requires:       openssl-devel}
+Requires:       libjpeg-turbo-devel
+Requires:       zlib-devel
+
+%description -n ector-devel
+Header files for Ector library.
+
 
 %package -n eeze
 Summary:	Library for manipulating devices through udev
@@ -1763,6 +1827,7 @@ EDC syntax support for Vim.
 
 %build
 %configure \
+	--with-opengl=full \
 	%{?with_drm:--enable-drm} \
 	%{?with_egl:--enable-egl} \
 	%{?with_fb:--enable-fb} \
@@ -1923,12 +1988,21 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/ecore/system
 %{_datadir}/ecore
 
+#make another package
+%attr(755,root,root) %{_libdir}/libefl.so.*.*.*
+%attr(755,root,root) %{_libdir}/libefl.so.1
+
 %files -n ecore-devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libecore.so
 %{_includedir}/ecore-1
 %{_pkgconfigdir}/ecore.pc
 %{_libdir}/cmake/Ecore
+
+#make another package
+%{_pkgconfigdir}/efl.pc
+%attr(755,root,root) %{_libdir}/libefl.so
+
 
 %if %{with static_libs}
 %files -n ecore-static
@@ -2354,6 +2428,28 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/edje/modules/emotion/%{arch_tag}
 %attr(755,root,root) %{_libdir}/edje/modules/emotion/%{arch_tag}/module.so
 
+%files -n emile
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libemile.so.*.*.*
+%attr(755,root,root) %{_libdir}/libemile.so.1
+
+%files -n emile-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libemile.so
+%{_includedir}/emile-1
+%{_pkgconfigdir}/emile.pc
+
+%files -n ector
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libector.so.*.*.*
+%attr(755,root,root) %{_libdir}/libector.so.1
+
+%files -n ector-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libector.so
+%{_includedir}/ector-1
+%{_pkgconfigdir}/ector.pc
+
 %files -n eet
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/eet
@@ -2616,6 +2712,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/eolian/include/edje-1
 %{_datadir}/eolian/include/eo-1
 %{_datadir}/eolian/include/evas-1
+%{_datadir}/eolian/include/efl-1
 
 %files -n eolian-devel
 %defattr(644,root,root,755)

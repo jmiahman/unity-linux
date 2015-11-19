@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=XSession
+Exec=enlightenment_start
+TryExec=enlightenment
+Name=Enlightenment DR17
+Comment=Very feature-rich window manager
+Comment[pl]=Zarządca okien o bardzo bogatych możliwościach
+# vi: encoding=utf-8

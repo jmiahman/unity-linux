@@ -55,6 +55,7 @@ rm %{buildroot}/usr/lib/*.la
 #%doc COPYING
 #%doc AUTHORS ChangeLog NEWS README
 %dir %{_datadir}/glib-2.0/schemas
+%dir %{_datadir}/glib-2.0
 %{_libdir}/lib*.so.*
 
 %files devel

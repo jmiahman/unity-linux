@@ -68,6 +68,7 @@ install -m 0755 -d \
 	etc/periodic/hourly \
 	etc/periodic/monthly \
 	etc/periodic/weekly \
+	etc/xdg/menus \
 	etc/skel \
 	etc/sysctl.d \
 	etc/xdg/autostart \
