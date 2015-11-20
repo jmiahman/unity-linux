@@ -85,6 +85,31 @@ Requires:	evas >= %{efl_ver}
 Requires:	evas-engine-software_x11 >= %{efl_ver}
 Requires:	evas-loader-jpeg >= %{efl_ver}
 Requires:	evas-loader-png >= %{efl_ver}
+Requires:	ecore-con >= %{efl_ver}
+Requires:	ecore-drm >= %{efl_ver}  
+Requires:	ecore-sdl >= %{efl_ver}  
+Requires:	ecore-wayland >= %{efl_ver}  
+Requires:	ecore-x >= %{efl_ver}   
+Requires:	eet >= %{efl_ver}   
+Requires:	elementary-libs >= %{efl_ver}  
+Requires:	evas >= %{efl_ver}  
+Requires:	emile >= %{efl_ver}
+Requires:	ector >= %{efl_ver}
+Requires:	harfbuzz  
+Requires:	libinput
+Requires:	mesa-libgbm
+Requires:	libxcursor
+Requires:	libxcomposite
+Requires:	libxinerama
+Requires:	libxscrnsaver
+Requires:	libwayland-client
+Requires:	libwayland-cursor
+Requires:	setxkbmap
+Requires:	xcb-util-keysyms
+Requires:	tslib
+Requires:	graphite2
+Requires:	sdl2
+
 %{?with_systemd:Requires:	systemd-units >= 1:192}
 %if %{with wayland}
 %{?with_wayland_egl:Requires:	Mesa-libEGL >= 7.10}

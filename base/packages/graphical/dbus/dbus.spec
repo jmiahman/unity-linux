@@ -28,6 +28,7 @@ BuildRequires:	xmlto
 %{?with_X11:BuildRequires:	libx11-devel}
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	expat 
+Requires(pre):  shadow
 
 %description
 D-BUS is a system for sending messages between applications. It is
@@ -68,7 +69,7 @@ with user X11 session.
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--with-xml=expat \
-	--with-dbus-user=messagebus \
+	--with-dbus-user=dbus \
 	--with-system-pid-file=/var/run/dbus.pid \
 	--disable-verbose-mode \
 	--disable-static \
@@ -98,15 +99,11 @@ install -d $RPM_BUILD_ROOT/etc/dbus-1/system.d
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-getent passwd messagebus > /dev/null
-if [ $? -ne 0 ]; then
-adduser -S -H -h /dev/null -s /sbin/nologin -D messagebus -G messagebus 2>/dev/null
-fi
-
-getent group messagebus > /dev/null
-if [ $? -ne 0 ]; then
-addgroup -S messagebus 2>/dev/null
-fi
+getent group dbus >/dev/null || groupadd -r dbus
+getent passwd dbus >/dev/null || \
+	useradd -r -g dbus -d /dev/null -s /sbin/nologin \
+	-c "account for dbus" dbus
+exit 0
 
 %post
 /usr/bin/dbus-uuidgen --ensure
