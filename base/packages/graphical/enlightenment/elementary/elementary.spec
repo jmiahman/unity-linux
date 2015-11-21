@@ -3,11 +3,11 @@
 # Conditional build:
 %bcond_with	static_libs	# don't build static library
 %bcond_without	drm		# Ecore DRM support
-%bcond_with	fb		# Ecore FB support
+%bcond_without	fb		# Ecore FB support
 %bcond_without	sdl		# Ecore SDL support
-%bcond_without	wayland		# Ecore Wayland support
+%bcond_with	wayland		# Ecore Wayland support
 %bcond_with	elocation	# Elocation support
-%bcond_with	emap		# Emap support [not available yet in PLD]
+%bcond_with	emap		# Emap support [not available yet in Unity]
 %bcond_with	eweather	# Eweather support
 %bcond_with	ewebkit		# Web (WebKit) support
 #

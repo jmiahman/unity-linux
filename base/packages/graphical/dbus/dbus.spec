@@ -107,6 +107,7 @@ exit 0
 
 %post
 /usr/bin/dbus-uuidgen --ensure
+/usr/bin/dbus-uuidgen >/etc/machine-id
 
 %files
 %defattr(644,root,root,755)

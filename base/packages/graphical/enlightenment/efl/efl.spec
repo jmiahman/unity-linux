@@ -13,11 +13,11 @@
 %bcond_without	harfbuzz	# HarfBuzz complex text shaping and layouting support
 %bcond_with	ibus		# IBus input module
 %bcond_without	luajit		# LuaJIT as Lua engine (Lua 5.1 interpreter if disabled)
-%bcond_with	pixman		# pixman for software rendering
+%bcond_without	pixman		# pixman for software rendering
 %bcond_with	scim		# SCIM input module
 %bcond_without	sdl		# SDL support
 %bcond_with	systemd		# systemd journal support in Eina, daemon support in Ecore
-%bcond_without	wayland		# Wayland display server support
+%bcond_with	wayland		# Wayland display server support
 %bcond_with	wayland_egl	# Wayland display server support [only with GLES instead of GL]
 %bcond_with	xcb		# use XCB API instead of Xlib
 %bcond_with	xine		# Xine support
@@ -35,6 +35,8 @@ Release:	1
 License:	LGPL v2.1+, BSD (depends on component)
 Group:		Libraries
 Source0:	https://download.enlightenment.org/rel/libs/efl/%{name}-%{version}.tar.xz
+Patch0:		egl-types-fixup.patch
+
 URL:		https://www.enlightenment.org/docs/efl/start
 %{?with_egl:BuildRequires:	egl-devel}
 BuildRequires:	mesa-libgl
@@ -1824,6 +1826,7 @@ EDC syntax support for Vim.
 
 %prep
 %setup -q
+%patch0 -p0
 
 %build
 %configure \

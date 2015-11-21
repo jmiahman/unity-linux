@@ -2,7 +2,7 @@
 #
 # Conditonal build:
 %bcond_with	systemd		# systemd (user session) support
-%bcond_without	wayland		# Wayland clients in composite module
+%bcond_with	wayland		# Wayland clients in composite module
 %bcond_with	wayland_egl	# Wayland clients EGL rendering
 #
 %define		efl_ver		1.16.0
