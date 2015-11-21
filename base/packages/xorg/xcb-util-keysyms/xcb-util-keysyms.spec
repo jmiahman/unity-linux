@@ -60,7 +60,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc ChangeLog NEWS README
 %attr(755,root,root) %{_libdir}/libxcb-keysyms.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libxcb-keysyms.so.1
+%attr(755,root,root) %{_libdir}/libxcb-keysyms.so.1
 
 %files devel
 %defattr(644,root,root,755)
