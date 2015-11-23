@@ -1,0 +1,110 @@
+--- efl-webkit/Source/JavaScriptCore/llint/LLIntEntrypoint.cpp.orig	2014-02-02 05:21:06.000000000 +0100
++++ efl-webkit/Source/JavaScriptCore/llint/LLIntEntrypoint.cpp	2014-03-20 19:38:55.531344185 +0100
+@@ -30,6 +30,7 @@
+ 
+ #include "CodeBlock.h"
+ #include "JITCode.h"
++#include "JSCellInlines.h"
+ #include "JSObject.h"
+ #include "LLIntThunks.h"
+ #include "LowLevelInterpreter.h"
+--- efl-webkit/Source/JavaScriptCore/runtime/FunctionExecutableDump.cpp.orig	2013-09-04 10:53:58.000000000 +0200
++++ efl-webkit/Source/JavaScriptCore/runtime/FunctionExecutableDump.cpp	2014-03-20 19:38:38.831344886 +0100
+@@ -25,6 +25,7 @@
+ 
+ #include "config.h"
+ #include "FunctionExecutableDump.h"
++#include "JSCellInlines.h"
+ 
+ #include "CodeBlock.h"
+ 
+--- efl-webkit/Source/JavaScriptCore/runtime/ArgumentsIteratorConstructor.cpp.orig	2013-11-07 09:32:26.000000000 +0100
++++ efl-webkit/Source/JavaScriptCore/runtime/ArgumentsIteratorConstructor.cpp	2015-10-11 21:26:50.522477628 +0200
+@@ -31,6 +31,7 @@
+ #include "JSCJSValueInlines.h"
+ #include "JSCellInlines.h"
+ #include "JSGlobalObject.h"
++#include "StructureInlines.h"
+ 
+ namespace JSC {
+ 
+--- efl-webkit/Source/JavaScriptCore/runtime/MapIteratorConstructor.cpp.orig	2013-11-12 11:01:43.000000000 +0100
++++ efl-webkit/Source/JavaScriptCore/runtime/MapIteratorConstructor.cpp	2015-10-12 18:02:57.788797399 +0200
+@@ -30,6 +30,7 @@
+ #include "JSCellInlines.h"
+ #include "JSGlobalObject.h"
+ #include "JSMapIterator.h"
++#include "StructureInlines.h"
+ #include "MapIteratorPrototype.h"
+ 
+ namespace JSC {
+--- efl-webkit/Source/JavaScriptCore/runtime/SetIteratorConstructor.cpp.orig	2013-11-12 11:01:43.000000000 +0100
++++ efl-webkit/Source/JavaScriptCore/runtime/SetIteratorConstructor.cpp	2015-10-12 19:48:30.573880360 +0200
+@@ -30,6 +30,7 @@
+ #include "JSCellInlines.h"
+ #include "JSGlobalObject.h"
+ #include "JSSetIterator.h"
++#include "StructureInlines.h"
+ #include "SetIteratorPrototype.h"
+ 
+ namespace JSC {
+--- efl-webkit/Source/JavaScriptCore/llint/LLIntThunks.cpp.orig	2014-02-02 05:21:06.000000000 +0100
++++ efl-webkit/Source/JavaScriptCore/llint/LLIntThunks.cpp	2015-10-12 19:55:11.737996314 +0200
+@@ -32,6 +32,7 @@
+ #include "JSInterfaceJIT.h"
+ #include "JSObject.h"
+ #include "JSStackInlines.h"
++#include "JSCJSValueInlines.h"
+ #include "LLIntCLoop.h"
+ #include "LinkBuffer.h"
+ #include "LowLevelInterpreter.h"
+--- efl-webkit/Source/WebCore/editing/InsertNodeBeforeCommand.cpp.orig	2013-12-30 11:34:40.000000000 +0100
++++ efl-webkit/Source/WebCore/editing/InsertNodeBeforeCommand.cpp	2015-10-12 20:17:08.519546544 +0200
+@@ -25,6 +25,7 @@
+ 
+ #include "config.h"
+ #include "InsertNodeBeforeCommand.h"
++#include "RenderElement.h"
+ 
+ #include "AXObjectCache.h"
+ #include "Document.h"
+--- efl-webkit/Source/JavaScriptCore/runtime/JSPromiseFunctions.cpp.orig	2014-01-09 10:03:17.000000000 +0100
++++ efl-webkit/Source/JavaScriptCore/runtime/JSPromiseFunctions.cpp	2015-10-12 20:46:55.032098217 +0200
+@@ -31,6 +31,7 @@
+ #include "Error.h"
+ #include "JSCJSValueInlines.h"
+ #include "JSCellInlines.h"
++#include "StructureInlines.h"
+ #include "JSPromise.h"
+ #include "JSPromiseConstructor.h"
+ #include "JSPromiseDeferred.h"
+--- efl-webkit/Source/JavaScriptCore/runtime/MapConstructor.cpp.orig	2013-09-27 13:08:50.000000000 +0200
++++ efl-webkit/Source/JavaScriptCore/runtime/MapConstructor.cpp	2015-10-12 20:55:06.454148865 +0200
+@@ -29,6 +29,7 @@
+ #include "Error.h"
+ #include "JSCJSValueInlines.h"
+ #include "JSCellInlines.h"
++#include "StructureInlines.h"
+ #include "JSGlobalObject.h"
+ #include "JSMap.h"
+ #include "MapPrototype.h"
+--- efl-webkit/Source/JavaScriptCore/runtime/SetConstructor.cpp.orig	2013-09-27 13:08:50.000000000 +0200
++++ efl-webkit/Source/JavaScriptCore/runtime/SetConstructor.cpp	2015-10-12 21:09:10.664326190 +0200
+@@ -29,6 +29,7 @@
+ #include "Error.h"
+ #include "JSCJSValueInlines.h"
+ #include "JSCellInlines.h"
++#include "StructureInlines.h"
+ #include "JSGlobalObject.h"
+ #include "JSSet.h"
+ #include "MapData.h"
+--- efl-webkit/Source/JavaScriptCore/runtime/WeakMapConstructor.cpp.orig	2013-09-27 13:08:50.000000000 +0200
++++ efl-webkit/Source/JavaScriptCore/runtime/WeakMapConstructor.cpp	2015-10-12 21:12:13.607063396 +0200
+@@ -28,6 +28,7 @@
+ 
+ #include "JSCJSValueInlines.h"
+ #include "JSCellInlines.h"
++#include "StructureInlines.h"
+ #include "JSGlobalObject.h"
+ #include "JSWeakMap.h"
+ #include "WeakMapPrototype.h"

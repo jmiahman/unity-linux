@@ -1,0 +1,8 @@
+--- nspr-4.10/nspr/config/nspr.pc.in.orig	2012-05-19 00:26:17.000000000 +0200
++++ nspr-4.10/nspr/config/nspr.pc.in	2012-06-03 08:08:25.428360499 +0200
+@@ -7,4 +7,5 @@
+ Description: The Netscape Portable Runtime
+ Version: @MOD_MAJOR_VERSION@.@MOD_MINOR_VERSION@.@MOD_PATCH_VERSION@
+ Libs: -L@libdir@ -lplds@MOD_MAJOR_VERSION@ -lplc@MOD_MAJOR_VERSION@ -lnspr@MOD_MAJOR_VERSION@
++Libs.private: -lpthread -ldl
+ Cflags: -I@includedir@

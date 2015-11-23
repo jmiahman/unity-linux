@@ -1,0 +1,10 @@
+--- efl-webkit/Source/WebKit2/PlatformEfl.cmake.orig	2014-01-24 12:25:07.000000000 +0100
++++ efl-webkit/Source/WebKit2/PlatformEfl.cmake	2015-10-13 15:42:28.827895471 +0200
+@@ -266,6 +266,7 @@
+     ${OPENGL_LIBRARIES}
+     ${PNG_LIBRARIES}
+     ${SQLITE_LIBRARIES}
++    Xext
+ )
+ 
+ list(APPEND WebProcess_SOURCES

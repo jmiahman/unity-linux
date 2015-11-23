@@ -1,0 +1,11 @@
+--- WebKit/Tools/TestWebKitAPI/CMakeLists.txt.orig	2013-12-14 08:50:25.000000000 +0100
++++ WebKit/Tools/TestWebKitAPI/CMakeLists.txt	2013-12-15 09:04:32.637595929 +0100
+@@ -130,7 +130,7 @@
+     target_link_libraries(test_webcore_${testName} ${test_webcore_LIBRARIES})
+ endforeach ()
+ 
+-add_library(TestWebKitAPIBase
++add_library(TestWebKitAPIBase STATIC
+     ${test_main_SOURCES}
+     ${webkit2_api_harness_SOURCES}
+     ${TESTWEBKITAPI_DIR}/JavaScriptTest.cpp

@@ -9,7 +9,7 @@
 %bcond_with	elocation	# Elocation support
 %bcond_with	emap		# Emap support [not available yet in Unity]
 %bcond_with	eweather	# Eweather support
-%bcond_with	ewebkit		# Web (WebKit) support
+%bcond_without	ewebkit		# Web (WebKit) support
 #
 
 %define		_desktopdir	%{_datadir}/applications/
