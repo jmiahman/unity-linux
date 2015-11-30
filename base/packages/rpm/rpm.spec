@@ -12,6 +12,7 @@
 %bcond_without libarchive
 # build with libimaevm.so
 %bcond_without libimaevm
+%bcond_with int_bdb
 
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
@@ -34,14 +35,14 @@ Group: System Environment/Base
 Url: http://www.rpm.org/
 Source0: http://rpm.org/releases/rpm-4.12.x/%{name}-%{rpmver}.tar.bz2
 %if %{with int_bdb}
-Source1: db-%{bdbver}.tar.gz
+#Source1: db-%{bdbver}.tar.gz
 %else
 BuildRequires: db5.2-devel
 Requires: db5.2
 %endif
 
 #Patch to run on MUSL
-Patch0: rpm-musl-namelen.patch
+Patch0: rpm-4.14.x-portable-definitions.patch
 # Disable autoconf config.site processing (#962837)
 #Patch1: rpm-4.11.x-siteconfig.patch
 # Fedora specspo is setup differently than what rpm expects, considering
@@ -276,7 +277,7 @@ Requires: rpm-libs%{_isa} = %{version}-%{release}
 %prep
 %setup -n %{name}-%{rpmver}
 
-%patch1 -p1
+%patch0 -p1
 
 %if %{with int_bdb}
 ln -s db-%{bdbver} db
@@ -465,7 +466,7 @@ exit 0
 
 #%files plugin-ima
 #%{_libdir}/rpm-plugins/ima.so
-#%endif
+%endif
 
 %files build-libs
 %defattr(-,root,root)
@@ -509,10 +510,10 @@ exit 0
 %{python_sitearch}/rpm
 #%{python_sitearch}/rpm_python-%{eggver}-py2.7.egg-info
 
-%files python3
-%defattr(-,root,root)
-%{python3_sitearch}/rpm
-%{python3_sitearch}/rpm_python-%{eggver}-py%{python3_version}.egg-info
+#%files python3
+#%defattr(-,root,root)
+#%{python3_sitearch}/rpm
+#%{python3_sitearch}/rpm_python-%{eggver}-py%{python3_version}.egg-info
 
 %files devel
 %defattr(-,root,root)

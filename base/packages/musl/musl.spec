@@ -2,7 +2,7 @@
 
 Summary: Development files for musl libc
 Name:	 musl
-Version: 1.1.11
+Version: 1.1.12
 Release: 1
 Source0: http://www.musl-libc.org/releases/%{name}-%{version}.tar.gz
 Source1: __stack_chk_fail_local.c
@@ -11,8 +11,6 @@ Source3: ldconfig
 Source4: getconf.c
 Source5: getent.c
 Source6: iconv.c
-
-Patch0:  musl-1.1.10-add-qsort_r.patch
 
 License: LGPLv2+
 Group:	 Development/C
@@ -45,7 +43,6 @@ Utilities for the %{name} c library (libc) implementation.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 
@@ -70,24 +67,25 @@ make
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=%{buildroot} install
 
-%__mkdir -p %{buildroot}/usr/lib/
-%__cp %{SOURCE2} %{buildroot}/usr/lib/
+%__mkdir -p %{buildroot}%{_libdir}/
+%__mkdir -p %{buildroot}/%{_lib}/
+%__cp %{SOURCE2} %{buildroot}%{_libdir}/
 local LDSO=$(make -f Makefile --eval "$(echo -e 'print-ldso:\n\t@echo $$(basename $(LDSO_PATHNAME))')" print-ldso)
 %__mkdir -p %{buildroot}/usr/bin
-%__mkdir -p %{buildroot}/lib/
 
-%__mv -f %{buildroot}/usr/lib/libc.so %{buildroot}/lib/ld-musl-%{_arch}.so.1
-%__ln_s -f ld-musl-%{_arch}.so.1 %{buildroot}/lib/libc.musl-%{_arch}.so.1
-%__ln_s -f /lib/ld-musl-%{_arch}.so.1 %{buildroot}/usr/lib/libc.so
+%__mv -f %{buildroot}/usr/lib/libc.so %{buildroot}/%{_lib}/ld-musl-%{_arch}.so.1
+%__ln_s -f ld-musl-%{_arch}.so.1 %{buildroot}%{_libdir}/libc.musl-%{_arch}.so.1
+%__ln_s -f /%{_lib}/ld-musl-%{_arch}.so.1 %{buildroot}%{_libdir}/libc.so
 %__mkdir -p %{buildroot}/usr/bin
-%__ln_s -f /lib/ld-musl-%{_arch}.so.1 %{buildroot}/usr/bin/ldd
+%__ln_s -f /%{_lib}/ld-musl-%{_arch}.so.1 %{buildroot}/usr/bin/ldd
+%__rm %{buildroot}/lib/ld-musl-%{_arch}.so.1
 
 # remove libintl.h, currently we don't want by default any NLS
 # and use GNU gettext where needed. the plan is to migrate to
 # musl gettext() later on as fully as possible.
 %__rm %{buildroot}/usr/include/libintl.h
 
-#%__sed -i 's!/usr/lib/musl!/usr!' %{buildroot}/usr/bin/musl-gcc
+#%__sed -i "s!%{_libdir}/musl!/usr!" %{buildroot}/usr/bin/musl-gcc
 
 /usr/bin/%{_target_platform}-gcc $CPPFLAGS $CFLAGS %{SOURCE4} -o getconf
 /usr/bin/%{_target_platform}-gcc $CPPFLAGS $CFLAGS %{SOURCE5} -o getent
@@ -107,22 +105,21 @@ local LDSO=$(make -f Makefile --eval "$(echo -e 'print-ldso:\n\t@echo $$(basenam
 #Compat (Different Package Maybe?)
 
 %define _ld ld-linux-x86-64.so.2
-	mkdir -p %{buildroot}/lib
-	ln -sf /lib/libc.musl-%{_arch}.so.1 %{buildroot}/lib/%{_ld}
+	mkdir -p %{buildroot}/%{_lib}
+	ln -sf /%{_lib}/libc.musl-%{_arch}.so.1 %{buildroot}/%{_lib}/%{_ld}
 
 	for i in libc.so.6 libm.so.6 libpthread.so.0 librt.so.1 libutil.so.1; do
-		ln -sf /lib/libc.musl-%{_arch}.so.1 %{buildroot}/lib/$i
+		ln -sf /%{_lib}/libc.musl-%{_arch}.so.1 %{buildroot}/%{_lib}/$i
 	done
 
-
+%__mv -f %{buildroot}/usr/lib/* %{buildroot}%{_libdir}/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 #%doc INSTALL README WHATSNEW 
-/%{_lib}/*-%{_arch}.so.*
-/lib/*
+/%{_lib}/*
 
 %files devel
 %{_libdir}/

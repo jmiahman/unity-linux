@@ -292,9 +292,10 @@ exit 0
 %ghost /var/lib/yum/history
 %ghost /var/lib/yum/plugins
 %ghost /var/lib/yum/yumdb
-#%{_mandir}/man*/yum.conf.5
+%{_mandir}/man*/yum.conf.5
+%{_mandir}/man*/yum*
 #%{_mandir}/man*/yum-deprecated.8
-#%{_mandir}/man*/yum-shell*
+%{_mandir}/man*/yum-shell*
 # plugin stuff
 %dir %{_sysconfdir}/yum/pluginconf.d 
 %dir %{yum_pluginslib}
@@ -327,13 +328,13 @@ exit 0
 #%{_sysconfdir}/cron.daily/0yum-security.cron
 #%config(noreplace) %{_sysconfdir}/yum/yum-cron-security.conf
 
-#%files updatesd
-#%defattr(-, root, root)
-#%config(noreplace) %{_sysconfdir}/yum/yum-updatesd.conf
-#%config %{_sysconfdir}/rc.d/init.d/yum-updatesd
-#%config %{_sysconfdir}/dbus-1/system.d/yum-updatesd.conf
+%files updatesd
+%defattr(-, root, root)
+%config(noreplace) %{_sysconfdir}/yum/yum-updatesd.conf
+%config %{_sysconfdir}/rc.d/init.d/yum-updatesd
+%config %{_sysconfdir}/dbus-1/system.d/yum-updatesd.conf
 %{_datadir}/yum-cli/yumupd.py*
-#%{_sbindir}/yum-updatesd
-#%{_mandir}/man*/yum-updatesd*
+%{_sbindir}/yum-updatesd
+%{_mandir}/man*/yum-updatesd*
 
 %changelog

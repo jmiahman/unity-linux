@@ -1,7 +1,5 @@
 %{!?python_sitelib: %global python_sitelib %(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
-%define _libdir /usr/lib
-
 %global gitrev 1f9abfb5b1bb18a8f46887fa2541957e74132567
 %global shortcommit %(c=%{gitrev}; echo ${c:0:7})
 #%filter_provides_in %{perl_vendorarch}/.*\.so$
@@ -23,7 +21,6 @@ Release:	1%{?dist}
 License:	BSD
 Url:		https://github.com/openSUSE/libsolv
 Source0:	https://github.com/openSUSE/libsolv/archive/%{version}/%{name}-%{version}.tar.gz
-#Source:		https://github.com/openSUSE/libsolv/archive/%{gitrev}.tar.gz#/%{name}-%{shortcommit}.tar.gz
 Group:		Development/Libraries
 Summary:	Package dependency solver
 BuildRequires:	cmake expat-devel rpm-devel zlib-devel
@@ -31,8 +28,7 @@ BuildRequires:	perl python-devel
 BuildRequires:  xz-devel
 #BuildRequires:  swig
 
-Patch0:		libsolv-fopencookie.patch 
-Patch1:		libsolv-python.patch
+Patch0:		libsolv-add-portable-fopencookie.patch
 
 %description
 A free package dependency solver using a satisfiability algorithm. The
@@ -47,9 +43,9 @@ library is based on two major, but independent, blocks:
 %package devel
 Summary:	A new approach to package dependency solving
 Group:		Development/Libraries
-Requires:	libsolv-tools%{?_isa} = %{version}-%{release}
-Requires:	libsolv%{?_isa} = %{version}-%{release}
-Requires:	rpm-devel%{?_isa}
+Requires:	libsolv-tools = %{version}-%{release}
+Requires:	libsolv = %{version}-%{release}
+Requires:	rpm-devel
 Requires:	cmake
 
 %description devel
@@ -59,18 +55,18 @@ Development files for libsolv,
 Summary:	A new approach to package dependency solving
 Group:		Development/Libraries
 Requires:	gzip bzip2 coreutils
-Requires:	libsolv%{?_isa} = %{version}-%{release}
+Requires:	libsolv = %{version}-%{release}
 
 %description tools
 Package dependency solver tools.
 
-#%package demo
-#Summary:	Applications demoing the libsolv library
-#Group:		Development/Libraries
-#Requires:	curl gnupg2
+%package demo
+Summary:	Applications demoing the libsolv library
+Group:		Development/Libraries
+Requires:	curl gnupg2
 
-#%description demo
-#Applications demoing the libsolv library.
+%description demo
+Applications demoing the libsolv library.
 
 %package -n python-solv
 Summary:	Python bindings for the libsolv library
@@ -95,7 +91,6 @@ Perl bindings for sat solver.
 %prep
 %setup -q -n libsolv-%{version}
 %patch0 -p1
-#%patch1 -p1
 
 %build
 cmake %_cmake_opts \
@@ -105,46 +100,42 @@ make %{?_smp_mflags}
 %install
 rm -rf %{buildroot}
 %make_install
-mv %{buildroot}/usr/lib64/* %{buildroot}/usr/lib/
-rm -rf %{buildroot}/usr/lib64
 
-
-
-%check
-make ARGS="-V" test
+#%check
+#make ARGS="-V" test
 
 %post -p /sbin/ldconfig
-
 %postun -p /sbin/ldconfig
 
 %files
 #%doc LICENSE* README BUGS
-%_libdir/libsolv.so.*
-%_libdir/libsolvext.so.*
+%{_libdir}/libsolv.so.*
+%{_libdir}/libsolvext.so.*
 
 %files tools
-%_bindir/deltainfoxml2solv
-%_bindir/dumpsolv
-%_bindir/installcheck
-%_bindir/mergesolv
-%_bindir/repo2solv.sh
-%_bindir/repomdxml2solv
-%_bindir/rpmdb2solv
-%_bindir/rpmmd2solv
-%_bindir/rpms2solv
-%_bindir/testsolv
-%_bindir/updateinfoxml2solv
+%{_bindir}/deltainfoxml2solv
+%{_bindir}/dumpsolv
+%{_bindir}/installcheck
+%{_bindir}/mergesolv
+%{_bindir}/repo2solv.sh
+%{_bindir}/repomdxml2solv
+%{_bindir}/rpmdb2solv
+%{_bindir}/rpmmd2solv
+%{_bindir}/rpms2solv
+%{_bindir}/testsolv
+%{_bindir}/updateinfoxml2solv
 
 %files devel
 #%doc examples/solv.c
-%_libdir/libsolv.so
-%_libdir/libsolvext.so
-%_includedir/solv
-%_datadir/cmake/Modules/FindLibSolv.cmake
-#%{_mandir}/man?/*
+%{_libdir}/libsolv.so
+%{_libdir}/libsolvext.so
+%{_includedir}/solv
+%{_datadir}/cmake/Modules/FindLibSolv.cmake
+%{_libdir}/pkgconfig/libsolv.pc
+%{_mandir}/man?/*
 
-#%files demo
-#%_bindir/solv
+%files demo
+%{_bindir}/solv
 
 %if 0%{?fedora}
 %files -n perl-solv

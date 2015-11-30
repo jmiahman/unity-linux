@@ -6,7 +6,7 @@ Summary:	A GNU general-purpose parser generator
 URL:		http://www.gnu.org/software/bison/
 License:	GPLv3+
 Group:		Development/Tools
-Source: 	ftp://ftp.gnu.org/pub/gnu/%{name}/%{name}-%{version}.tar.xz
+Source0: 	ftp://ftp.gnu.org/pub/gnu/%{name}/%{name}-%{version}.tar.xz
 
 #BuildRequires:	
 #Requires:	
@@ -44,6 +44,7 @@ simple programs to supply minimal support for the generated parsers.
 
 %build
 %configure
+
 make %{?_smp_mflags}
 
 
@@ -58,6 +59,19 @@ make %{?_smp_mflags}
 %{_infodir}/bison.info*
 %{_bindir}/bison
 %{_datadir}/aclocal/bison*.m4
+%{_bindir}/yacc
+   /usr/lib64/charset.alias
+%{_datadir}/doc/bison/examples/calc++/calc++-driver.cc
+%{_datadir}/doc/bison/examples/calc++/calc++-driver.hh
+%{_datadir}/doc/bison/examples/calc++/calc++-parser.yy
+%{_datadir}/doc/bison/examples/calc++/calc++-scanner.ll
+%{_datadir}/doc/bison/examples/calc++/calc++.cc
+%{_datadir}/doc/bison/examples/mfcalc/calc.h
+%{_datadir}/doc/bison/examples/mfcalc/mfcalc.y
+%{_datadir}/doc/bison/examples/rpcalc/rpcalc.y
+%{_datadir}/info/dir
+%{_datadir}/locale/*/LC_MESSAGES/*.mo
+
 
 %files devel
 %doc COPYING

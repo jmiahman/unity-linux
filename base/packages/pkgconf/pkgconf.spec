@@ -31,19 +31,20 @@ Provides: pkgconfig
 	--infodir=/usr/share/info \
 	--localstatedir=/var 
 
-%make
-%make check
+%make_build
+%make_build check
 
 %install
 %__rm -rf %{buildroot}
 %make_install
-%__ln -s pkgconf $RPM_BUILD_ROOT/usr/bin/pkg-config
+%__ln_s pkgconf $RPM_BUILD_ROOT/usr/bin/pkg-config
 mkdir -p %{buildroot}/usr/lib/pkgconfig
 
 %files
 %dir /usr/lib/pkgconfig
 %{_bindir}/pkgconf
 %{_bindir}/pkg-config
-/usr/share/aclocal/pkg.m4
+%{_datadir}/aclocal/pkg.m4
+%{_mandir}/man1/pkgconf.1.gz
 
 %changelog

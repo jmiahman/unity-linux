@@ -1,0 +1,85 @@
+diff -up rpm-4.12.0.1/misc/fts.c rpm-4.14-devel/misc/fts.c
+--- rpm-4.12.0.1/misc/fts.c	2014-06-30 04:47:14.046503415 -0400
++++ rpm-4.14-devel/misc/fts.c	2015-11-27 15:57:57.211141331 -0500
+@@ -31,6 +31,13 @@
+ static char sccsid[] = "@(#)fts.c	8.6 (Berkeley) 8/14/94";
+ #endif /* LIBC_SCCS and not lint */
+ 
++/* Conditional to set up proper fstat64 implementation */
++#if defined(hpux) || defined(sun)
++#   define FTS_FSTAT64(_fd, _sbp)   fstat((_fd), (_sbp))
++#else
++#   define FTS_FSTAT64(_fd, _sbp)   fstat64((_fd), (_sbp))
++#endif
++
+ #if defined(_LIBC)
+ #include <sys/param.h>
+ #include <include/sys/stat.h>
+@@ -42,25 +49,22 @@ static char sccsid[] = "@(#)fts.c	8.6 (B
+ #include <string.h>
+ #include <unistd.h>
+ #else
++
++/* Conditionals for working around non-GNU environments */
+ #if defined(hpux)
+-# define        _INCLUDE_POSIX_SOURCE
++#   define        _INCLUDE_POSIX_SOURCE
+ #   define __errno_location() 	(&errno)
+ #   define dirfd(dirp)		-1
+ #   define stat64		stat
+-#   define _STAT_VER		0
+-#   define __fxstat64(_stat_ver, _fd, _sbp)	fstat((_fd), (_sbp))
+ #endif
+ #if defined(sun)
+ #   define __errno_location()	(&errno)
+ #   define dirfd(dirp)		-1
+-#   define _STAT_VER		0
+-#   define __fxstat64(_stat_ver, _fd, _sbp)	fstat((_fd), (_sbp))
+ #endif
+ #if defined(__APPLE__)
+ #   define __errno_location()	(__error())
+-#   define _STAT_VER		0
+-#   define __fxstat64(_stat_ver, _fd, _sbp) fstat64((_fd), (_sbp))
+ #endif
++
+ #include "system.h"
+ #include <stdlib.h>
+ #include <string.h>
+@@ -1118,7 +1122,7 @@ fts_safe_changedir(FTS * sp, FTSENT * p,
+ 		return (0);
+ 	if (fd < 0 && (newfd = __open(path, O_RDONLY, 0)) < 0)
+ 		return (-1);
+-	if (__fxstat64(_STAT_VER, newfd, &sb)) {
++	if (FTS_FSTAT64(newfd, &sb)) {
+ 		ret = -1;
+ 		goto bail;
+ 	}
+diff -up rpm-4.12.0.1/misc/fts.h rpm-4.14-devel/misc/fts.h
+--- rpm-4.12.0.1/misc/fts.h	2014-06-30 04:47:14.046503415 -0400
++++ rpm-4.14-devel/misc/fts.h	2015-11-27 15:57:57.211141331 -0500
+@@ -40,18 +40,18 @@
+ 
+ #   define __THROW
+ 
+-#if defined(hpux)
+-# define _D_EXACT_NAMLEN(d) ((d)->d_namlen)
+-# define	_INCLUDE_POSIX_SOURCE
++#if !defined(_LARGEFILE64_SOURCE)
+ # define	_LARGEFILE64_SOURCE
+ #endif
+ 
+-#if defined(sun)
+-# define _D_EXACT_NAMLEN(d) ((d)->d_reclen)
++#if !defined(_D_EXACT_NAMLEN)
++# define _D_EXACT_NAMLEN(d) (strlen((d)->d_name))
+ #endif
+ 
+-#if defined(__APPLE__)
+-# define _D_EXACT_NAMLEN(d) (strlen((d)->d_name))
++#if defined(hpux)
++# if !defined(_INCLUDE_POSIX_SOURCE)
++#  define	_INCLUDE_POSIX_SOURCE
++# endif
+ #endif
+ 
+ #endif

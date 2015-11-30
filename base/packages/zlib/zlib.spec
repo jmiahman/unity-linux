@@ -33,26 +33,25 @@ library.
 export CFLAGS="$CFLAGS -O2"
 ./configure \
 	--prefix=/usr \
-	--libdir=/lib \
+	--libdir=/%{_lib} \
 	--shared \
 
-%make
-
+%make_build
 
 %install
 make install pkgconfigdir=/usr/lib/pkgconfig DESTDIR=%{buildroot}
 
-
 %files
 %doc
-/lib/libz.so.1.2.8
-/lib/libz.so.1
+/%{_lib}/libz.so.?.?.?
+/%{_lib}/libz.so.?
+%{_mandir}/man3/zlib.?.*
 
 %files devel
-/lib/libz.a
-/lib/libz.so
+/%{_lib}/libz.a
+/%{_lib}/libz.so
 /usr/lib/pkgconfig/zlib.pc
-/usr/include/zlib.h
-/usr/include/zconf.h
+%{_includedir}/zlib.h
+%{_includedir}/zconf.h
 
 %changelog

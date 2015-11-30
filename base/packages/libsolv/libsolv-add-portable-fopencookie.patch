@@ -1,22 +1,5 @@
-From 5e15690cc34df9319aa5c1e73e79ccbcc8ff44a8 Mon Sep 17 00:00:00 2001
-From: Neal Gompa (ニール・ゴンパ) <ngompa13@gmail.com>
-Date: Wed, 11 Nov 2015 20:32:17 -0500
-Subject: [PATCH] Add fake fopencookie() implementation fallback
-
-In environments where neither fopencookie() nor funopen()
-are implemented, we need to provide a suitable implementation
-of fopencookie() that we can use.
----
- ext/CMakeLists.txt                 |   7 ++
- ext/solv_xfopen.c                  |  10 +--
- ext/solv_xfopen_fake_fopencookie.c | 134 +++++++++++++++++++++++++++++++++++++
- ext/solv_xfopen_fake_fopencookie.h |  39 +++++++++++
- 4 files changed, 186 insertions(+), 4 deletions(-)
- create mode 100644 ext/solv_xfopen_fake_fopencookie.c
- create mode 100644 ext/solv_xfopen_fake_fopencookie.h
-
 diff --git a/ext/CMakeLists.txt b/ext/CMakeLists.txt
-index ad52495..580398c 100644
+index ad52495..4f282ce 100644
 --- a/ext/CMakeLists.txt
 +++ b/ext/CMakeLists.txt
 @@ -4,6 +4,13 @@ SET (libsolvext_SRCS
@@ -25,16 +8,16 @@ index ad52495..580398c 100644
  
 +IF (NOT HAVE_FOPENCOOKIE AND NOT HAVE_FUNOPEN)
 +    SET (libsolvext_SRCS ${libsolvext_SRCS}
-+        solv_xfopen_fake_fopencookie.c)
++        solv_xfopen_fallback_fopencookie.c)
 +    SET (libsolvext_HEADERS ${libsolvext_HEADERS}
-+        solv_xfopen_fake_fopencookie.h)
++        solv_xfopen_fallback_fopencookie.h)
 +ENDIF (NOT HAVE_FOPENCOOKIE AND NOT HAVE_FUNOPEN)
 +
  IF (ENABLE_RPMDB)
      SET (libsolvext_SRCS ${libsolvext_SRCS}
          pool_fileconflicts.c repo_rpmdb.c)
 diff --git a/ext/solv_xfopen.c b/ext/solv_xfopen.c
-index b0421bf..d982092 100644
+index b0421bf..31345dd 100644
 --- a/ext/solv_xfopen.c
 +++ b/ext/solv_xfopen.c
 @@ -13,6 +13,10 @@
@@ -42,7 +25,7 @@ index b0421bf..d982092 100644
  #include <fcntl.h>
  
 +#if !defined(HAVE_FUNOPEN) && !defined(HAVE_FOPENCOOKIE)
-+#include "solv_xfopen_fake_fopencookie.h"
++#include "solv_xfopen_fallback_fopencookie.h"
 +#endif
 +
  #include "solv_xfopen.h"
@@ -75,34 +58,23 @@ index b0421bf..d982092 100644
  #endif
  }
  
-diff --git a/ext/solv_xfopen_fake_fopencookie.c b/ext/solv_xfopen_fake_fopencookie.c
+diff --git a/ext/solv_xfopen_fallback_fopencookie.c b/ext/solv_xfopen_fallback_fopencookie.c
 new file mode 100644
-index 0000000..76a8031
+index 0000000..89426a9
 --- /dev/null
-+++ b/ext/solv_xfopen_fake_fopencookie.c
-@@ -0,0 +1,134 @@
-+/* 
-+	Provides a very limited fake fopencookie() for environments with a libc
-+	that lacks it.
-+	
-+	Author: zhasha
-+	License: WTFPL (terms below)
-+	
-+	    	DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-+                    Version 2, December 2004
-+
-+ 	Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
-+
-+ 	Everyone is permitted to copy and distribute verbatim or modified
-+ 	copies of this license document, and changing it is allowed as long
-+ 	as the name is changed.
-+
-+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-+   	TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-+
-+  	0. You just DO WHAT THE FUCK YOU WANT TO.
-+	
-+*/
++++ b/ext/solv_xfopen_fallback_fopencookie.c
+@@ -0,0 +1,124 @@
++/*
++ *	Provides a very limited fopencookie() for environments with a libc
++ *	that lacks it.
++ *
++ *	Authors: zhasha & nsz
++ *	Modified for libsolv by Neal Gompa
++ *
++ *	This program is licensed under the BSD license, read LICENSE.BSD
++ *	for further information.
++ *
++ */
 +
 +#define _LARGEFILE64_SOURCE 1
 +#include <pthread.h>
@@ -112,7 +84,7 @@ index 0000000..76a8031
 +#include <fcntl.h>
 +#include <sys/types.h>
 +#include <errno.h>
-+#include "solv_xfopen_fake_fopencookie.h"
++#include "solv_xfopen_fallback_fopencookie.h"
 +
 +extern int pipe2(int[2], int);
 +
@@ -127,7 +99,7 @@ index 0000000..76a8031
 +{
 +    struct ctx *ctx = arg;
 +    ssize_t r;
-+    size_t n;
++    size_t n, k;
 +
 +    pthread_detach(pthread_self());
 +
@@ -141,17 +113,18 @@ index 0000000..76a8031
 +        }
 +        if (r == 0) { break; }
 +
++        n = r, k = 0;
 +        while (n > 0) {
 +            r = ctx->io.write ?
-+                (ctx->io.write)(ctx->cookie, ctx->buf + ((size_t)r - n), n) :
-+                write(ctx->fd, ctx->buf + ((size_t)r - n), n);
++                (ctx->io.write)(ctx->cookie, ctx->buf + k, n) :
++                write(ctx->fd, ctx->buf + k, n);
 +            if (r < 0) {
 +                if (errno != EINTR) { break; }
 +                continue;
 +            }
 +            if (r == 0) { break; }
 +
-+            n -= (size_t)r;
++            n -= r, k += r;
 +        }
 +        if (n > 0) { break; }
 +    }
@@ -171,8 +144,8 @@ index 0000000..76a8031
 +
 +    switch (mode[0]) {
 +        case 'a':
-+        case 'r': rd = 1; break;
 +        case 'w': wr = 1; break;
++        case 'r': rd = 1; break;
 +        default:
 +            errno = EINVAL;
 +            return NULL;
@@ -215,37 +188,26 @@ index 0000000..76a8031
 +    free(ctx);
 +    return NULL;
 +}
-diff --git a/ext/solv_xfopen_fake_fopencookie.h b/ext/solv_xfopen_fake_fopencookie.h
+diff --git a/ext/solv_xfopen_fallback_fopencookie.h b/ext/solv_xfopen_fallback_fopencookie.h
 new file mode 100644
-index 0000000..075218d
+index 0000000..7223e3f
 --- /dev/null
-+++ b/ext/solv_xfopen_fake_fopencookie.h
-@@ -0,0 +1,39 @@
-+/* 
-+	Provides a very limited fake fopencookie() for environments with a libc
-+	that lacks it.
-+	
-+	Author: zhasha
-+	License: WTFPL (terms below)
-+	
-+	    	DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-+                    Version 2, December 2004
++++ b/ext/solv_xfopen_fallback_fopencookie.h
+@@ -0,0 +1,28 @@
++/*
++ *	Provides a very limited fopencookie() for environments with a libc
++ *	that lacks it.
++ *
++ *	Authors: zhasha & nsz
++ *	Modified for libsolv by Neal Gompa
++ *
++ *	This program is licensed under the BSD license, read LICENSE.BSD
++ *	for further information.
++ *
++ */
 +
-+ 	Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
-+
-+ 	Everyone is permitted to copy and distribute verbatim or modified
-+ 	copies of this license document, and changing it is allowed as long
-+ 	as the name is changed.
-+
-+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-+   	TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-+
-+  	0. You just DO WHAT THE FUCK YOU WANT TO.
-+	
-+*/
-+
-+#ifndef SOLV_XFOPEN_FAKE_FOPENCOOKIE_H
-+#define SOLV_XFOPEN_FAKE_FOPENCOOKIE_H
++#ifndef SOLV_XFOPEN_FALLBACK_FOPENCOOKIE_H
++#define SOLV_XFOPEN_FALLBACK_FOPENCOOKIE_H
 +
 +#include <stdio.h>
 +#include <stdint.h>
@@ -260,5 +222,3 @@ index 0000000..075218d
 +FILE *fopencookie(void *cookie, const char *mode, struct cookie_io_functions_t io);
 +
 +#endif
--- 
-2.4.9 (Apple Git-60)
