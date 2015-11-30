@@ -10,11 +10,16 @@ Group:          Development/Tools
 License:        GPLv3+
 URL:            http://sources.redhat.com/binutils
 Source0:        http://ftp.gnu.org/gnu/binutils/binutils-%{version}.tar.bz2
+
 Patch0:		binutils-ld-fix-static-linking.patch
 Patch1: 	hash-style-gnu.patch
+Patch2:		binutils-2.20.51.0.2-libtool-lib64.patch
 
 BuildRequires: gettext, flex, bison, zlib-devel
-#Requires:       
+Requires: coreutils
+Requires(post): /usr/bin/install-info
+Requires(preun): /usr/bin/install-info
+Requires(post): coreutils
 
 %description
 Binutils is a collection of binary utilities, including ar (for
@@ -40,6 +45,7 @@ This package contains BFD and opcodes static and dynamic libraries.
 %setup -q
 %patch0 -p1 -b .fix-static-linking
 %patch1 -p1 -b .hash-style-gnu
+%patch2 -p1 -b .libtool_64
 
 
 %build
@@ -50,9 +56,10 @@ This package contains BFD and opcodes static and dynamic libraries.
 	--with-build-sysroot=%{buildroot} \
 	--with-sysroot=/ \
 	--prefix=/usr \
+	--libdir=%{_libdir} \
 	--mandir=/usr/share/man \
 	--infodir=/usr/share/info \
-	--disable-multilib \
+	--enable-multilib \
 	--enable-shared \
 	--enable-ld=default \
 	--enable-gold=yes \
@@ -67,12 +74,16 @@ This package contains BFD and opcodes static and dynamic libraries.
 	--disable-werror \
 	--disable-nls \
 
-make
+make libdir=%{_libdir}
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
+
+# Remove libtool files, which reference the .so libs
+rm -f %{buildroot}%{_libdir}/libbfd.la
+rm -f %{buildroot}%{_libdir}/libopcodes.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -81,13 +92,17 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/*
-%dir /usr/%{_target_platform}
-%dir /usr/%{_target_platform}/bin/
-%dir /usr/%{_target_platform}/lib/
-%dir /usr/%{_target_platform}/lib/ldscripts/
-/usr/%{_target_platform}/bin/*
-/usr/%{_target_platform}/lib/ldscripts/*
+%dir %{_prefix}/%{_target_platform}
+%dir %{_prefix}/%{_target_platform}/bin/
+%dir %{_prefix}/%{_target_platform}/lib/
+%dir %{_prefix}/%{_target_platform}/lib/ldscripts/
+%{_prefix}/%{_target_platform}/bin/*
+%{_prefix}/%{_target_platform}/lib/ldscripts/*
 %{_libdir}/*%{version}.so
+%{_mandir}/man1/*
+%{_infodir}
+%{_infodir}/[^b]*info*
+%{_infodir}/binutils*info*
 
 %files devel
 %defattr(-,root,root,-)
@@ -95,5 +110,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/*.h
 %dir %{_includedir}/libiberty
 %{_includedir}/libiberty/*.h
+%{_prefix}/lib/lib*.a
+%{_libdir}/lib*.a
+%{_libdir}/libbfd.so
+%{_libdir}/libopcodes.so
+%{_infodir}/bfd*info*
 
 %changelog
+* Mon Nov 30 2015 JMiahMan <JMiahMan@unity-linux.org> 2.25.1-1
+- Initial build for Unity-Linux
