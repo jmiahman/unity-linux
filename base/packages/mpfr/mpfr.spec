@@ -1,5 +1,6 @@
 %global _arch %(uname -m)
 %define _target_platform %{_arch}-unity-linux-musl
+%define _libdir /usr/lib64
 
 Name:           mpfr
 Version:        3.1.3 
@@ -44,7 +45,7 @@ install the mpfr package.
 	--host=%{_target_platform} \
 	--build=%{_target_platform} \
 	--target=%{_target_platform} \
-	--libdir=/usr/lib64 \
+	--libdir=%{_libdir} \
 	--prefix=/usr \
 	--enable-shared
 

@@ -1,3 +1,7 @@
+%global _arch %(uname -m)
+%define _target_platform %{_arch}-unity-linux-musl
+%define _libdir /usr/lib64
+
 Name:           mpc
 Version:        1.0.2
 Release:        1%{?dist}
@@ -35,14 +39,16 @@ EGREP=egrep \
 	--sysconfdir=/etc \
 	--mandir=/usr/share/man \
 	--infodir=/usr/share/info \
+	--libdir=%{_libdir} \
+	--disable-static \
 	--enable-shared
 
 make ARCH=%{_arch}
 %install
 %__rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-%__rm $RPM_BUILD_ROOT/usr/lib/*.la
-
+%__rm $RPM_BUILD_ROOT/%{_libdir}/*.la
+%__rm -f ${RPM_BUILD_ROOT}/%{_infodir}/dir
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -54,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %{_libdir}/libmpc.so
 %{_includedir}/mpc.h
-#%{_infodir}/*.info*
+%{_infodir}/*.info*
 
 %changelog
+* Wed Dec 02 2015 JMiahMan - 1.0.2-1
+- Initial build for Unity-Linux
+
