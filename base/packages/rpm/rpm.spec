@@ -4,7 +4,7 @@
 # build against xz?
 %bcond_without xz
 # just for giggles, option to build with internal Berkeley DB
-%bcond_without int_bdb
+%bcond_with int_bdb
 # run internal testsuite?
 %bcond_with check
 # build with plugins?
@@ -22,26 +22,23 @@
 %define rpmhome /usr/lib/rpm
 
 %define rpmver 4.12.0.1
-#%define snapver rc1
-#%define srcver %{rpmver}%{?snapver:-%{snapver}}
-#%define eggver %{rpmver}%{?snapver:_%{snapver}}
 
 %define bdbname libdb
-%define bdbver 5.3.15
+%define bdbver 5.3.28
 %define dbprefix db
 
 Summary: The RPM package management system
 Name: rpm
 Version: 4.12.0.1
-Release: %{?snapver:0.%{snapver}.}11%{?dist}
+Release: 1%{?dist}
 Group: System Environment/Base
 Url: http://www.rpm.org/
 Source0: http://rpm.org/releases/rpm-4.12.x/%{name}-%{version}.tar.bz2
 %if %{with int_bdb}
 #Source1: db-%{bdbver}.tar.gz
 %else
-BuildRequires: db5.2-devel
-Requires: db5.2
+BuildRequires: db5.3-devel
+Requires: db5.3
 %endif
 
 #Patch to run on MUSL

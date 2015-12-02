@@ -1,0 +1,66 @@
+Perl (Main Package)
+perl(Config)
+perl(File::Basename)
+perl(File::Copy)
+perl(strict)
+perl(vars)
+perl(warnings)
+perl(AutoSplit)
+perl(base)
+perl(DynaLoader)
+perl(File::Find)
+perl(POSIX)
+
+1. perl-PathTools
+perl(Cwd)
+perl(File::Spec)
+
+2. perl-File-Path
+perl(File::Path)
+
+3. perl-Encode
+perl(Encode)
+
+4. perl-Exporter
+perl(Exporter)
+
+5. perl-version
+perl(version)
+
+6. perl-CPAN-Meta
+perl(CPAN::Meta)
+
+7. perl-Data-Dumper
+perl(Data::Dumper)
+
+8. perl-ExtUtils-Command
+perl(ExtUtils::Command)
+
+9. perl-ExtUtils-Install
+perl(ExtUtils::Install)
+
+10. perl-ExtUtils-Manifest
+perl(ExtUtils::Manifest)
+
+11. perl-Getopt-Long
+perl(Getopt::Long)
+
+12. perl-podlators
+perl(Pod::Man)
+
+13. perl-Test-Harness
+perl(Test::Harness)
+
+14. perl-libintl
+perl(Locale::Messages)
+
+15. perl-Text-Unidecode
+perl(Text::Unidecode)
+
+16. perl-Storable
+perl(Storable)
+
+17. perl-Unicode-EastAsianWidth
+perl(Unicode::EastAsianWidth)
+
+18. perl-ExtUtils-ParseXS

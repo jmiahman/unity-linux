@@ -1,3 +1,4 @@
+%global _arch %(uname -m)
 %define _target_platform %{_arch}-unity-linux-musl
 
 Name:           mpfr
@@ -43,21 +44,22 @@ install the mpfr package.
 	--host=%{_target_platform} \
 	--build=%{_target_platform} \
 	--target=%{_target_platform} \
+	--libdir=/usr/lib64 \
 	--prefix=/usr \
 	--enable-shared
 
-make ARCH=%{_arch}
+make 
 
 %install
 %__rm -rf $RPM_BUILD_ROOT
 %__make install DESTDIR=$RPM_BUILD_ROOT
-
+%__rm $RPM_BUILD_ROOT/%{_libdir}/*.la
+%__rm $RPM_BUILD_ROOT/%{_libdir}/*.a
+%__rm $RPM_BUILD_ROOT/%{_infodir}/dir
+%__rm -rf $RPM_BUILD_ROOT/%{_docdir}/mpfr
 
 %clean
 %__rm -rf $RPM_BUILD_ROOT
-%__make DESTDIR=$RPM_BUILD_ROOT install
-%__rm $RPM_BUILD_ROOT/usr/lib/*.la
-
 
 
 %files
@@ -67,8 +69,13 @@ make ARCH=%{_arch}
 
 %files devel
 %defattr(-,root,root,-)
+%doc AUTHORS BUGS COPYING COPYING.LESSER NEWS TODO
+#%{_docdir}/mpfr/examples/*.c
 %{_libdir}/libmpfr.so
 %{_includedir}/*.h
 %{_infodir}/mpfr.info*
 
-%changelo
+%changelog
+* Wed Dec 02 2015 JMiahMan <JMiahMan@unity-linux.org> - 3.1.3-1
+- Initial build
+

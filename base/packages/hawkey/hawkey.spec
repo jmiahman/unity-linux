@@ -1,7 +1,7 @@
 %global libsolv_version 0.6.4-1
 
 Name:		hawkey
-Version:	0.6.0
+Version:	0.6.2
 Release:	1%{?snapshot}%{?dist}
 Summary:	Library providing simplified C and Python API to libsolv
 Group:		System Environment/Libraries
@@ -12,6 +12,7 @@ URL:		https://github.com/rpm-software-management/%{name}
 Source0:	https://github.com/rpm-software-management/%{name}/archive/%{name}-%{version}-1.tar.gz
 
 Patch0:		hawkey-0.6.0-musl-add-ipc_h.patch
+Patch1:		hawkey-0.6.2-Add-qsort_r-fallback-implementation.patch
 
 BuildRequires:	libsolv-devel >= %{libsolv_version}
 BuildRequires:	cmake expat-devel rpm-devel zlib-devel check-devel
@@ -49,6 +50,7 @@ Python 2 bindings for the hawkey library.
 %prep
 %setup -q -n %{name}-%{name}-%{version}-1
 %patch0 -p1
+%patch1 -p1
 
 %build
 rm -rf %{buildroot}
