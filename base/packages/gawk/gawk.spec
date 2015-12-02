@@ -28,22 +28,28 @@ considered to be a standard Linux tool for processing text.
 %build
 
 ./configure \
+	--with-libsigsegv-prefix=no \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--mandir=/usr/share/man \
 	--infodir=/usr/share/info \
+	--libdir=%{_libdir} \
 	--disable-nls
 
 make %{?_smp_mflags}
 
 
 %install
+rm -rf $RPM_BUILD_ROOT
 make DESTDIR=%{buildroot} install
+
+rm %{buildroot}%{_infodir}/dir
 
 %postun
 exec /bin/busybox --install -s
 
 %files
+%{_bindir}/%{name}-%{version}
 %{_bindir}/*awk
 %{_infodir}/gawk.info*
 %{_infodir}/gawkinet.info*
@@ -51,5 +57,9 @@ exec /bin/busybox --install -s
 %{_datadir}/awk
 %{_includedir}/gawkapi.h
 %{_libdir}/gawk
+%{_mandir}/man*/*.*.gz
+
 
 %changelog
+* Mon Nov 30 2015 JMiahMan <JMiahMan@unity-linux.org> - 4.1.3-1
+- Initial inclusion into Unity-Linux

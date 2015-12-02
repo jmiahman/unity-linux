@@ -3,9 +3,10 @@
 
 
 %global cpan_name ExtUtils-MakeMaker
+%global cpan_lname extutils-makemaker
 %global cpan_version 7.10
 
-Name:           perl-%{cpan_name}
+Name:           perl-%{cpan_lname}
 Version:        %(echo '%{cpan_version}' | tr _ .)
 Release:        1%{?dist}
 Summary:        Create a module Makefile
@@ -75,9 +76,10 @@ find $RPM_BUILD_ROOT -type f -name .packlist -exec rm -f {} \;
 %{_mandir}/man3/*
 %exclude %{_mandir}/man3/ExtUtils::Command.*
 
-%files -n perl-ExtUtils-Command
+%files -n perl-extutils-command
 %dir %{perl_vendorlib}/ExtUtils
 %{perl_vendorlib}/ExtUtils/Command.pm
 %{_mandir}/man3/ExtUtils::Command.*
 
 %changelog
+

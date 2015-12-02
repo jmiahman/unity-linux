@@ -1,3 +1,5 @@
+%define _target_platform %{_arch}-unity-linux-musl
+
 # build against xz?
 %bcond_without xz
 # just for giggles, option to build with internal Berkeley DB
@@ -29,11 +31,11 @@
 
 Summary: The RPM package management system
 Name: rpm
-Version: %{rpmver}
+Version: 4.12.0.1
 Release: %{?snapver:0.%{snapver}.}11%{?dist}
 Group: System Environment/Base
 Url: http://www.rpm.org/
-Source0: http://rpm.org/releases/rpm-4.12.x/%{name}-%{rpmver}.tar.bz2
+Source0: http://rpm.org/releases/rpm-4.12.x/%{name}-%{version}.tar.bz2
 %if %{with int_bdb}
 #Source1: db-%{bdbver}.tar.gz
 %else
@@ -297,7 +299,7 @@ autoreconf -i -f
 # Using configure macro has some unwanted side-effects on rpm platform
 # setup, use the old-fashioned way for now only defining minimal paths.
 #export LDFLAGS="$LDFLAGS -ldb"
-export CFLAGS="-D_GNU_SOURCE -D__musl__ -Os -D_STAT_VER=0 $CFLAGS"
+#export CFLAGS="-D_GNU_SOURCE -D__musl__ -Os -D_STAT_VER=0 $CFLAGS"
 LDFLAGS="$LDFLAGS -lintl" \
 ./configure \
     --prefix=%{_usr} \

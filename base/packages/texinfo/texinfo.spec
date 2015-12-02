@@ -7,6 +7,15 @@ Group:		Applications/Publishing
 License:	GPLv3+
 URL:		http://www.gnu.org/software/texinfo/
 Source0:	ftp://ftp.gnu.org/gnu/texinfo/texinfo-%{version}.tar.xz
+Source1:	info-dir
+
+Requires(post): /usr/bin/install-info
+Requires(preun): /usr/bin/install-info
+Requires: perl >= 5.7.3, perl(Text::Unidecode)
+Requires: perl(Unicode::EastAsianWidth), perl(Data::Dumper), perl(Locale::Messages)
+BuildRequires: zlib-devel, ncurses-devel, help2man, perl(Data::Dumper)
+BuildRequires: perl(Locale::Messages), perl(Unicode::EastAsianWidth), perl(Text::Unidecode)
+BuildRequires: perl(Storable)
 
 Provides:	info
 Provides:	install-info
@@ -37,9 +46,11 @@ make
 
 rm -f ${RPM_BUILD_ROOT}/usr/share/info/dir
 rm -rf ${RPM_BUILD_ROOT}/usr/lib/charset.alias
+install -p -m644 %{SOURCE1} $RPM_BUILD_ROOT%{_infodir}/dir
 
 %files
 %{_bindir}/*
+%dir %{_datadir}/info/
 %{_datadir}/texinfo/*
 %{_datadir}/texinfo/Texinfo/*
 %{_datadir}/texinfo/lib/Text-Unidecode/lib/Text/*
@@ -52,5 +63,10 @@ rm -rf ${RPM_BUILD_ROOT}/usr/lib/charset.alias
 %{_datadir}/texinfo/DebugTexinfo/*.pm
 %{_datadir}/texinfo/Pod-Simple-Texinfo/Pod/Simple/*.pm
 %dir %{_datadir}/texinfo
+%config(noreplace) %verify(not md5 size mtime) %{_infodir}/dir
+%{_infodir}/*.info*.gz
+%{_datadir}/locale/*/LC_MESSAGES/*.mo
+%{_mandir}/man1/*.1.gz
+%{_mandir}/man5/*.5.gz
 
 %changelog

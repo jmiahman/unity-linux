@@ -30,13 +30,6 @@ Patch0:	rpm5.patch
 Patch1: %{name}-pld.patch
 Patch3: rpm5-yum.patch
 Patch4: yum_ok_newline.patch
-#Patch1: yum-distro-configs.patch
-#Patch5: geode-arch.patch
-#Patch6: yum-HEAD.patch
-#Patch7: yum-ppc64-preferred.patch
-#Patch20: yum-manpage-files.patch
-#Patch21: yum-completion-helper.patch
-#Patch22: yum-deprecated.patch
 
 URL: http://yum.baseurl.org/
 BuildArchitectures: noarch
@@ -46,7 +39,7 @@ BuildRequires: gettext
 # This is really CheckRequires ...
 BuildRequires: python-nose
 BuildRequires: python >= 2.4
-BuildRequires: rpm-python, rpm >= 0:4.4.2
+BuildRequires: rpm-python, rpm >= 4.4.2
 BuildRequires: python-iniparse
 BuildRequires: python-sqlite
 BuildRequires: python-urlgrabber >= 3.9.0-8
@@ -148,17 +141,10 @@ This runs after yum-cron-daily, if that is installed.
 
 %prep
 %setup -q
-%patch0 -p1
+#%patch0 -p1
 %patch1 -p1
-%patch3 -p1
+#%patch3 -p1
 %patch4 -p1
-#%patch5 -p1
-#%patch6 -p1
-#%patch7 -p1
-#%patch20 -p1
-#%patch21 -p1
-#%patch22 -p1
-#%patch1 -p1
 
 %build
 sed -i 's!rpmUtils yum etc docs po!rpmUtils yum etc docs!g' Makefile

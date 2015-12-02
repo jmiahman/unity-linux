@@ -9,7 +9,7 @@ Source1:	%{name}.sh
 Source2:	%{name}.conf
 Source3:	%{name}.init
 URL:		http://www.alsa-project.org/
-Requires(post,preun):	/sbin/chkconfig
+Requires(post,preun): openrc
 Requires:	gawk
 Requires:	eudev
 BuildArch:	noarch
@@ -25,24 +25,26 @@ install -d $RPM_BUILD_ROOT/etc/udev/rules.d
 cp -a %{SOURCE0} $RPM_BUILD_ROOT/etc/udev/rules.d/alsa.rules
 install -D %{SOURCE1} $RPM_BUILD_ROOT/lib/udev/alsa-udev
 install -D %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/alsa-udev
-install -D %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/alsa-udev
+install -D %{SOURCE3} $RPM_BUILD_ROOT/etc/init.d/alsa-udev
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
-/sbin/chkconfig --add alsa-udev
+/sbin/rc-update add alsa-udev
 
 %preun
 if [ "$1" = "0" ]; then
-	/sbin/chkconfig --del alsa-udev
+	/sbin/rc-update del alsa-udev
 fi
 
 %files
 %defattr(644,root,root,755)
-%attr(754,root,root) /etc/rc.d/init.d/*
+%attr(754,root,root) /etc/init.d/*
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/alsa-udev
 /etc/udev/rules.d/alsa.rules
 %attr(754,root,root) /lib/udev/alsa-udev
 
 %changelog
+* Mon Nov 30 2015 JMiahMan <JMiahMan@Unity-Linux.org> - 0.2-1
+- Initial build for Unity-Linux

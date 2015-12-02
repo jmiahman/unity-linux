@@ -31,6 +31,14 @@ Requires: %{name} = %{version}
 The libraries, header files and documentation for using the GNU MP 
 arbitrary precision library in applications.
 
+%package static
+Summary: Development tools for the GNU MP arbitrary precision library
+Group: Development/Libraries
+Requires: %{name}-devel = %{epoch}:%{version}-%{release}
+
+%description static
+The static libraries for using the GNU MP arbitrary precision library 
+in applications.
 
 %prep
 %setup -q
@@ -45,6 +53,7 @@ arbitrary precision library in applications.
 	--localstatedir=/var/state/gmp \
 	--enable-cxx \
 	--with-pic \
+	--libdir=%{_libdir} \
 
 make ARCH=%{_arch}
 make check
@@ -53,12 +62,14 @@ make check
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-%__rm -f $RPM_BUILD_ROOT/usr/lib/*.la
+%__rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
+%license COPYING COPYING.LESSERv3 COPYINGv2 COPYINGv3
+%doc NEWS README
 %defattr(-,root,root,-)
 %{_libdir}/libgmp.so.*
 %{_libdir}/libgmpxx.so.*
@@ -68,5 +79,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libgmp.so
 %{_libdir}/libgmpxx.so
 %{_includedir}/*.h
+%{_infodir}/gmp.info*
+
+%files static
+%defattr(-,root,root,-)
+%{_libdir}/libgmp.a
+%{_libdir}/libgmpxx.a
 
 %changelog
+* Mon Nov 30 2015 JMiahMan <JMiahMan@unity-linux.org> 6.0.0-1
+- Initial Release for Unity Linux

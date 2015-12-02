@@ -7,7 +7,7 @@ Group:		System Environment/Base
 License:	GPLv2
 URL:		http://unity-linux.org
 
-Source0:	mkmntdirs.c
+#Source0:	mkmntdirs.c
 Source1:	crontab
 Source2:	color_prompt
 Source3:	aliases.conf
@@ -33,15 +33,17 @@ mkdir -p %{buildroot}
 
 %build
 
-%__cc %{SOURCE0} -o %{buildroot}/mkmntdirs
+#Do we need this?
+#%__cc %{SOURCE0} -o %{buildroot}/mkmntdirs
 
 # generate shadow
-cp %{SOURCE9} %{buildroot}
+mkdir %{buildroot}/etc
+cp %{SOURCE9} %{buildroot}/etc/
 awk -F: '{
 	pw = ":!:"
 	if ($1 == "root") { pw = "::" }
 	print($1 pw ":0:::::")
-}' %{buildroot}/passwd >> %{buildroot}/shadow
+}' %{buildroot}/etc/passwd >> %{buildroot}/etc/shadow
 #' fix syntax higlighting
 
 %install
@@ -96,7 +98,6 @@ install -m 0755 -d \
 	usr/local/lib \
 	usr/local/share \
 	usr/share \
-	usr/share/info \
 	usr/share/man \
 	usr/share/doc \
 	usr/share/aclocal \
@@ -113,7 +114,7 @@ install -m 0755 -d \
 
 install -d -m 0700 %{buildroot}/root 
 install -d -m 1777 %{buildroot}/tmp %{buildroot}/var/tmp
-install -m755 %{buildroot}/mkmntdirs %{buildroot}/sbin/mkmntdirs
+#install -m755 %{buildroot}/mkmntdirs %{buildroot}/sbin/mkmntdirs
 
 install -m644 %{SOURCE1} %{buildroot}/etc/crontabs/root 
 install -m644 %{SOURCE2} %{buildroot}/etc/profile.d/
@@ -168,14 +169,12 @@ EOF
 
 install -m644 \
 	%{SOURCE7} \
-	passwd \
 	%{SOURCE8} \
 	%{SOURCE10} \
 	%{SOURCE11} \
 	%{SOURCE12} \
 	%{buildroot}/etc/ 
 
-install -m640 -g shadow %{buildroot}/shadow %{buildroot}/etc/
 
 echo %{version} > %{buildroot}/etc/unity-release
 
@@ -213,7 +212,6 @@ exit 0
 %dir /etc/network
 %dir /usr/doc
 %dir /usr/lib/X11
-%dir /usr/share/info
 %dir /usr/share/man
 %dir /usr/share/doc
 %dir /usr/share/applications
@@ -255,5 +253,6 @@ exit 0
 /etc/crontabs/root
 /etc/profile.d/
 
-
 %changelog
+* Mon Nov 30 2015 JMiahMan <JMiahMan@unity-linux.org> 0.4-1
+- Initial release for Unity-Linux

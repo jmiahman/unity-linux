@@ -235,8 +235,9 @@ cd obj-%_target_platform
 		--build=%_target_platform \
 		--host=%_target_platform \
 		--target=%_target_platform \
-		--with-pkgversion="Unity %{version}" \
+		--with-pkgversion="Unity Linux GCC %{version}" \
 		--enable-checking=release \
+		--libdir=%{_libdir} \
 		--disable-fixed-point \
 		--disable-libstdcxx-pch \
 		--disable-multilib \
@@ -336,38 +337,38 @@ install -m644 %{SOURCE2} %{buildroot}/%{_gcclibdir}/hardenednopiessp.specs
 install -m644 %{SOURCE3} %{buildroot}/%{_gcclibdir}/hardenednossp.specs
 install -m644 %{SOURCE4} %{buildroot}/%{_gcclibdir}/vanilla.specs
 
-#%post
-#/sbin/install-info --info-dir=%_infodir %_infodir/gcc.info
-#/sbin/install-info --info-dir=%_infodir %_infodir/gccint.info
-#%_libdir/gcc/%_target_platform/%version/install-tools/mkheaders
-#chmod -R go+rX %_libdir/gcc/%_target_platform/%version/include/*
+%post
+/usr/bin/install-info --info-dir=%_infodir %_infodir/gcc.info
+usr//bin/install-info --info-dir=%_infodir %_infodir/gccint.info
+%_libdir/gcc/%_target_platform/%version/install-tools/mkheaders
+chmod -R go+rX %_libdir/gcc/%_target_platform/%version/include/*
 
-#%preun
-#if [ $1 -eq 0 ]; then
-#	/sbin/install-info --delete --info-dir=%_infodir %_infodir/gccint.info
-#	/sbin/install-info --delete --info-dir=%_infodir %_infodir/gcc.info
-#	if [ -d %_libdir/gcc/%_target_platform/%version/include ]; then
-#		rm -rf %_libdir/gcc/%_target_platform/%version/include/*
-#	fi
-#fi
+%preun
+if [ $1 -eq 0 ]; then
+	/usr/bin/install-info --delete --info-dir=%_infodir %_infodir/gccint.info
+	/usr/bin/install-info --delete --info-dir=%_infodir %_infodir/gcc.info
+	if [ -d %_libdir/gcc/%_target_platform/%version/include ]; then
+		rm -rf %_libdir/gcc/%_target_platform/%version/include/*
+	fi
+fi
 
-#%post -n libgcc -p /sbin/ldconfig
-#%postun -n libgcc -p /sbin/ldconfig
+%post -n libgcc -p /sbin/ldconfig
+%postun -n libgcc -p /sbin/ldconfig
 
-#%post -n cpp
-#/sbin/install-info --info-dir=%_infodir %_infodir/cpp.info
-#/sbin/install-info --info-dir=%_infodir %_infodir/cppinternals.info
+%post -n cpp
+/usr/bin/install-info --info-dir=%_infodir %_infodir/cpp.info
+/usr/bin/install-info --info-dir=%_infodir %_infodir/cppinternals.info
 
-#%preun -n cpp
-#if [ $1 -eq 0 ]; then
-#	/sbin/install-info --delete --info-dir=%_infodir %_infodir/cppinternals.info
-#	/sbin/install-info --delete --info-dir=%_infodir %_infodir/cpp.info
-#fi
+%preun -n cpp
+if [ $1 -eq 0 ]; then
+	/usr/bin/install-info --delete --info-dir=%_infodir %_infodir/cppinternals.info
+	/usr/bin/install-info --delete --info-dir=%_infodir %_infodir/cpp.info
+fi
 
-#%if %BUILD_GXX
-#%post -n libstdc++ -p /sbin/ldconfig
-#%postun -n libstdc++ -p /sbin/ldconfig
-#%endif
+%if %BUILD_GXX
+%post -n libstdc++ -p /sbin/ldconfig
+%postun -n libstdc++ -p /sbin/ldconfig
+%endif
 
 %files 
 %defattr(-,root,root)
@@ -376,8 +377,8 @@ install -m644 %{SOURCE4} %{buildroot}/%{_gcclibdir}/vanilla.specs
 %_bindir/gcov
 %_bindir/%_target_platform-gcc
 %_bindir/%_target_platform-gcc-%version
-#%_infodir/gcc.info*
-#%_infodir/gccint.info*
+%_infodir/gcc.info*
+%_infodir/gccint.info*
 %dir %_libdir/gcc
 %dir %_libdir/gcc/%_target_platform
 %dir %_libdir/gcc/%_target_platform/%version
@@ -396,13 +397,13 @@ install -m644 %{SOURCE4} %{buildroot}/%{_gcclibdir}/vanilla.specs
 %_libdir/gcc/%_target_platform/%version/include-fixed
 %_libdir/gcc/%_target_platform/%version/install-tools
 
-#%_mandir/man1/cc.1*
-#%_mandir/man1/gcc.1*
-#%_mandir/man1/gcov.1*
-#%_mandir/man7/fsf-funding.7*
-#%_mandir/man7/gfdl.7*
-#%_mandir/man7/gpl.7*
-#%doc rpm-doc/gcc/*
+%_mandir/man1/cc.1*
+%_mandir/man1/gcc.1*
+%_mandir/man1/gcov.1*
+%_mandir/man7/fsf-funding.7*
+%_mandir/man7/gfdl.7*
+%_mandir/man7/gpl.7*
+%doc rpm-doc/gcc/*
 
 /usr/libexec/gcc/%_target_platform/%version/lto1
 /usr/libexec/gcc/%_target_platform/%version/lto-wrapper
@@ -414,11 +415,11 @@ install -m644 %{SOURCE4} %{buildroot}/%{_gcclibdir}/vanilla.specs
 %files -n cpp
 %defattr(-,root,root)
 %_bindir/cpp
-#%_infodir/cpp.info*
-#%_infodir/cppinternals.info*
+%_infodir/cpp.info*
+%_infodir/cppinternals.info*
 %dir %_libdir/gcc
 %dir %_libdir/gcc/%_target_platform
-#%_mandir/man1/cpp.1*
+%_mandir/man1/cpp.1*
 
 %files -n libgcc
 %defattr(-,root,root)
@@ -433,14 +434,14 @@ install -m644 %{SOURCE4} %{buildroot}/%{_gcclibdir}/vanilla.specs
 %dir %_libdir/gcc
 %dir %_libdir/gcc/%_target_platform
 /usr/libexec/gcc/%_target_platform/%version/cc1plus
-#%_mandir/man1/?++.1*
-#%doc rpm-doc/g++/*
+%_mandir/man1/?++.1*
+%doc rpm-doc/g++/*
 
 %files -n libstdc++
 %defattr(-,root,root)
 %_libdir/libstdc++.so.6*
-#%doc rpm-doc/libstdc++/*
-#%doc libstdc++-v3/doc/html
+%doc rpm-doc/libstdc++/*
+%doc libstdc++-v3/doc/html
 %exclude %_datadir/gcc-%version/python
 
 %files -n libstdc++-devel
@@ -474,3 +475,5 @@ install -m644 %{SOURCE4} %{buildroot}/%{_gcclibdir}/vanilla.specs
 %_libdir/libgomp.spec
 
 %changelog
+* Mon Nov 30 2015 JMiahMan <JMiahMan@unity-linux.org>  5.1.0-1
+- Initial Release for Unity-Linux

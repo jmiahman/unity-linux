@@ -101,8 +101,9 @@ make %{?_smp_mflags}
 rm -rf %{buildroot}
 %make_install
 
-#%check
-#make ARGS="-V" test
+%check
+export LD_LIBRARY_PATH=%{buildroot}%{_libdir}
+make ARGS="-V" test
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
