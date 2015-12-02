@@ -62,13 +62,13 @@ make ARCH=%{_arch}
 
 %files
 %defattr(-,root,root,-)
-#%doc COPYING COPYING.LESSER NEWS README
+%doc COPYING COPYING.LESSER NEWS README
 %{_libdir}/libmpfr.so.*
 
 %files devel
 %defattr(-,root,root,-)
 %{_libdir}/libmpfr.so
 %{_includedir}/*.h
-#%{_infodir}/mpfr.info*
+%{_infodir}/mpfr.info*
 
-%changelog
+%changelo

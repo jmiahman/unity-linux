@@ -1,4 +1,5 @@
-%define _target_platform %{_arch}-unity-linux-musl
+#%define _target_platform %{_arch}-unity-linux-musl
+%global _arch %(uname -m)
 
 # build against xz?
 %bcond_without xz
@@ -286,6 +287,12 @@ ln -s db-%{bdbver} db
 %endif
 
 %build
+#Remove OLD config.sub
+for i in $(find . -name config.guess 2>/dev/null) $(find . -name config.sub 2>/dev/null) ; do \
+        [ -f /usr/share/automake-1.15/$(basename $i) ] && %{__rm} -f $i && %{__cp} -fv /usr/share/automake-1.15/$(basename $i) $i ; \
+done
+
+
 %if %{without int_bdb}
 #CPPFLAGS=-I%{_includedir}/db%{bdbver} 
 #LDFLAGS=-L%{_libdir}/db%{bdbver}
@@ -426,12 +433,14 @@ exit 0
 %{_mandir}/man8/rpm2cpio.8*
 
 # XXX this places translated manuals to wrong package wrt eg rpmbuild
-#%lang(fr) %{_mandir}/fr/man[18]/*.[18]*
-#%lang(ko) %{_mandir}/ko/man[18]/*.[18]*
-#%lang(ja) %{_mandir}/ja/man[18]/*.[18]*
-#%lang(pl) %{_mandir}/pl/man[18]/*.[18]*
-#%lang(ru) %{_mandir}/ru/man[18]/*.[18]*
-#%lang(sk) %{_mandir}/sk/man[18]/*.[18]*
+%{_mandir}/fr/man[18]/*.[18]*
+%{_mandir}/ko/man[18]/*.[18]*
+%{_mandir}/ja/man[18]/*.[18]*
+%{_mandir}/pl/man[18]/*.[18]*
+%{_mandir}/ru/man[18]/*.[18]*
+%{_mandir}/sk/man[18]/*.[18]*
+
+%{_datadir}/locale/*/LC_MESSAGES/rpm.mo
 
 %attr(0755, root, root) %dir %{rpmhome}
 %{rpmhome}/macros
@@ -510,7 +519,7 @@ exit 0
 %files python
 %defattr(-,root,root)
 %{python_sitearch}/rpm
-#%{python_sitearch}/rpm_python-%{eggver}-py2.7.egg-info
+%{python_sitearch}/rpm_python-%{version}-py2.7.egg-info
 
 #%files python3
 #%defattr(-,root,root)
@@ -536,3 +545,6 @@ exit 0
 %doc doc/librpm/html/*
 
 %changelog
+* Mon Nov 30 2015 JMiahMan <JMiahMan@unity-linux.org> - 4.12.0.1-1
+- Initial build for Unity-Linux
+

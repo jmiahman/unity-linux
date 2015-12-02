@@ -36,6 +36,8 @@ LIBS=-lgomp \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
+	--includedir=%{_includedir} \
+	--libdir=%{_libdir} \
 	--enable-threads \
 	--enable-shared \
 	--without-java \
@@ -47,15 +49,21 @@ make libaltdir=%{_libdir}
 
 
 %install
+rm -rf $RPM_BUILD_ROOT
 make libaltdir=%{_libdir} DESTDIR=%{buildroot} install
 rm %{buildroot}%{_libdir}/*.la
+rm %{buildroot}%{_libdir}/*.a
+
+ln -sf %{_includedir}/beecrypt/* %{buildroot}/%{_includedir}/
 
 %files
 %{_libdir}/libbeecrypt.so.7.0.0
 %{_libdir}/libbeecrypt.so.7
 
 %files devel
-%{_includedir}/%{name}
+%{_includedir}
 %{_libdir}/libbeecrypt.so
 
 %changelog
+* Mon Nov 30 2015 JMiahMan <JMiahMan@unity-linux.org> - 4.2.1-1
+- Initial build for Unity-Linux

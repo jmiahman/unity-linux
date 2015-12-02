@@ -38,7 +38,7 @@ This package contains scripts to aid in development of RPM packages.
 %configure \
 	--libdir=%{_prefix}/lib
 
-%{__make} bin_SCRIPTS
+%{__make} 
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -56,20 +56,23 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS README*
+#%doc NEWS README*
 %dir %{_sysconfdir}/%{name}
-%config(noreplace) %{_sysconfdir}/%{name}/devscripts.conf
+#%config(noreplace) %{_sysconfdir}/%{name}/devscripts.conf
 %config(noreplace) %{_sysconfdir}/%{name}/newspec.conf
 %config(noreplace) %{_sysconfdir}/%{name}/rmdevelrpms.conf
+
+%config(noreplace) %{_sysconfdir}/bash_completion.d/rpmdevtools.bash-completion
+%config(noreplace) %{_sysconfdir}/rpmdevtools/curlrc
 
 # templates
 %config(noreplace) %{_sysconfdir}/%{name}/spectemplate-*.spec
 %config(noreplace) %{_sysconfdir}/%{name}/template.init
 
-%attr(755,root,root) %{_bindir}/annotate-output
-%attr(755,root,root) %{_bindir}/checkbashisms
-%attr(755,root,root) %{_bindir}/licensecheck
-%attr(755,root,root) %{_bindir}/manpage-alert
+#%attr(755,root,root) %{_bindir}/annotate-output
+#%attr(755,root,root) %{_bindir}/checkbashisms
+#%attr(755,root,root) %{_bindir}/licensecheck
+#%attr(755,root,root) %{_bindir}/manpage-alert
 %attr(755,root,root) %{_bindir}/rpmargs
 %attr(755,root,root) %{_bindir}/rpmdev-*
 %attr(755,root,root) %{_bindir}/rpmelfsym
@@ -85,3 +88,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}
 
 %changelog
+* Wed Dec 02 2015 JMiahMan <JMiahMan@unity-linux.org>  - 8.6-1
+- Built
+

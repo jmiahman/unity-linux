@@ -3,12 +3,9 @@ Name:      libhif
 Version:   0.2.1
 Release:   1%{?dist}
 License:   LGPLv2+
+Group:     Development/Libraries
 URL:       https://github.com/hughsie/libhif
 Source0:   http://people.freedesktop.org/~hughsient/releases/libhif-%{version}.tar.xz
-
-Patch0:    libhif-rpm5.patch
-
-Group: unkown
 
 BuildRequires: glib-devel
 BuildRequires: libtool
@@ -36,11 +33,6 @@ GLib headers and libraries for libhif.
 
 %prep
 %setup -q
-
-# for patch2
-#rm -f configure
-
-#%patch0 -p1
 
 %build
 %configure \
@@ -80,3 +72,5 @@ rm -rf $RPM_BUILD_ROOT/usr/share/gtk-doc
 %{_datadir}/gir-1.0/*.gir
 
 %changelog
+* Mon Nov 30 2015 JMiahMan <JMiahMan@unity-linux.org> - 0.2.1-1
+- Initial release for Unity-Linux
