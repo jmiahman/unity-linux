@@ -1,3 +1,7 @@
+%global _arch %(uname -m)
+%define _target_platform %{_arch}-unity-linux-musl
+%define _libdir /usr/lib64
+%define _lib /lib64
 #%global _default_patch_fuzz 3
 
 %define _target_platform %{_arch}-unity-linux-musl
@@ -8,7 +12,7 @@
 %define with_musl 1
 %define gcc_stage 3
 
-%define _gcclibdir /usr/lib/gcc/%_target_platform/%{version}
+%define _gcclibdir %{_libdir}/gcc/%_target_platform/%{version}
 
 #%define _languages 'c,c++,fortran,objc'
 %define _languages 'c,c++'
@@ -80,7 +84,7 @@ Patch44:        ada-musl.patch
 
 BuildRequires: binutils, gettext, bison, flex, texinfo
 Requires: lib%{name} = %{version}
-Requires: mpc
+Requires: libmpc
 Requires: mpfr
 Requires: gmp
 
@@ -235,12 +239,12 @@ cd obj-%_target_platform
 		--build=%_target_platform \
 		--host=%_target_platform \
 		--target=%_target_platform \
+		--libdir=%{_libdir} \
 		--with-pkgversion="Unity Linux GCC %{version}" \
 		--enable-checking=release \
-		--libdir=%{_libdir} \
 		--disable-fixed-point \
 		--disable-libstdcxx-pch \
-		--disable-multilib \
+		--enable-multilib \
 		--disable-nls \
 		--disable-werror \
 		--enable-__cxa_atexit \
@@ -423,7 +427,7 @@ fi
 
 %files -n libgcc
 %defattr(-,root,root)
-/%_libdir/libgcc*.so.*
+/%_lib/libgcc*.so.*
 %_libdir/libquadmath.so.*
 
 %if %BUILD_GXX

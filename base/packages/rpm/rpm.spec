@@ -23,22 +23,22 @@
 
 %define rpmver 4.12.0.1
 
-%define bdbname libdb
+%define bdbname db
 %define bdbver 5.3.28
 %define dbprefix db
 
 Summary: The RPM package management system
 Name: rpm
 Version: 4.12.0.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Group: System Environment/Base
 Url: http://www.rpm.org/
 Source0: http://rpm.org/releases/rpm-4.12.x/%{name}-%{version}.tar.bz2
 %if %{with int_bdb}
 #Source1: db-%{bdbver}.tar.gz
 %else
-BuildRequires: db5.3-devel
-Requires: db5.3
+BuildRequires: db-devel
+Requires: db
 %endif
 
 #Patch to run on MUSL
@@ -302,8 +302,6 @@ autoreconf -i -f
 
 # Using configure macro has some unwanted side-effects on rpm platform
 # setup, use the old-fashioned way for now only defining minimal paths.
-#export LDFLAGS="$LDFLAGS -ldb"
-#export CFLAGS="-D_GNU_SOURCE -D__musl__ -Os -D_STAT_VER=0 $CFLAGS"
 LDFLAGS="$LDFLAGS -lintl" \
 ./configure \
     --prefix=%{_usr} \
@@ -542,6 +540,9 @@ exit 0
 %doc doc/librpm/html/*
 
 %changelog
+* Wed Dec 02 2015 JMiahMan <JMiahMan@unity-linux.org> - 4.12.0.1-2
+- removed requires for db5.3 and replace it just with db
+
 * Mon Nov 30 2015 JMiahMan <JMiahMan@unity-linux.org> - 4.12.0.1-1
 - Initial build for Unity-Linux
 

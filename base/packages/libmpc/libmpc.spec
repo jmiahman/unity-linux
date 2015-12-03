@@ -2,7 +2,7 @@
 %define _target_platform %{_arch}-unity-linux-musl
 %define _libdir /usr/lib64
 
-Name:           mpc
+Name:           libmpc
 Version:        1.0.2
 Release:        1%{?dist}
 Summary:        Multiprecision C library
@@ -29,7 +29,7 @@ Header files and shared object symlinks for MPC is a C library.
 
 
 %prep
-%setup -q
+%setup -q -n mpc-%{version}
 
 
 %build

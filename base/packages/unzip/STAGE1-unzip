@@ -1,0 +1,19 @@
+srpm unzip
+mcd $BUILDDIR/$1
+rsync -av $SRC/unzip*/ ./
+make $J -f unix/Makefile \
+    CC=${TARGET}-gcc \
+    AS=${TARGET}-as \
+    AR=${TARGET}-ar \
+    STRIP=${TARGET}-strip \
+    RANLIB=${TARGET}-ranlib \
+    prefix=/usr \
+    generic
+make $J -f unix/Makefile \
+    CC=${TARGET}-gcc \
+    AS=${TARGET}-as \
+    AR=${TARGET}-ar \
+    STRIP=${TARGET}-strip \
+    RANLIB=${TARGET}-ranlib \
+    prefix=${ROOTFS}/usr \
+    install

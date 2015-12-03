@@ -11,21 +11,16 @@
 %include	/usr/lib/rpm/macros.java
 %endif
 
-%define		major		5
-%define		libver		%{major}.2
-%define		ver		%{libver}.42
-%define		patchlevel	0
+%define         major           5
+%define         libver          %{major}.3
+
 Summary:	Berkeley DB database library for C
-Name:		db5.2
-Version:	%{ver}.%{patchlevel}
+Name:		db
+Version:	5.3.28
 Release:	1
 License:	BSD-like (see LICENSE)
 Group:		Libraries
-#Source0Download: http://www.oracle.com/technetwork/database/berkeleydb/downloads/index-082944.html
-Source0:	http://download.oracle.com/berkeley-db/db-%{ver}.tar.gz
-# Source0-md5:	28c39545efbeb926d1efef0bf33135b9
-Patch0:		%{name}-link.patch
-Patch1:		%{name}-sql-features.patch
+Source0:	http://download.oracle.com/berkeley-db/db-%{version}.tar.gz
 URL:		http://www.oracle.com/technetwork/database/berkeleydb/downloads/index.html
 BuildRequires:	automake
 %if %{with java}
@@ -69,6 +64,20 @@ recovery. DB supports C, C++, Java and Perl APIs.
 
 This package contains the header files, libraries, and documentation
 for building programs which use Berkeley DB.
+
+%package devel-doc
+Summary: C development documentation files for the Berkeley DB library
+Group: Documentation
+Requires: %{name} = %{version}-%{release}
+Requires: %{name}-devel = %{version}-%{release}
+BuildArch: noarch
+
+%description devel-doc
+The Berkeley Database (Berkeley DB) is a programmatic toolkit that
+provides embedded database support for both traditional and
+client/server applications. This package contains the header files,
+libraries, and documentation for building programs which use the
+Berkeley DB.
 
 %package static
 Summary:	Static libraries for Berkeley database library
@@ -256,9 +265,7 @@ This package contains command line tools for managing Berkeley DB
 databases.
 
 %prep
-%setup -q -n db-%{ver}
-%patch0 -p1
-%patch1 -p1
+%setup -q -n db-%{version}
 
 %build
 #Remove OLD config.sub
@@ -277,10 +284,7 @@ cd build_unix.static
 
 export CC="%{__cc}"
 export CXX="%{__cxx}"
-#CFLAGS="%{rpmcflags}"
-#CXXFLAGS="%{rpmcflags} -fno-implicit-templates"
-#LDFLAGS="%{rpmcflags} %{rpmldflags}"
-../dist/configure \
+../configure \
 	--disable-shared \
 	--enable-static \
 	--enable-compat185 \
@@ -296,9 +300,9 @@ export CXX="%{__cxx}"
 cd ..
 %endif
 
-cd build_unix
-
-../dist/configure \
+mkdir dist/dist-tls
+cd dist/dist-tls
+../configure -C \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
 	--enable-shared \
@@ -315,11 +319,17 @@ cd build_unix
 	%{?with_java:--enable-java} \
 	%{?with_tcl:--enable-tcl --with-tcl=/usr/lib}
 
-%{__make} library_build \
-	TCFLAGS='-I$(builddir) -I%{_includedir}' \
-	LIBSO_LIBS="\$(LIBS)" \
-	LIBTSO_LIBS="\$(LIBS) -ltcl"
+# Remove libtool predep_objects and postdep_objects wonkiness so that
+# building without -nostdlib doesn't include them twice.  Because we
+# already link with g++, weird stuff happens if you don't let the
+# compiler handle this.
+perl -pi -e 's/^predep_objects=".*$/predep_objects=""/' libtool
+perl -pi -e 's/^postdep_objects=".*$/postdep_objects=""/' libtool
+perl -pi -e 's/-shared -nostdlib/-shared/' libtool
 
+make %{?_smp_mflags}
+
+cd ../../
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_includedir},%{_libdir},%{_bindir}}
@@ -327,18 +337,16 @@ install -d $RPM_BUILD_ROOT{%{_includedir},%{_libdir},%{_bindir}}
 install -d $RPM_BUILD_ROOT%{_javadir}
 %endif
 
+mkdir -p ${RPM_BUILD_ROOT}%{_includedir}
+mkdir -p ${RPM_BUILD_ROOT}%{_libdir}
+
+%makeinstall STRIP=/bin/true -C dist/dist-tls
+
 %if %{with static_libs}
 %{__make} -C build_unix.static library_install \
 	DESTDIR=$RPM_BUILD_ROOT \
-	docdir=%{_docdir}/db-%{version}-docs \
 	includedir=%{_includedir}
 %endif
-
-%{__make} -C build_unix library_install \
-	DESTDIR=$RPM_BUILD_ROOT \
-	LIB_INSTALL_FILE_LIST="" \
-	docdir=%{_docdir}/db-%{version}-docs \
-	includedir=%{_includedir}
 
 %if %{with rpm_db}
 install -d $RPM_BUILD_ROOT/%{_lib}
@@ -394,7 +402,6 @@ ln -sf libdb_cxx-%{libver}.a libdb_cxx.a
 %{__rm} libdb_tcl-%{major}.so
 %endif
 %endif
-
 sed -i "s/old_library=''/old_library='libdb-%{libver}.a'/" libdb-%{libver}.la
 sed -i "s/old_library=''/old_library='libdb_cxx-%{libver}.a'/" libdb_cxx-%{libver}.la
 
@@ -410,22 +417,10 @@ for F in db_*; do
 done
 cd -
 
-install -d $RPM_BUILD_ROOT%{_examplesdir}/db-%{version}
-cp -a examples/c/* $RPM_BUILD_ROOT%{_examplesdir}/db-%{version}
-
-install -d $RPM_BUILD_ROOT%{_examplesdir}/db-cxx-%{version}
-cp -a examples/cxx/* $RPM_BUILD_ROOT%{_examplesdir}/db-cxx-%{version}
-
-%if %{with java}
-install -d $RPM_BUILD_ROOT%{_examplesdir}/db-java-%{version}
-cp -a examples/java/* $RPM_BUILD_ROOT%{_examplesdir}/db-java-%{version}
-%endif
-
-# in %doc
-#%{__rm} $RPM_BUILD_ROOT%{_docdir}/db-%{version}-docs/{index.html,license/license_db.html}
-
-# don't have csharp subpackages yet
-%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/db-%{version}-docs/csharp
+# Eliminate installed doco
+rm -rf ${RPM_BUILD_ROOT}%{_prefix}/docs
+rm -rf docs/installation
+mv examples docs
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -447,7 +442,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-#%doc LICENSE README docs/index.html docs/license
+%doc LICENSE README docs/index.html docs/license
 %if %{with rpm_db}
 %attr(755,root,root) /%{_lib}/libdb-%{libver}.so
 %else
@@ -473,21 +468,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %{_includedir}/db.h
 %{_includedir}/db_185.h
-#%dir %{_docdir}/db-%{version}-docs
-#%dir %{_docdir}/db-%{version}-docs/api_reference
-#%{_docdir}/db-%{version}-docs/api_reference/C
-#%{_docdir}/db-%{version}-docs/articles
-#%dir %{_docdir}/db-%{version}-docs/gsg
-#%{_docdir}/db-%{version}-docs/gsg/C
-#%dir %{_docdir}/db-%{version}-docs/gsg_txn
-#%{_docdir}/db-%{version}-docs/gsg_txn/C
-#%dir %{_docdir}/db-%{version}-docs/gsg_db_rep
-#%{_docdir}/db-%{version}-docs/gsg_db_rep/C
-#%{_docdir}/db-%{version}-docs/installation
-#%{_docdir}/db-%{version}-docs/porting
-#%{_docdir}/db-%{version}-docs/programmer_reference
-#%{_docdir}/db-%{version}-docs/upgrading
-%{_examplesdir}/db-%{version}
+
+%files devel-doc
+%defattr(-,root,root,-)
+%doc docs/*
 
 %if %{with static_libs}
 %files static
@@ -512,12 +496,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libdb_cxx.la
 %endif
 %{_includedir}/db_cxx.h
-#%{_docdir}/db-%{version}-docs/api_reference/CXX
-#%{_docdir}/db-%{version}-docs/api_reference/STL
-#%{_docdir}/db-%{version}-docs/gsg/CXX
-#%{_docdir}/db-%{version}-docs/gsg_txn/CXX
-#%{_docdir}/db-%{version}-docs/gsg_db_rep/CXX
-%{_examplesdir}/db-cxx-%{version}
 
 %if %{with static_libs}
 %files cxx-static
@@ -546,12 +524,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libdb_java-%{major}.so
 %{_libdir}/libdb_java.la
 %endif
-#%{_docdir}/db-%{version}-docs/collections
-#%{_docdir}/db-%{version}-docs/gsg/JAVA
-#%{_docdir}/db-%{version}-docs/gsg_txn/JAVA
-#%{_docdir}/db-%{version}-docs/gsg_db_rep/JAVA
-#%{_docdir}/db-%{version}-docs/java
-%{_examplesdir}/db-java-%{version}
 %endif
 
 %if %{with tcl}
@@ -567,7 +539,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libdb_tcl-%{major}.so
 %{_libdir}/libdb_tcl.la
 %endif
-#%{_docdir}/db-%{version}-docs/api_reference/TCL
 %endif
 
 %files sql
@@ -589,7 +560,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libdb_sql-%{major}.so
 %endif
 %{_includedir}/dbsql.h
-#%{_docdir}/db-%{version}-docs/bdb-sql
 
 %files stl
 %defattr(644,root,root,755)
@@ -664,3 +634,5 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Dec 02 2015 JMiahMan - 5.3-1
+- Initial build for Unity-Linux
