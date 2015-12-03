@@ -231,7 +231,7 @@ echo %{version} > gcc/BASE-VER
 rm -rf obj-%_target_platform
 mkdir obj-%_target_platform
 cd obj-%_target_platform
-
+export LD_LIBRARY_PATH="%_lib:$LD_LIBRARY_PATH"
 #Alpine
 	../configure --prefix=/usr \
 		--mandir=/usr/share/man \
@@ -240,11 +240,12 @@ cd obj-%_target_platform
 		--host=%_target_platform \
 		--target=%_target_platform \
 		--libdir=%{_libdir} \
+		--with-slibdir=%{_lib} \
 		--with-pkgversion="Unity Linux GCC %{version}" \
 		--enable-checking=release \
 		--disable-fixed-point \
 		--disable-libstdcxx-pch \
-		--enable-multilib \
+		--disable-multilib \
 		--disable-nls \
 		--disable-werror \
 		--enable-__cxa_atexit \
@@ -310,7 +311,10 @@ rm -rf %buildroot
 %__make -C obj-%_target_platform DESTDIR=%buildroot install
 
 # Relocate libgcc shared library from %_libdir/ to /%_lib/.
+if [[ ! -e %buildroot/%_lib ]]; then
 mkdir %buildroot/%_lib
+fi
+
 ln -s ../../../../../%_libdir/libgcc_s.so.1 \
 	%buildroot%_libdir/gcc/%_target_platform/%version/libgcc_s.so
 #mesut
