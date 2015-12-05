@@ -9,9 +9,9 @@ Unity Linux itself is not meant to be ran as a full on Linux install, though it 
 
 ##Status
 
-Currently Unity Linux is in it's very early stages. We have core packages that are hosted on GitHub. Key packages to take note of would be: MUSL, OpenRC, BusyBox, RPM5, and YUM. At this point we do offer development ISOs that can be ran “live”, but not currently installed easily.
+Currently Unity Linux is in its very early stages. We have core packages that are hosted on GitHub. Key packages to take note of would be: MUSL, OpenRC, BusyBox, RPM, and Yum. At this point we do offer development ISOs that can be ran “live”, but not currently installed easily.
 
 ##Useful Links
-Website: http://unity-linux.org  
-Wiki: http://wiki.unity-linux.org  
-Webchat: http://webchat.freenode.net/?channels=unitylinux  
+Website: http://unity-linux.org
+Wiki: http://wiki.unity-linux.org
+Webchat: http://webchat.freenode.net/?channels=unitylinux
