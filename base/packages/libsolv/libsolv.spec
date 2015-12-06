@@ -1,3 +1,6 @@
+%global _arch %(uname -m)
+%define _target_platform %{_arch}-unity-linux-musl
+%define _libdir /usr/lib64
 %{!?python_sitelib: %global python_sitelib %(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 %global gitrev 1f9abfb5b1bb18a8f46887fa2541957e74132567
@@ -17,7 +20,7 @@
 
 Name:		libsolv
 Version:	0.6.14
-Release:	1%{?dist}
+Release:	0%{?dist}
 License:	BSD
 Url:		https://github.com/openSUSE/libsolv
 Source0:	https://github.com/openSUSE/libsolv/archive/%{version}/%{name}-%{version}.tar.gz
@@ -26,7 +29,6 @@ Summary:	Package dependency solver
 BuildRequires:	cmake expat-devel rpm-devel zlib-devel
 BuildRequires:	perl python-devel
 BuildRequires:  xz-devel
-#BuildRequires:  swig
 
 Patch0:		libsolv-add-portable-fopencookie.patch
 

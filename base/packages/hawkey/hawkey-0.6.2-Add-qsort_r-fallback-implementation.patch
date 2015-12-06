@@ -1,20 +1,21 @@
-From 6ee8dff755175f21b5e77f8d95c905ffd7b90bc2 Mon Sep 17 00:00:00 2001
+From 859caab06cdc6c6bdbfeec89e251c9c8a88c400a Mon Sep 17 00:00:00 2001
 From: Neal Gompa (ニール・ゴンパ) <ngompa13@gmail.com>
 Date: Wed, 2 Dec 2015 08:21:23 -0500
 Subject: [PATCH] Add qsort_r fallback implementation
 
 ---
- src/CMakeLists.txt |   6 ++
+ src/CMakeLists.txt |   7 ++
  src/goal.c         |   8 +++
  src/qsort_r.c      | 183 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 197 insertions(+)
+ 3 files changed, 198 insertions(+)
  create mode 100644 src/qsort_r.c
 
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 6029c01..be6055f 100644
+index 6029c01..ec7b7a5 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -1,3 +1,9 @@
+@@ -1,3 +1,10 @@
++INCLUDE (CheckFunctionExists)
 +CHECK_FUNCTION_EXISTS (qsort_r HAVE_QSORT_R)
 +
 +IF (HAVE_QSORT_R)
@@ -241,5 +242,5 @@ index 0000000..7f597ae
 +/*		qsort(pn - r, r / es, es, cmp);*/
 +}
 -- 
-2.4.9
+2.4.9 (Apple Git-60)
 

@@ -12,7 +12,7 @@
 %define with_musl 1
 %define gcc_stage 3
 
-%define _gcclibdir %{_libdir}/gcc/%_target_platform/%{version}
+%define _gcclibdir %{_libdir}/gcc/%{_target_platform}/%{version}
 
 #%define _languages 'c,c++,fortran,objc'
 %define _languages 'c,c++'
@@ -20,7 +20,7 @@
 Summary:	C compiler from the GNU Compiler Collection.
 Name:		gcc
 Version:	5.1.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:	GPLv3+
 Group:		Development/Languages
 URL:		http://gcc.gnu.org
@@ -144,9 +144,6 @@ Group: Development/Libraries
 Header files and libraries needed for C++ development.
 %endif
 
-####################################################################
-# OpenMP library
-
 %package -n libgomp%gcc_branch
 Summary: GCC OpenMP shared support library.
 Group: System/Libraries
@@ -160,6 +157,119 @@ Group: Development/Libraries
 
 %description -n libgomp%gcc_branch-devel
 This package contains GCC OpenMP headers and library.
+
+%package -n libatomic
+Summary: The GNU Atomic library
+Group: System Environment/Libraries
+
+%description -n libatomic
+This package contains the GNU Atomic library
+which is a GCC support runtime library for atomic operations not supported
+by hardware.
+
+%package -n libatomic-static
+Summary: The GNU Atomic static library
+Group: Development/Libraries
+Requires: libatomic = %{version}-%{release}
+
+%description -n libatomic-static
+This package contains GNU Atomic static libraries.
+
+%package -n libatomic-devel
+Summary: The GNU Atomic library
+Group: Development/Libraries
+Requires: gcc = %{version}-%{release}
+
+%description -n libatomic-devel
+This package contains support files for the
+GNU Atomic library
+
+%package -n libquadmath
+Summary: GCC __float128 shared support library
+Group: System Environment/Libraries
+
+%description -n libquadmath
+This package contains GCC shared support library which is needed
+for __float128 math support and for Fortran REAL*16 support.
+
+%package -n libquadmath-devel
+Summary: GCC __float128 support
+Group: Development/Libraries
+Requires: libquadmath = %{version}-%{release}
+Requires: gcc = %{version}-%{release}
+
+%description -n libquadmath-devel
+This package contains headers for building Fortran programs using
+REAL*16 and programs using __float128 math.
+
+%package -n libquadmath-static
+Summary: Static libraries for __float128 support
+Group: Development/Libraries
+Requires: libquadmath-devel = %{version}-%{release}
+
+%description -n libquadmath-static
+This package contains static libraries for building Fortran programs
+using REAL*16 and programs using __float128 math.
+
+%package -n libitm
+Summary: The GNU Transactional Memory library
+Group: System Environment/Libraries
+
+%description -n libitm
+This package contains the GNU Transactional Memory library
+which is a GCC transactional memory support runtime library.
+
+%package -n libitm-devel
+Summary: The GNU Transactional Memory support
+Group: Development/Libraries
+Requires: libitm = %{version}-%{release}
+Requires: gcc = %{version}-%{release}
+
+%description -n libitm-devel
+This package contains headers and support files for the
+GNU Transactional Memory library.
+
+%package -n libitm-static
+Summary: The GNU Transactional Memory static library
+Group: Development/Libraries
+Requires: libitm-devel = %{version}-%{release}
+
+%description -n libitm-static
+This package contains GNU Transactional Memory static libraries.
+
+%package -n libcilkrts
+Summary: The Cilk+ runtime library
+Group: System Environment/Libraries
+
+%description -n libcilkrts
+This package contains the Cilk+ runtime library.
+
+%package -n libcilkrts-static
+Summary: The Cilk+ static runtime library
+Group: Development/Libraries
+Requires: libcilkrts = %{version}-%{release}
+
+%description -n libcilkrts-static
+This package contains the Cilk+ static runtime library.
+
+%package -n libcilkrts-devel
+Summary: The Cilk+ static runtime library support
+Group: Development/Libraries
+Requires: libcilkrts = %{version}-%{release}
+Requires: gcc = %{version}-%{release}
+
+%description -n libcilkrts-devel
+This package contains support files for
+the Cilk+ static runtime library.
+
+%package gdb-plugin
+Summary: GCC plugin for GDB
+Group: Development/Debuggers
+Requires: gcc = %{version}-%{release}
+
+%description gdb-plugin
+This package contains GCC plugin for GDB C expression evaluation.
+
 
 %prep
 %setup -q
@@ -228,19 +338,18 @@ sed -i gcc/Makefile.in -e 's|^build/genautomata$(build_exeext) .*|& -fno-PIC|'
 echo %{version} > gcc/BASE-VER
 
 # We will build this software outside source tree as recommended by INSTALL/*
-rm -rf obj-%_target_platform
-mkdir obj-%_target_platform
-cd obj-%_target_platform
-export LD_LIBRARY_PATH="%_lib:$LD_LIBRARY_PATH"
+rm -rf obj-%{_target_platform}
+mkdir obj-%{_target_platform}
+cd obj-%{_target_platform}
 #Alpine
 	../configure --prefix=/usr \
 		--mandir=/usr/share/man \
 		--infodir=/usr/share/info \
-		--build=%_target_platform \
-		--host=%_target_platform \
-		--target=%_target_platform \
+		--build=%{_target_platform} \
+		--host=%{_target_platform} \
+		--target=%{_target_platform} \
 		--libdir=%{_libdir} \
-		--with-slibdir=%{_lib} \
+		--with-slibdir=/%{_lib} \
 		--with-pkgversion="Unity Linux GCC %{version}" \
 		--enable-checking=release \
 		--disable-fixed-point \
@@ -306,57 +415,67 @@ find rpm-doc -type f \( -iname '*changelog*' -not -name '*.bz2' \) -print0 |
 	xargs -r0 bzip2 -9 --
 
 %install
-rm -rf %buildroot
+rm -rf %{buildroot}
 
-%__make -C obj-%_target_platform DESTDIR=%buildroot install
+%{__make} -C obj-%{_target_platform} DESTDIR=%{buildroot} install
 
-# Relocate libgcc shared library from %_libdir/ to /%_lib/.
-if [[ ! -e %buildroot/%_lib ]]; then
-mkdir %buildroot/%_lib
+# Relocate libgcc shared library from %{_libdir}/ to /%{_lib}/.
+if [[ ! -e %{buildroot}/%{_lib} ]]; then
+mkdir %{buildroot}/%{_lib}
 fi
 
-ln -s ../../../../../%_libdir/libgcc_s.so.1 \
-	%buildroot%_libdir/gcc/%_target_platform/%version/libgcc_s.so
+ln -s ../../../../../%{_libdir}/libgcc_s.so.1 \
+	%{buildroot}%{_libdir}/gcc/%{_target_platform}/%{version}/libgcc_s.so
 #mesut
-#rm %buildroot%_libdir/libgcc_s.so
+#rm %{buildroot}%{_libdir}/libgcc_s.so
 
 # Fix some things.
-ln -s gcc %buildroot%_bindir/cc
-echo ".so gcc.1" > %buildroot%_mandir/man1/cc.1
+ln -s gcc %{buildroot}%{_bindir}/cc
+echo ".so gcc.1" > %{buildroot}%{_mandir}/man1/cc.1
 
 #ln -s /gcc/liblto_plugin.so.0.0.0 \
-#	%buildroot/usr/libexec/gcc/%_target_platform/%version/liblto_plugin.so.0
+#	%{buildroot}/usr/libexec/gcc/%{_target_platform}/%{version}/liblto_plugin.so.0
 
 #ln -s /gcc/liblto_plugin.so.0.0.0 \
-#        %buildroot/usr/libexec/gcc/%_target_platform/%version/liblto_plugin.so
+#        %{buildroot}/usr/libexec/gcc/%{_target_platform}/%{version}/liblto_plugin.so
 
 %if %BUILD_GXX
-echo ".so g++.1" > %buildroot%_mandir/man1/c++.1
+echo ".so g++.1" > %{buildroot}%{_mandir}/man1/c++.1
 %endif
 
 # Remove unpackaged files
-rm %buildroot%_infodir/dir
-rm %buildroot%_infodir/gccinstall.info*
-#rm %buildroot%_libdir/libiberty.a
-rm -f %buildroot%_libdir/*.la
+rm %{buildroot}%{_infodir}/dir
+rm %{buildroot}%{_infodir}/gccinstall.info*
+#rm %{buildroot}%{_libdir}/libiberty.a
+rm -f %{buildroot}%{_libdir}/*.la
 
-install -m644 %{SOURCE1} %{buildroot}/%{_gcclibdir}/hardenednopie.specs
-install -m644 %{SOURCE2} %{buildroot}/%{_gcclibdir}/hardenednopiessp.specs
-install -m644 %{SOURCE3} %{buildroot}/%{_gcclibdir}/hardenednossp.specs
-install -m644 %{SOURCE4} %{buildroot}/%{_gcclibdir}/vanilla.specs
+#Do we need these?
+#install -m644 %{SOURCE1} %{buildroot}/%{_gcclibdir}/hardenednopie.specs
+#install -m644 %{SOURCE2} %{buildroot}/%{_gcclibdir}/hardenednopiessp.specs
+#install -m644 %{SOURCE3} %{buildroot}/%{_gcclibdir}/hardenednossp.specs
+#install -m644 %{SOURCE4} %{buildroot}/%{_gcclibdir}/vanilla.specs
+
+# Remove binaries we will not be including, so that they don't end up in
+# gcc-debuginfo
+rm -f %{buildroot}%{_prefix}/bin/%{_target_platform}-gcc-ar || :
+rm -f %{buildroot}%{_prefix}/bin/%{_target_platform}-gcc-nm || :
+rm -f %{buildroot}%{_prefix}/bin/%{_target_platform}-gcc-ranlib || :
+rm -f %{buildroot}%{_libdir}/libvtv* || :
+rm -rf %{buildroot}%{_prefix}/libexec/gcc/%{_target_platform}/%{version}/install-tools
+
+find %{buildroot} -name \*.la | xargs rm -f
 
 %post
-/usr/bin/install-info --info-dir=%_infodir %_infodir/gcc.info
-usr//bin/install-info --info-dir=%_infodir %_infodir/gccint.info
-%_libdir/gcc/%_target_platform/%version/install-tools/mkheaders
-chmod -R go+rX %_libdir/gcc/%_target_platform/%version/include/*
+/usr/bin/install-info --info-dir=%{_infodir} %{_infodir}/gcc.info
+/usr/bin/install-info --info-dir=%{_infodir} %{_infodir}/gccint.info
+chmod -R go+rX %{_libdir}/gcc/%{_target_platform}/%{version}/include/*
 
 %preun
 if [ $1 -eq 0 ]; then
-	/usr/bin/install-info --delete --info-dir=%_infodir %_infodir/gccint.info
-	/usr/bin/install-info --delete --info-dir=%_infodir %_infodir/gcc.info
-	if [ -d %_libdir/gcc/%_target_platform/%version/include ]; then
-		rm -rf %_libdir/gcc/%_target_platform/%version/include/*
+	/usr/bin/install-info --delete --info-dir=%{_infodir} %{_infodir}/gccint.info
+	/usr/bin/install-info --delete --info-dir=%{_infodir} %{_infodir}/gcc.info
+	if [ -d %{_libdir}/gcc/%{_target_platform}/%{version}/include ]; then
+		rm -rf %{_libdir}/gcc/%{_target_platform}/%{version}/include/*
 	fi
 fi
 
@@ -364,13 +483,13 @@ fi
 %postun -n libgcc -p /sbin/ldconfig
 
 %post -n cpp
-/usr/bin/install-info --info-dir=%_infodir %_infodir/cpp.info
-/usr/bin/install-info --info-dir=%_infodir %_infodir/cppinternals.info
+/usr/bin/install-info --info-dir=%{_infodir} %{_infodir}/cpp.info
+/usr/bin/install-info --info-dir=%{_infodir} %{_infodir}/cppinternals.info
 
 %preun -n cpp
 if [ $1 -eq 0 ]; then
-	/usr/bin/install-info --delete --info-dir=%_infodir %_infodir/cppinternals.info
-	/usr/bin/install-info --delete --info-dir=%_infodir %_infodir/cpp.info
+	/usr/bin/install-info --delete --info-dir=%{_infodir} %{_infodir}/cppinternals.info
+	/usr/bin/install-info --delete --info-dir=%{_infodir} %{_infodir}/cpp.info
 fi
 
 %if %BUILD_GXX
@@ -380,108 +499,173 @@ fi
 
 %files 
 %defattr(-,root,root)
-%_bindir/cc
-%_bindir/gcc
-%_bindir/gcov
-%_bindir/%_target_platform-gcc
-%_bindir/%_target_platform-gcc-%version
-%_infodir/gcc.info*
-%_infodir/gccint.info*
-%dir %_libdir/gcc
-%dir %_libdir/gcc/%_target_platform
-%dir %_libdir/gcc/%_target_platform/%version
+%{_bindir}/cc
+%{_bindir}/gcc
+%{_bindir}/gcov
+%{_bindir}/gcov-tool
+%{_bindir}/gcc-ar
+%{_bindir}/gcc-nm
+%{_bindir}/gcc-ranlib
+%{_bindir}/%{_target_platform}-gcc
+%{_bindir}/%{_target_platform}-gcc-%{version}
+%{_infodir}/gcc.info*
+%{_infodir}/gccint.info*
+%dir %{_libdir}/gcc
+%dir %{_libdir}/gcc/%{_target_platform}
+%dir %{_libdir}/gcc/%{_target_platform}/%{version}
 %dir /usr/libexec/gcc
-%dir /usr/libexec/gcc/%_target_platform
-/usr/libexec/gcc/%_target_platform/%version/cc1
-/usr/libexec/gcc/%_target_platform/%version/collect2
+%dir /usr/libexec/gcc/%{_target_platform}
+/usr/libexec/gcc/%{_target_platform}/%{version}/cc1
+/usr/libexec/gcc/%{_target_platform}/%{version}/collect2
 %dir /usr/libexec/gcc/%{_target_platform}/5.1.0
-%_libdir/gcc/%_target_platform/%version/crt*.o
-%_libdir/gcc/%_target_platform/%version/libgcc*.a
-%_libdir/gcc/%_target_platform/%version/libgcc*.so
-%_libdir/gcc/%_target_platform/%version/libgcov*.a
+%{_libdir}/gcc/%{_target_platform}/%{version}/crt*.o
+%{_libdir}/gcc/%{_target_platform}/%{version}/libgcc*.a
+%{_libdir}/gcc/%{_target_platform}/%{version}/libgcc*.so
+%{_libdir}/gcc/%{_target_platform}/%{version}/libgcov*.a
 
-%_libdir/gcc/%_target_platform/%version/include
+%{_libdir}/gcc/%{_target_platform}/%{version}/include
 
-%_libdir/gcc/%_target_platform/%version/include-fixed
-%_libdir/gcc/%_target_platform/%version/install-tools
+%{_libdir}/gcc/%{_target_platform}/%{version}/include-fixed
+%{_libdir}/gcc/%{_target_platform}/%{version}/install-tools
 
-%_mandir/man1/cc.1*
-%_mandir/man1/gcc.1*
-%_mandir/man1/gcov.1*
-%_mandir/man7/fsf-funding.7*
-%_mandir/man7/gfdl.7*
-%_mandir/man7/gpl.7*
+%{_mandir}/man1/cc.1*
+%{_mandir}/man1/gcc.1*
+%{_mandir}/man1/gcov.1*
+%{_mandir}/man7/fsf-funding.7*
+%{_mandir}/man7/gfdl.7*
+%{_mandir}/man7/gpl.7*
 %doc rpm-doc/gcc/*
 
-/usr/libexec/gcc/%_target_platform/%version/lto1
-/usr/libexec/gcc/%_target_platform/%version/lto-wrapper
-#%exclude %_libdir/gcc/%_target_platform/%version/*.la
-/usr/libexec/gcc/%_target_platform/%version/liblto_plugin.so.0.0.0
-/usr/libexec/gcc/%_target_platform/%version/liblto_plugin.so.0
-/usr/libexec/gcc/%_target_platform/%version/liblto_plugin.so
+/usr/libexec/gcc/%{_target_platform}/%{version}/lto1
+/usr/libexec/gcc/%{_target_platform}/%{version}/lto-wrapper
+#%exclude %{_libdir}/gcc/%{_target_platform}/%{version}/*.la
+/usr/libexec/gcc/%{_target_platform}/%{version}/liblto_plugin.so.*
+/usr/libexec/gcc/%{_target_platform}/%{version}/liblto_plugin.so
+
+%files -n libatomic
+%defattr(-,root,root,-)
+%{_prefix}/%{_lib}/libatomic.so.1*
+
+%files -n libatomic-static
+%defattr(-,root,root,-)
+%{_libdir}/libatomic.a
+%{_libdir}/libatomic.so
+
+%files -n libatomic-devel
+%defattr(-,root,root,-)
+%{_libdir}/libatomic.so
 
 %files -n cpp
 %defattr(-,root,root)
-%_bindir/cpp
-%_infodir/cpp.info*
-%_infodir/cppinternals.info*
-%dir %_libdir/gcc
-%dir %_libdir/gcc/%_target_platform
-%_mandir/man1/cpp.1*
+%{_bindir}/cpp
+%{_infodir}/cpp.info*
+%{_infodir}/cppinternals.info*
+%dir %{_libdir}/gcc
+%dir %{_libdir}/gcc/%{_target_platform}
+%{_mandir}/man1/cpp.1*
 
 %files -n libgcc
 %defattr(-,root,root)
-/%_lib/libgcc*.so.*
-%_libdir/libquadmath.so.*
+/%{_lib}/libgcc*.so*
 
 %if %BUILD_GXX
 %files c++
 %defattr(-,root,root)
-%_bindir/?++
-%_bindir/%_target_platform-?++
-%dir %_libdir/gcc
-%dir %_libdir/gcc/%_target_platform
-/usr/libexec/gcc/%_target_platform/%version/cc1plus
-%_mandir/man1/?++.1*
+%{_bindir}/?++
+%{_bindir}/%{_target_platform}-?++
+%dir %{_libdir}/gcc
+%dir %{_libdir}/gcc/%{_target_platform}
+/usr/libexec/gcc/%{_target_platform}/%{version}/cc1plus
+%{_mandir}/man1/?++.1*
 %doc rpm-doc/g++/*
 
 %files -n libstdc++
 %defattr(-,root,root)
-%_libdir/libstdc++.so.6*
+%{_libdir}/libstdc++.so.6*
 %doc rpm-doc/libstdc++/*
 %doc libstdc++-v3/doc/html
-%exclude %_datadir/gcc-%version/python
+%exclude %{_datadir}/gcc-%{version}/python
 
 %files -n libstdc++-devel
 %defattr(-,root,root)
-%dir %_includedir/c++
-%_includedir/c++/%version
-%_libdir/libs*++.a
-%_libdir/libstdc++.so
+%dir %{_includedir}/c++
+%{_includedir}/c++/%{version}
+%{_libdir}/libs*++.a
+%{_libdir}/libstdc++.so
 %endif
 
 %files -n libgcc%gcc_branch-plugin-devel
 %defattr(-,root,root)
-%_libdir/gcc/%_target_platform/%version/plugin
-#%_infodir/libquadmath.info*
-%_libdir/libquadmath.a
+%dir %{_libdir}/gcc/%{_target_platform}/%{version}/plugin
 
 %files -n libgomp%gcc_branch
 %defattr(-,root,root)
-%_libdir/libgomp.so.*
+%{_libdir}/libgomp.so.*
+%{_libdir}/libgomp.so.1*
+%{_libdir}/libgomp.so.1*
+%{_libdir}/libgomp-plugin-host_nonshm.so.1*
 
 %files -n libgomp%gcc_branch-devel
 %defattr(-,root,root)
-%dir %_libdir/gcc/%_target_platform/%version
-%dir %_libdir/gcc/%_target_platform/%version/include
-%_libdir/gcc/%_target_platform/%version/plugin
-%_libdir/gcc/%_target_platform/%version/include/omp.h
-%dir %_libdir/gcc/%_target_platform/%version
-#%_infodir/libgomp*.info*
-%_libdir/libgomp.a
-%_libdir/libgomp.so
-%_libdir/libgomp.spec
+%dir %{_libdir}/gcc/%{_target_platform}/%{version}
+%dir %{_libdir}/gcc/%{_target_platform}/%{version}/include
+%{_libdir}/gcc/%{_target_platform}/%{version}/plugin
+/usr/libexec/gcc/%{_target_platform}/%{version}/plugin/gengtype
+%{_libdir}/gcc/%{_target_platform}/%{version}/include/omp.h
+%dir %{_libdir}/gcc/%{_target_platform}/%{version}
+%{_libdir}/libgomp-plugin-host_nonshm.so
+%{_infodir}/libgomp*.info*
+%{_libdir}/libgomp.a
+%{_libdir}/libgomp.so
+%{_libdir}/libgomp.spec
+
+%files -n libquadmath
+%defattr(-,root,root,-)
+%{_libdir}/libquadmath.so.0*
+%{_infodir}/libquadmath.info*
+
+%files -n libquadmath-devel
+%defattr(-,root,root,-)
+%{_libdir}/libquadmath.so
+
+%files -n libquadmath-static
+%defattr(-,root,root,-)
+%{_libdir}/libquadmath.a
+
+%files -n libitm
+%defattr(-,root,root,-)
+%{_libdir}/libitm.so.1*
+%{_infodir}/libitm.info*
+
+%files -n libitm-devel
+%defattr(-,root,root,-)
+%{_libdir}/libitm.so
+%{_libdir}/libitm.spec
+
+%files -n libitm-static
+%defattr(-,root,root,-)
+%{_libdir}/libitm.a
+
+%files -n libcilkrts
+%defattr(-,root,root,-)
+%{_libdir}/libcilkrts.so.5*
+
+%files -n libcilkrts-static
+%defattr(-,root,root,-)
+%{_libdir}/libcilkrts.a
+
+%files -n libcilkrts-devel
+%defattr(-,root,root,-)
+%{_libdir}/libcilkrts.so
+%{_libdir}/libcilkrts.spec
+
+%files gdb-plugin
+%defattr(-,root,root,-)
+%{_prefix}/%{_lib}/libcc1.so*
 
 %changelog
+* Thu Dec 03 2015 JMiahMan <JMiahMan@unity-linux.org>  5.1.0-2
+- Update spec to build with rpm4
+
 * Mon Nov 30 2015 JMiahMan <JMiahMan@unity-linux.org>  5.1.0-1
 - Initial Release for Unity-Linux

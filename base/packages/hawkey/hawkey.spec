@@ -1,3 +1,7 @@
+%global _arch %(uname -m)
+%define _target_platform %{_arch}-unity-linux-musl
+%define _libdir /usr/lib64
+
 %global libsolv_version 0.6.4-1
 
 Name:		hawkey
@@ -66,8 +70,6 @@ make doc-man
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
 mkdir -p %{buildroot}%{_libdir}/
-mv %{buildroot}/usr/lib64/* %{buildroot}/usr/lib/
-rm -rf %{buildroot}/usr/lib64
 
 %post -p /sbin/ldconfig
 
@@ -81,7 +83,7 @@ rm -rf %{buildroot}/usr/lib64
 %{_libdir}/libhawkey.so
 %{_libdir}/pkgconfig/hawkey.pc
 %{_includedir}/hawkey/
-#%{_mandir}/man3/hawkey.3.gz
+%{_mandir}/man3/hawkey.3*
 
 %files -n python-hawkey
 %{python_sitearch}/
