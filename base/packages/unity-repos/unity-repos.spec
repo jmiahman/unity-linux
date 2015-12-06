@@ -1,6 +1,6 @@
 Summary:        unity package repositories
 Name:           unity-repos
-Version:        0.4
+Version:        0.5
 Release:        1
 License:        MIT
 Group:          System Environment/Base
@@ -45,14 +45,17 @@ install -d -m 755 $RPM_BUILD_ROOT/etc/yum/repos.d/
 #  install -m 644 $file $RPM_BUILD_ROOT/etc/yum/repos.d/
 #done
 
-install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/etc/yum/repos.d/
+install -m 644 %{SOURCE0} $RPM_BUILD_ROOT/etc/yum.repos.d/
 
 %files
 %defattr(-,root,root,-)
 %dir /etc/yum/repos.d/
-%config(noreplace) /etc/yum/repos.d/unity.repo
-#%config(noreplace) /etc/yum.repos.d/unity-updates*.repo
+%config(noreplace) /etc/yum.repos.d/unity*.repo
 #%dir /etc/pki/rpm-gpg
 #/etc/pki/rpm-gpg/*
 
 %changelog
+* Sun Dec 06 2015 JMiahMan <JMiahMan@unity-linux.org> - 0.5-1
+- Initial build for Unity-Linux
+
+
