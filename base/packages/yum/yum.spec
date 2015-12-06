@@ -26,10 +26,7 @@ Group: System Environment/Base
 Source0: http://yum.baseurl.org/download/3.4/%{name}-%{version}.tar.gz
 Source1: yum.conf
 #Source2: yum-updatesd.conf.fedora
-Patch0:	rpm5.patch
-Patch1: %{name}-pld.patch
-Patch3: rpm5-yum.patch
-Patch4: yum_ok_newline.patch
+Patch1: yum_ok_newline.patch
 
 URL: http://yum.baseurl.org/
 BuildArchitectures: noarch
@@ -141,10 +138,7 @@ This runs after yum-cron-daily, if that is installed.
 
 %prep
 %setup -q
-#%patch0 -p1
 %patch1 -p1
-#%patch3 -p1
-%patch4 -p1
 
 %build
 sed -i 's!rpmUtils yum etc docs po!rpmUtils yum etc docs!g' Makefile

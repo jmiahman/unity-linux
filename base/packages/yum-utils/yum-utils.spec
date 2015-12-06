@@ -18,7 +18,6 @@ Source0:	http://yum.baseurl.org/download/yum-utils/%{name}-%{version}.tar.gz
 # Source0-md5:	b2859b89321b98f2581243536e1b4993
 Source1:	yum-plugin-unity-kernel.py
 Source2:	yum-plugin-unity-kernel.conf
-Patch0:		rpm5.patch
 URL:		http://yum.baseurl.org/download/yum-utils/
 BuildRequires:	gettext
 #BuildRequires:	rpm-pythonprov
@@ -384,7 +383,6 @@ packages (and if they need rebooting, or have updates, etc.)
 
 %prep
 %setup -q
-%patch0 -p1
 
 mv plugins/README README.plugins
 
