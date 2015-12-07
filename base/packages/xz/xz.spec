@@ -1,3 +1,8 @@
+%global _arch %(uname -m)
+%define _target_platform %{_arch}-unity-linux-musl
+%define _libdir /usr/lib64
+%define _lib /lib64
+
 Name:		xz	
 Version:	5.2.1
 Release:	1%{?dist}
@@ -48,6 +53,8 @@ Development libraries for decoding files compressed with LZMA or XZ utils.
 	--prefix=/usr \
 	--disable-rpath \
 	--disable-werror \
+	--libdir=%{_libdir} \
+	--disable-static 
 
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
@@ -56,10 +63,13 @@ make %{?_smp_mflags}
 
 
 %install
+rm -rf %{buildroot}
 make DESTDIR=%{buildroot} install
-
+rm -rf %{buildroot}/%{_libdir}/*.la
 
 %files
+%doc AUTHORS COPYING COPYING.GPLv2 NEWS README THANKS TODO
+
 %{_bindir}/lzdiff
 %{_bindir}/xzegrep
 %{_bindir}/lzless
@@ -83,6 +93,8 @@ make DESTDIR=%{buildroot} install
 %{_bindir}/xzdec
 %{_bindir}/lzma
 %{_bindir}/lzmore
+%{_datadir}/locale/*/LC_MESSAGES/*.mo
+%{_mandir}/man*/*.*
 
 %files libs
 %{_libdir}/liblzma.so.5
@@ -94,5 +106,9 @@ make DESTDIR=%{buildroot} install
 %dir %{_includedir}/lzma
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/liblzma.pc
+%{_docdir}/xz/
 
 %changelog
+* Mon Dec 07 2015 JMiahMan <JMiahMan@unity-linux.com> - 5.2.1-1
+- Rebuild for rpm4
+
