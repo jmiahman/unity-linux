@@ -10,9 +10,8 @@ Release:	0
 License:	BSD-like
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/libtirpc/%{name}-%{version}.tar.bz2
-# Source0-md5:	373d5ad46b1d19759ec763a9f0afcf4d
-Patch0:		Disable-parts-of-TIRPC-requiring-NIS-support.patch
-Patch1:		Disable-DES-authentification-support.patch
+Source1:	nis.h
+Patch0:		musl-fixes.patch
 
 URL:		http://sourceforge.net/projects/libtirpc/
 BuildRequires:	autoconf >= 2.50
@@ -20,7 +19,6 @@ BuildRequires:	automake
 BuildRequires:	musl-devel
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
-#Requires:	heimdal-libs
 Requires:	musl
 
 %description
@@ -57,9 +55,10 @@ This package includes static TI-RPC library.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
+mkdir src/rpcsvc
+cp %{SOURCE1} src/rpcsvc/
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
@@ -67,7 +66,8 @@ This package includes static TI-RPC library.
 %configure \
 	--disable-silent-rules \
 	--disable-gssapi \
-	--disable-static
+	--disable-static \
+	--sysconf=/etc
 
 %{__make}
 
@@ -91,7 +91,8 @@ ln -sf /%{_lib}/$(cd $RPM_BUILD_ROOT/%{_lib}; echo lib*.so.*.*) \
 	$RPM_BUILD_ROOT%{_libdir}/libtirpc.so
 
 # Provide rpc/rpc.h
-ln -sf %{_includedir}/tirpc/rpc/rpc.h $RPM_BUILD_ROOT%{_includedir}/rpc/rpc.h
+ln -sf %{_includedir}/tirpc/rpc/*.h $RPM_BUILD_ROOT%{_includedir}/rpc/
+ln -sf %{_includedir}/tirpc/netconfig.h $RPM_BUILD_ROOT%{_includedir}/
 
 # obsoleted by pkgconfig
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libtirpc.la
@@ -113,8 +114,9 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libtirpc.so
+%{_includedir}/netconfig.h
 %{_includedir}/tirpc
-%{_includedir}/rpc/rpc.h
+%{_includedir}/rpc
 %{_libdir}/pkgconfig/libtirpc.pc
 %{_mandir}/man3/bindresvport.3t*
 %{_mandir}/man3/des_crypt.3t*

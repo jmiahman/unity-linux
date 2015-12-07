@@ -1,3 +1,8 @@
+%global _arch %(uname -m)
+%define _target_platform %{_arch}-unity-linux-musl
+%define _libdir /usr/lib64
+%define _lib /lib64
+
 %define _sysconfdir /etc
 
 Summary:	Programs for dynamic creation of device nodes
@@ -41,7 +46,7 @@ automake --add-missing
 	--with-rootprefix= \
 	--with-rootrundir=/run \
 	--with-rootlibexecdir=/lib/udev \
-	--libdir=/usr/lib \
+	--libdir=%{_libdir} \
 	--enable-split-usr \
 	--enable-manpages \
 	--disable-hwdb \
@@ -87,13 +92,11 @@ install -m755 %{SOURCE2} %{buildroot}/etc/init.d/udev-postmount
 /lib/udev/collect
 /lib/udev/mtd_probe
 /lib/udev/rules.d/42-usb-hid-pm.rules
-#/lib/udev/rules.d/50-firmware.rules
 /lib/udev/rules.d/50-udev-default.rules
 /lib/udev/rules.d/60-cdrom_id.rules
 /lib/udev/rules.d/60-drm.rules
 /lib/udev/rules.d/60-persistent-alsa.rules
 /lib/udev/rules.d/60-persistent-input.rules
-#/lib/udev/rules.d/60-persistent-serial.rules
 /lib/udev/rules.d/60-persistent-storage-tape.rules
 /lib/udev/rules.d/60-persistent-storage.rules
 /lib/udev/rules.d/60-persistent-v4l.rules
@@ -101,11 +104,15 @@ install -m755 %{SOURCE2} %{buildroot}/etc/init.d/udev-postmount
 /lib/udev/rules.d/64-btrfs.rules
 /lib/udev/rules.d/75-net-description.rules
 /lib/udev/rules.d/75-probe_mtd.rules
-#/lib/udev/rules.d/75-tty-description.rules
 /lib/udev/rules.d/78-sound-card.rules
-#/lib/udev/rules.d/80-drivers-modprobe.rules
 /lib/udev/rules.d/80-net-name-slot.rules
-#/lib/udev/rules.d/95-udev-late.rules
+/lib/udev/rules.d/60-block.rules                                                                  
+/lib/udev/rules.d/60-evdev.rules                                            
+/lib/udev/rules.d/60-serial.rules                                                            
+/lib/udev/rules.d/70-mouse.rules                                       
+/lib/udev/rules.d/70-touchpad.rules                                   
+/lib/udev/rules.d/80-drivers.rules  
+
 /lib/udev/scsi_id
 /lib/udev/udevd
 /lib/udev/v4l_id
@@ -121,15 +128,18 @@ install -m755 %{SOURCE2} %{buildroot}/etc/init.d/udev-postmount
 /etc/udev/*
 %dir /etc/udev/hwdb.d
 %dir /%{_lib}/udev/rules.d
+%{_mandir}/man*/*                                                                   
 
 %files devel
 %{_libdir}/libudev.a
 %{_libdir}/libudev.so
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/libgudev-1.0.so
+%{_libdir}/libgudev-1.0.so.0
 %{_libdir}/libgudev-1.0.a
 %dir %{_datadir}/gir-1.0/
 %{_datadir}/gir-1.0/GUdev-1.0.gir
+%{_libdir}/girepository-1.0/GUdev-1.0.typelib
 %{_includedir}/*.h
 %dir %{_includedir}/gudev-1.0/
 %dir %{_includedir}/gudev-1.0/gudev/

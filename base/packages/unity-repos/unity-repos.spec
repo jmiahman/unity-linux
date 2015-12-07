@@ -40,7 +40,7 @@ cp %{SOURCE0} %{name}-%{version}
 #ln -s RPM-GPG-KEY-unity-%{version}-primary RPM-GPG-KEY-%{version}-unity
 #popd
 
-install -d -m 755 $RPM_BUILD_ROOT/etc/yum/repos.d/
+install -d -m 755 $RPM_BUILD_ROOT/etc/yum.repos.d/
 #for file in *.repo ; do
 #  install -m 644 $file $RPM_BUILD_ROOT/etc/yum/repos.d/
 #done

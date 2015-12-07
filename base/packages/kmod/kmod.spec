@@ -1,3 +1,8 @@
+%global _arch %(uname -m)
+%define _target_platform %{_arch}-unity-linux-musl
+%define _libdir /usr/lib64
+%define _lib /lib64
+
 %{!?python_sitearch: %global python_sitearch %(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 # - alias from /etc/modprobe.d/3.4.32.longterm-1/geninitrd.conf does not work for geninitrd
@@ -64,14 +69,14 @@ Requires:	%{name}-libs = %{version}-%{release}
 %description devel
 Header files for %{name} library.
 
-#%package -n bash-completion-kmod
-#Summary:	bash-completion for kmod utilities
-#Group:		Applications/Shells
-#Requires:	bash-completion >= 2.0
-#BuildArch:	noarch
+%package -n bash-completion-kmod
+Summary:	bash-completion for kmod utilities
+Group:		Applications/Shells
+Requires:	bash-completion >= 2.0
+BuildArch:	noarch
 
-#%description -n bash-completion-kmod
-#bash-completion for kmod utilities.
+%description -n bash-completion-kmod
+bash-completion for kmod utilities.
 
 %package -n python-kmod
 Summary:	Python binding for kmod API
@@ -108,7 +113,6 @@ automake
 	--disable-silent-rules \
 	--disable-test-modules \
 	--enable-python \
-	--with-rootlibdir=/%{_lib} \
 	--with-xz \
 	--with-zlib
 %{__make}
@@ -162,8 +166,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files libs
 %defattr(644,root,root,755)
-/%{_lib}/libkmod.so.*.*.*
-/%{_lib}/libkmod.so.2
+%{_libdir}/libkmod.so.*.*.*
+%{_libdir}/libkmod.so.2
 
 %files devel
 %defattr(644,root,root,755)
@@ -171,9 +175,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libkmod.h
 %{_libdir}/pkgconfig/*.pc
 
-#%files -n bash-completion-kmod
-#%defattr(644,root,root,755)
-#%{_datadir}/bash-completion/completions/kmod
+%files -n bash-completion-kmod
+%defattr(644,root,root,755)
+%{_datadir}/bash-completion/completions/kmod
 
 %files -n python-kmod
 %defattr(644,root,root,755)
@@ -194,4 +198,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/modinfo.8*                                                       
 %{_mandir}/man8/modprobe.8*                                                      
 %{_mandir}/man8/rmmod.8*
+
+%changelog
+* Sun Dec 06 2015 JMiahMan <JMiahMan@unity-linux.org> - 21-1
+- rebuilt
 
