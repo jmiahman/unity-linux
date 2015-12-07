@@ -1,6 +1,11 @@
+%global _arch %(uname -m)
+%define _target_platform %{_arch}-unity-linux-musl
+%define _libdir /usr/lib64
+%define _lib /lib64
+
 Name:		expat	
 Version:	2.1.0
-Release:	1%{?dist}
+Release:	0%{?dist}
 Summary:	An XML Parser library written in C
 
 Group:		System Environment/Libraries
@@ -34,7 +39,9 @@ to develop XML applications with expat.
 
 ./configure \
 	--prefix=/usr \
-	--mandir=/usr/share/man
+	--mandir=/usr/share/man \
+	--libdir=%{_libdir} \
+	--disable-static
 
 make %{?_smp_mflags}
 
@@ -42,11 +49,13 @@ make %{?_smp_mflags}
 %install
 %make_install
 
+rm -rf %{buildroot}/%{_libdir}/libexpat.la
 
 %files
 %{_bindir}/xmlwf
 %{_libdir}/libexpat.so.1
 %{_libdir}/libexpat.so.1.6.0
+%{_mandir}/man*/*.*
 
 %files devel
 %{_libdir}/lib*.so
