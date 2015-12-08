@@ -5,7 +5,7 @@
 
 Name:		expat	
 Version:	2.1.0
-Release:	0%{?dist}
+Release:	1%{?dist}
 Summary:	An XML Parser library written in C
 
 Group:		System Environment/Libraries
@@ -63,3 +63,6 @@ rm -rf %{buildroot}/%{_libdir}/libexpat.la
 %{_includedir}/*.h
 
 %changelog
+* Mon Dec 07 2015 JMiahMan <JMiahMan@unity-linux.org> - 2.1.0-1
+- Rebuild for rpm4
+

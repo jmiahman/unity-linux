@@ -1,3 +1,8 @@
+%global _arch %(uname -m)
+%define _target_platform %{_arch}-unity-linux-musl
+%define _libdir /usr/lib64
+%define _lib /lib64
+
 %define _target_platform %{_arch}-unity-linux-musl
 
 Name:		linux-pam	
@@ -51,15 +56,13 @@ and modules for use with the PAM system.
 
 
 %build
-
-
 sed -e 's/pam_rhosts//g' -i modules/Makefile.am
 autoreconf -vif
 ./configure \
 	--build=%{_target_platform} \
 	--host=%{_target_platform} \
 	--prefix=/usr \
-	--libdir=/lib \
+	--libdir=%{_libdir} \
 	--sysconfdir=/etc \
 	--mandir=/usr/share/man \
 	--infodir=/usr/share/info \
@@ -100,6 +103,7 @@ chgrp shadow %{buildroot}/sbin/unix_chkpwd \
 
 
 %files
+%{_mandir}/man*/*.*
 /etc/environment
 %dir /etc/security/
 /etc/security/pam_env.conf
@@ -116,53 +120,53 @@ chgrp shadow %{buildroot}/sbin/unix_chkpwd \
 /etc/pam.d/base-auth
 /etc/pam.d/base-password
 /etc/pam.d/base-session
-/lib/libpam.so.0
-/lib/libpamc.so.0
-/lib/libpamc.so.0.82.1
-/lib/libpam_misc.so.0
-/lib/libpam_misc.so.0.82.1
-/lib/libpam.so.0.84.1
-%dir /lib/security/
-/lib/security/pam_tally.so
-/lib/security/pam_mail.so
-/lib/security/pam_ftp.so
-/lib/security/pam_unix.so
-/lib/security/pam_motd.so
-/lib/security/pam_limits.so
-/lib/security/pam_namespace.so
-/lib/security/pam_echo.so
-/lib/security/pam_time.so
-%dir /lib/security/pam_filter
-/lib/security/pam_filter/upperLOWER
-/lib/security/pam_keyinit.so
-/lib/security/pam_debug.so
-/lib/security/pam_tally2.so
-/lib/security/pam_issue.so
-/lib/security/pam_loginuid.so
-/lib/security/pam_securetty.so
-/lib/security/pam_stress.so
-/lib/security/pam_wheel.so
-/lib/security/pam_rootok.so
-/lib/security/pam_warn.so
-/lib/security/pam_localuser.so
-/lib/security/pam_group.so
-/lib/security/pam_exec.so
-/lib/security/pam_timestamp.so
-/lib/security/pam_deny.so
-/lib/security/pam_umask.so
-/lib/security/pam_faildelay.so
-/lib/security/pam_env.so
-/lib/security/pam_xauth.so
-/lib/security/pam_filter.so
-/lib/security/pam_mkhomedir.so
-/lib/security/pam_lastlog.so
-/lib/security/pam_succeed_if.so
-/lib/security/pam_nologin.so
-/lib/security/pam_pwhistory.so
-/lib/security/pam_listfile.so
-/lib/security/pam_access.so
-/lib/security/pam_permit.so
-/lib/security/pam_shells.so
+%{_libdir}/libpam.so.0
+%{_libdir}/libpamc.so.0
+%{_libdir}/libpamc.so.0.82.1
+%{_libdir}/libpam_misc.so.0
+%{_libdir}/libpam_misc.so.0.82.1
+%{_libdir}/libpam.so.0.84.1
+%dir %{_libdir}/security/
+%{_libdir}/security/pam_tally.so
+%{_libdir}/security/pam_mail.so
+%{_libdir}/security/pam_ftp.so
+%{_libdir}/security/pam_unix.so
+%{_libdir}/security/pam_motd.so
+%{_libdir}/security/pam_limits.so
+%{_libdir}/security/pam_namespace.so
+%{_libdir}/security/pam_echo.so
+%{_libdir}/security/pam_time.so
+%dir %{_libdir}/security/pam_filter
+%{_libdir}/security/pam_filter/upperLOWER
+%{_libdir}/security/pam_keyinit.so
+%{_libdir}/security/pam_debug.so
+%{_libdir}/security/pam_tally2.so
+%{_libdir}/security/pam_issue.so
+%{_libdir}/security/pam_loginuid.so
+%{_libdir}/security/pam_securetty.so
+%{_libdir}/security/pam_stress.so
+%{_libdir}/security/pam_wheel.so
+%{_libdir}/security/pam_rootok.so
+%{_libdir}/security/pam_warn.so
+%{_libdir}/security/pam_localuser.so
+%{_libdir}/security/pam_group.so
+%{_libdir}/security/pam_exec.so
+%{_libdir}/security/pam_timestamp.so
+%{_libdir}/security/pam_deny.so
+%{_libdir}/security/pam_umask.so
+%{_libdir}/security/pam_faildelay.so
+%{_libdir}/security/pam_env.so
+%{_libdir}/security/pam_xauth.so
+%{_libdir}/security/pam_filter.so
+%{_libdir}/security/pam_mkhomedir.so
+%{_libdir}/security/pam_lastlog.so
+%{_libdir}/security/pam_succeed_if.so
+%{_libdir}/security/pam_nologin.so
+%{_libdir}/security/pam_pwhistory.so
+%{_libdir}/security/pam_listfile.so
+%{_libdir}/security/pam_access.so
+%{_libdir}/security/pam_permit.so
+%{_libdir}/security/pam_shells.so
 /sbin/mkhomedir_helper
 /sbin/pam_tally2
 /sbin/pam_timestamp_check
@@ -171,20 +175,21 @@ chgrp shadow %{buildroot}/sbin/unix_chkpwd \
 /sbin/pam_tally
 
 %files devel
-/lib/libpam_misc.so
-/lib/libpam.so
-/lib/libpamc.so
-%dir /usr/include/security
-/usr/include/security/_pam_compat.h
-/usr/include/security/_pam_macros.h
-/usr/include/security/pam_filter.h
-/usr/include/security/pam_ext.h
-/usr/include/security/pam_client.h
-/usr/include/security/pam_modutil.h
-/usr/include/security/pam_misc.h
-/usr/include/security/pam_modules.h
-/usr/include/security/_pam_types.h
-/usr/include/security/pam_appl.h
+%{_docdir}/Linux-PAM/
+%{_libdir}/libpam_misc.so
+%{_libdir}/libpam.so
+%{_libdir}/libpamc.so
+%dir %{_includedir}/security
+%{_includedir}/security/_pam_compat.h
+%{_includedir}/security/_pam_macros.h
+%{_includedir}/security/pam_filter.h
+%{_includedir}/security/pam_ext.h
+%{_includedir}/security/pam_client.h
+%{_includedir}/security/pam_modutil.h
+%{_includedir}/security/pam_misc.h
+%{_includedir}/security/pam_modules.h
+%{_includedir}/security/_pam_types.h
+%{_includedir}/security/pam_appl.h
 
 %changelog
 

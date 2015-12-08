@@ -1,3 +1,8 @@
+%global _arch %(uname -m)
+%define _target_platform %{_arch}-unity-linux-musl
+%define _libdir /usr/lib64
+%define _lib /lib64
+
 Name:		shadow	
 Version:	4.2.1
 Release:	1%{?dist}
@@ -9,8 +14,11 @@ URL:		http://pkg-shadow.alioth.debian.org/
 Source0:	http://pkg-shadow.alioth.debian.org/releases/%{name}-%{version}.tar.xz
 Source1:	login.pamd
 
-BuildRequires:	linux-pam-devel
-#Requires:	
+BuildRequires: linux-pam-devel
+BuildRequires: libacl-devel libattr-devel
+BuildRequires: bison flex 
+Requires(pre): coreutils
+Requires(post): coreutils
 
 %description
 The shadow-utils package includes the necessary programs for
@@ -35,6 +43,7 @@ are used for managing group accounts.
 	--mandir=/usr/share/man \
 	--infodir=/usr/share/info \
 	--localstatedir=/var \
+	--libdir=%{_libdir} \
 	--without-nscd \
 	--without-chsh \
 	--without-chfn \
@@ -68,6 +77,7 @@ rm %{buildroot}%{_bindir}/chsh
 rm %{buildroot}%{_bindir}/chfn
 
 %files
+%{_mandir}/man*/*.*
 /bin/groups
 /bin/su
 /bin/login
@@ -75,35 +85,35 @@ rm %{buildroot}%{_bindir}/chfn
 %dir /etc/default
 /etc/default/useradd
 /etc/pam.d/login
-/usr/sbin/newusers
-/usr/sbin/useradd
-/usr/sbin/usermod
-/usr/sbin/groupadd
-/usr/sbin/vipw
-/usr/sbin/userdel
-/usr/sbin/pwck
-/usr/sbin/groupmems
-/usr/sbin/chgpasswd
-/usr/sbin/groupmod
-/usr/sbin/grpck
-/usr/sbin/grpunconv
-/usr/sbin/grpconv
-/usr/sbin/chpasswd
-/usr/sbin/pwconv
-/usr/sbin/vigr
-/usr/sbin/pwunconv
-/usr/sbin/logoutd
-/usr/sbin/groupdel
-/usr/bin/sg
-/usr/bin/lastlog
-/usr/bin/newuidmap
-/usr/bin/expiry
-/usr/bin/chage
-/usr/bin/faillog
-/usr/bin/newgidmap
-/usr/bin/passwd
-/usr/bin/gpasswd
-/usr/bin/newgrp
+%{_sbindir}/newusers
+%{_sbindir}/useradd
+%{_sbindir}/usermod
+%{_sbindir}/groupadd
+%{_sbindir}/vipw
+%{_sbindir}/userdel
+%{_sbindir}/pwck
+%{_sbindir}/groupmems
+%{_sbindir}/chgpasswd
+%{_sbindir}/groupmod
+%{_sbindir}/grpck
+%{_sbindir}/grpunconv
+%{_sbindir}/grpconv
+%{_sbindir}/chpasswd
+%{_sbindir}/pwconv
+%{_sbindir}/vigr
+%{_sbindir}/pwunconv
+%{_sbindir}/logoutd
+%{_sbindir}/groupdel
+%{_bindir}/sg
+%{_bindir}/lastlog
+%{_bindir}/newuidmap
+%{_bindir}/expiry
+%{_bindir}/chage
+%{_bindir}/faillog
+%{_bindir}/newgidmap
+%{_bindir}/passwd
+%{_bindir}/gpasswd
+%{_bindir}/newgrp
 
 %changelog
 

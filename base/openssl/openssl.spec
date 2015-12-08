@@ -1,9 +1,15 @@
+%global _arch %(uname -m)
+%define _target_platform %{_arch}-unity-linux-musl
+%define _libdir /usr/lib64
+%define _lib /lib64
 %define __find_requires %{nil}
 %define _sysconfdir /etc
+%global _default_patch_fuzz 2
+
 
 Name:		openssl	
-Version:	1.0.2d	
-Release:	1%{?dist}
+Version:	1.0.2e	
+Release:	0%{?dist}
 Summary:	Utilities from the general purpose cryptography library with TLS implementation
 
 Group:		System Environment/Libraries
@@ -64,7 +70,7 @@ support various cryptographic algorithms and protocols.
 %prep
 %setup -q
 
-%patch0 -p1 -b .test
+#%patch0 -p1 -b .test
 %patch1 -p1
 %patch2 -p1 
 #%patch3 -p1 
@@ -84,7 +90,7 @@ rm -rf %{_builddir}/apps/progs.h
 LDFLAGS=" -Wa,--noexecstack" \
 ./config \
 	--prefix=/usr \
-	--libdir=lib \
+	--libdir=/%{_lib} \
 	--openssldir=%{_sysconfdir}/ssl \
 	shared zlib enable-montasm enable-md2 \
 	%ifarch x86_64
@@ -102,16 +108,10 @@ rm -rf %{buildroot}
 make INSTALL_PREFIX=%{buildroot} MANDIR=/usr/share/man install
 
 install -m755 %{_builddir}/%{name}-%{version}/tools/c_rehash %{buildroot}/usr/bin/
-mkdir %{buildroot}/lib
-mv %{buildroot}/usr/lib/libcrypto.so.1.0.0 %{buildroot}/lib/libcrypto.so.1.0.0
-mv %{buildroot}/usr/lib/libssl.so.1.0.0 %{buildroot}/lib/libssl.so.1.0.0
-cd %{buildroot}/
-%__ln -sf /lib/libcrypto.so.1.0.0 %{buildroot}/usr/lib/libcrypto.so.1.0.0
-%__ln -sf /lib/libssl.so.1.0.0 %{buildroot}/usr/lib/libssl.so.1.0.0
-
 
 
 %files
+%{_mandir}/man*/*.*
 %{_bindir}/*
 %dir %{_sysconfdir}/ssl/certs
 %{_sysconfdir}/ssl/openssl.cnf
@@ -127,7 +127,6 @@ cd %{buildroot}/
 
 
 %files -n libcrypto
-/lib/libcrypto.so.1.0.0
 %{_libdir}/libcrypto.so.1.0.0
 %{_libdir}/engines/libubsec.so
 %{_libdir}/engines/libatalla.so
@@ -144,7 +143,6 @@ cd %{buildroot}/
 %dir %{_libdir}/engines
 
 %files -n libssl
-/lib/libssl.so.1.0.0
 %{_libdir}/libssl.so.1.0.0
 
 %files devel
