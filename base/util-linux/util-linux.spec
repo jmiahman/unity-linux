@@ -5,7 +5,7 @@
 
 Name:		util-linux	
 Version:	2.26.2
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	A collection of basic system utilities
 
 Group:		System Environment/Base	
@@ -257,7 +257,6 @@ rm -f %{buildroot}/%{_libdir}/*.la \
 %files libs
 %{_libdir}/libfdisk.so.*
 %{_libdir}/libsmartcols.so.*
-%{_docdir}/util-linux/
 
 %files -n blkid
 /sbin/blkid
@@ -282,6 +281,7 @@ rm -f %{buildroot}/%{_libdir}/*.la \
 %files libs-devel
 %{_includedir}/libfdisk
 %{_includedir}/libsmartcols
+%{_docdir}/util-linux/
 
 %files -n libmount
 %{_libdir}/libmount.so.* 
@@ -309,6 +309,9 @@ rm -f %{buildroot}/%{_libdir}/*.la \
 %{_datadir}/bash-completion/completions/
 
 %changelog
+* Tue Dec 08 2015 JMiahMan <JMiahMan@unity-linux.org> - 2.26.2-3
+- Place doc in libs-devel and not libs
+
 * Tue Dec 08 2015 JMiahMan <JMiahMan@unity-linux.org> - 2.26.2-2
 - Rebuild for rpm4 and MUSL qsort_r patch drop
 

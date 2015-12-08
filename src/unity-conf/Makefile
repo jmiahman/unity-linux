@@ -1,8 +1,16 @@
-VERSION		:= 0.0.4
+VERSION		:= 0.0.5
 
 sysconfdir      ?= /etc/lbu
 
-PREFIX		?=
+PREFIX		?= /usr
+
+M_ARCH := $(shell uname -m)
+
+ifeq (x86_64,${M_ARCH})
+LIBDIR ?= $(PREFIX)/lib64
+else
+LIBDIR ?= $(PREFIX)/lib
+endif
 
 LIB_FILES	:= libunity.sh
 SBIN_FILES	:= lbu\
@@ -73,8 +81,8 @@ install: $(BIN_FILES) $(SBIN_FILES) $(LIB_FILES) $(ETC_LBU_FILES)
 	install -m 755 $(BIN_FILES) $(DESTDIR)$(PREFIX)/bin
 	install -m 755 -d $(DESTDIR)/$(PREFIX)/sbin
 	install -m 755 $(SBIN_FILES) $(DESTDIR)/$(PREFIX)/sbin
-	install -m 755 -d $(DESTDIR)/$(PREFIX)/lib
-	install -m 755 $(LIB_FILES) $(DESTDIR)/$(PREFIX)/lib
+	install -m 755 -d $(DESTDIR)/$(LIBDIR)
+	install -m 755 $(LIB_FILES) $(DESTDIR)/$(LIBDIR)
 	install -m 755 -d $(DESTDIR)/$(sysconfdir)
 	install -m 755 $(ETC_LBU_FILES) $(DESTDIR)/$(sysconfdir)
 
@@ -83,7 +91,7 @@ uninstall:
 		rm -f "$(DESTDIR)/$(PREFIX)/sbin/$$i";\
 	done
 	for i in $(LIB_FILES); do \
-		rm -f "$(DESTDIR)/$(PREFIX)/lib/$$i";\
+		rm -f "$(DESTDIR)/$(LIBDIR)/$$i";\
 	done
 
 #---------------- make tar -----------------------------------------------------------------------------

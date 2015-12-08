@@ -1,7 +1,12 @@
+%global _arch %(uname -m)
+%define _target_platform %{_arch}-unity-linux-musl
+%define _libdir /usr/lib64
+%define _lib /lib64
+
 Summary: Simple kernel loader which boots from a FAT filesystem
 Name: syslinux
 Version: 6.03
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: Applications/System
 URL: http://syslinux.zytor.com/wiki/index.php/The_Syslinux_Project
@@ -115,18 +120,18 @@ rm -rf %{buildroot}
 
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_sbindir}
-mkdir -p %{buildroot}%{_prefix}/lib/syslinux
+mkdir -p %{buildroot}%{_libdir}/syslinux
 mkdir -p %{buildroot}%{_includedir}
 make bios install \
 	INSTALLROOT=%{buildroot} BINDIR=%{_bindir} SBINDIR=%{_sbindir} \
-	LIBDIR=%{_prefix}/lib DATADIR=%{_datadir} \
+	LIBDIR=%{_libdir} DATADIR=%{_datadir} \
 	MANDIR=%{_mandir} INCDIR=%{_includedir} \
 	EXTLINUXDIR=/boot/extlinux \
 	LDLINUX=ldlinux.c32
 %ifarch %{x86_64}
 make efi64 install netinstall \
 	INSTALLROOT=%{buildroot} BINDIR=%{_bindir} SBINDIR=%{_sbindir} \
-	LIBDIR=%{_prefix}/lib DATADIR=%{_datadir} \
+	LIBDIR=%{_libdir} DATADIR=%{_datadir} \
 	MANDIR=%{_mandir} INCDIR=%{_includedir} \
 	EXTLINUXDIR=/boot/extlinux \
 	LDLINUX=ldlinux.c32
@@ -144,7 +149,7 @@ sed "/^version=/s/=.*/=%{version}-r%{release}/" %{SOURCE2} \
 chmod 755 %{buildroot}/sbin/update-extlinux
 
 # don't ship libsyslinux, at least, not for now
-rm -f %{buildroot}%{_prefix}/lib/libsyslinux*
+rm -f %{buildroot}%{_libdir}/libsyslinux*
 rm -f %{buildroot}%{_includedir}/syslinux.h
 
 %clean
@@ -217,17 +222,18 @@ rm -rf %{buildroot}
 %endif
 
 %files docs
-#%doc NEWS README*
-#%doc doc/* 
-#%doc sample
-#%{_mandir}/man1/gethostip*
-#%{_mandir}/man1/syslinux*
-#%{_mandir}/man1/extlinux*
-#%{_mandir}/man1/isohybrid*
-#%{_mandir}/man1/memdiskfind*
-#%{_mandir}/man1/lss16toppm*
-#%{_mandir}/man1/ppmtolss16*
-#%{_mandir}/man1/syslinux2ansi*
+%doc NEWS README*
+%doc doc/* 
+%doc sample
+%{_docdir}/syslinux/sample/
+%{_mandir}/man1/gethostip*
+%{_mandir}/man1/syslinux*
+%{_mandir}/man1/extlinux*
+%{_mandir}/man1/isohybrid*
+%{_mandir}/man1/memdiskfind*
+%{_mandir}/man1/lss16toppm*
+%{_mandir}/man1/ppmtolss16*
+%{_mandir}/man1/syslinux2ansi*
 
 
 %post extlinux
@@ -242,3 +248,8 @@ elif [ -f /boot/extlinux.conf ]; then \
 fi
 
 %changelog
+* Tue Dec 08 2015 JMiahMan <JMiahMan@unity-linux.org> - 6.03-1
+- Rebuild for rpm4, update update-extlinux for normal boot initrd
+
+* Mon Nov 30 2015 JMiahMan <JMiahMan@unity-linux.org> - 6.03-1
+- Initial build for Unity Linux

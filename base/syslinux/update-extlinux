@@ -170,13 +170,15 @@ for kernel in $(find /boot -name "vmlinuz*" -type f); do
 		echo "  INITRD initramfs-$tag" >> $conf.new
 	fi
 
-        if [ -f "/boot/initrd.img" ]; then                                                                                                                                                                 
-                everbose "Found initrd: /boot/initrd.img"                                                                                                                                               
-                echo "  INITRD initrd.img" >> $conf.new                                                                                                                                                    
-        fi 
-
-	echo "  APPEND root=$root modules=${modules}${TYPE:+,$TYPE} $default_kernel_opts" >> $conf.new
-	echo "" >> $conf.new
+        if [ -f "/boot/initrd.img" ]; then
+		everbose "Found initrd: /boot/initrd.img"
+		echo "  INITRD initrd.img" >> $conf.new
+		echo "  APPEND quiet" >> $conf.new
+		echo "" >> $conf.new
+        else 
+		echo "  APPEND root=$root modules=${modules}${TYPE:+,$TYPE} $default_kernel_opts" >> $conf.new
+		echo "" >> $conf.new
+	fi
 	lst=$(($lst + 1))
 done
 

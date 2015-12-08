@@ -328,14 +328,10 @@ EOF
 	if [ "$(rc --sys)" = "XEN0" ]; then
 		pkgs="$pkgs xen-hypervisor"
 	fi
-#	local repos=$(sed -e 's/\#.*//' /etc/apk/repositories)
-#	local repoflags=
-#	for i in $repos; do
-#		repoflags="$repoflags --repository $i"
-#	done
 
-	update-extlinux
+#	done
 	cp /mnt/device/isolinux/initrd.img /boot/
+	update-extlinux
 	chroot_caps=$(set_grsec chroot_caps 0)
 	init_chroot_mounts "$mnt"
 	echo "Installing root system"
