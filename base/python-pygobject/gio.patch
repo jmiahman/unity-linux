@@ -1,0 +1,11 @@
+--- pygobject-2.26.0/gio/Makefile.am.wiget	2010-10-27 22:22:43.519555573 +0200
++++ pygobject-2.26.0/gio/Makefile.am	2010-10-27 22:23:39.140406060 +0200
+@@ -97,7 +97,7 @@ endif
+ # code generator
+ .defs.c:
+ 	(cd $(srcdir)\
+-	 && $(PYTHON) $(top_srcdir)/codegen/codegen.py \
++	 && $(PYTHON) $(abs_top_srcdir)/codegen/codegen.py \
+ 	    --py_ssize_t-clean \
+ 	    --register gio-types.defs \
+ 	    --register unix-types.defs \

@@ -1,0 +1,15 @@
+diff -urN pygobject-2.16.0/codegen/pygobject-codegen-2.0.in pygobject-2.16.0.new/codegen/pygobject-codegen-2.0.in
+--- pygobject-2.16.0/codegen/pygobject-codegen-2.0.in	2008-12-21 17:30:45.000000000 +0100
++++ pygobject-2.16.0.new/codegen/pygobject-codegen-2.0.in	2009-02-16 00:00:54.000000000 +0100
+@@ -8,4 +8,10 @@
+ PYTHONPATH=$codegendir
+ export PYTHONPATH
+ 
+-exec @PYTHON@ $codegendir/codegen.py "$@"
++if [ -f $codegendir/codegen.pyc ]; then
++	codegenexe="$codegendir/codegen.pyc"
++else
++	codegenexe="$codegendir/codegen.py"
++fi
++
++exec @PYTHON@ $codegenexe "$@"

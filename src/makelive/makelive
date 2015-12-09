@@ -88,21 +88,95 @@ function createSpecialDevFiles
 	ln -s $/fd/2 $1/stderr
 
 }
-# copy from sys ($1) dynamic linked libraries of application ($2) to initrd skeleton
+
 function copy_libs
 {
-	echo "Copying libraries for $2:"
-	for liblink in $(get_app_libs $2)
-	do
-		[ -f $liblink ] && lib=$liblink || lib=$(stat -t -c %N $1/$liblink  | sed -e  s/.*\ // -e s/\'// -e s/\`// | sed "s/\'//g" | sed "s/\`//g") # get dst file name if symlink
-		echo " - copying $lib"
-		[ ! -f $tmp_initrd/$lib ] && cp -d $1/$libDir/$(basename $lib)* $tmp_initrd/lib
-		echo " - $liblink"
-		[ ! -f $tmp_initrd/$lib ] && cp -a $1/$liblink* $tmp_initrd/$libDir
-		[ -h $tmp_initrd/$liblink  ] && lib=$(stat -t -c %N $1/$liblink  | sed -e  s/.*\ // -e s/\'// -e s/\`//)  && cp -d $1/$libDir/$(basename $lib) $tmp_initrd/$libDir
 
+	#Make sure we have input
+	[[ $# < 2 ]] && echo "No vaild input: copy_libs \"binary\" \"destination\" "
+
+	#Check if the paths are vaild
+	echo "what am I" $tmp_initrd/bin/$(basename $1)
+	[[ ! -e $tmp_initrd/bin/$(basename $1) ]] && echo "Not a valid input $1" && return 1 
+	[[ -d $2 ]] || echo "No such directory $2 creating..."&& mkdir -p "$2"
+
+	#Get the binary library dependencies
+	echo "Collecting the shared library dependencies for $1..."
+	deps=$(chroot $sys_source ldd $1 |cut -d'>' -f2 |sed 's/(0x[^[:space:]]*//g' )
+	#deps=$(ldd $1 |cut -d'>' -f2 | awk '{print $1}')
+	echo "Copying the dependencies for $1 to $2"
+
+	#Copy the libs
+	for dep in $deps
+	do
+            lib_link=$(readlink -m $dep)
+            if [[ ! -z $(readlink $dep) ]] && [[ ! -f $tmp_initrd/lib/$(basename $dep) ]] && [[ ! -f $tmp_initrd/lib/$(basename $lib_link) ]]; then
+                cp -df $lib_link $tmp_initrd/lib/                                                                                                       
+                ln -sf /lib/$(basename $lib_link) $tmp_initrd/lib/$(basename $dep)                          
+                echo "found lib link $(basename $dep) $tmp_initrd/lib/$(basename $lib_link)"      
+            else
+                if [[ ! -f $2$(basename $dep) ]] && [[ ! -f $tmp_initrd/lib/$(basename $lib_link) ]]; then
+                    echo "Copying $dep to $2"
+                    cp -df "$sys_source$dep" $tmp_initrd/lib/
+                else
+                    echo "lib $2$(basename $dep) exists"
+                fi
+            fi
 	done
 }
+
+function find_copy_bin
+{
+	#Make sure we have input
+	[[ $# < 2 ]] && echo "No vaild input: find_bin \"binary\" \"destination\" "
+
+	#Check if the paths are vaild
+	#[[ ! -e $sys_source$1 ]] && echo "Not a vaild input $1" && return 1
+	[[ -d $2 ]] || echo "No such directory $2 creating..."&& mkdir -p "$2"
+	#Copy binary
+	found_bin=$(chroot $sys_source find /*bin/ /usr/*bin/ -type f | grep -w -m1 "$1$")
+	echo "copying $found_bin to $2"
+	if [[ -f $sys_source$found_bin ]]; then
+	   cp -d "$sys_source$found_bin" "$2"
+           copy_libs $found_bin $tmp_initrd/lib/
+        else
+           echo "$found_bin file not found"
+        fi
+
+}
+
+function find_copy_busybox
+{
+        #find and copy busybox
+        #if busybox.static and busybox shared is installed it's assumed
+        #that busybox static should be default otherwise it wouldn't be installed
+        #if static is not found use the shared version and copy the libs as well
+                locate_bbox=$(find $sys_source/*bin/ $sys_source/usr/*bin/ -executable -type f -name busybox* -print | tr " " "\n" )
+                if [[ $(echo $locate_bbox)  == *"static"* ]]; then
+                        bbox_bin=$(echo $locate_bbox |tr " " "\n"|grep -m1 'static')
+			ln -sf $(basename $bbox_bin) $tmp_initrd/bin/busybox
+                        if [[ $1 == 1 ]]; then
+                                echo $(basename $bbox_bin)
+                                exit 0
+                        fi
+                else
+                        bbox_bin=$(echo $locate_bbox |tr " " "\n"|grep -m1 'busybox')
+                        if [[ $1 == 1 ]]; then
+                                echo $(basename $bbox_bin)
+                                exit 0
+                        fi
+			echo "not static copying libs"
+                        copy_libs $bbox_bin $tmp_initrd/lib/
+
+                fi
+                [[ -d $1 ]] || echo "No such directory $1 creating..."&& mkdir -p "$1"
+		if [[ $1 != 1 ]]; then
+		echo "copying busybox: $bbox_bin"
+                cp -df $bbox_bin $1
+		fi
+
+}
+
 function create_initrd
 {
 	#make root dirs
@@ -146,17 +220,17 @@ function create_initrd
 	[ ! -f $sys_source/lib/modules/$kernel_rel/modules.dep ] && echo "Running depmod..." && chroot $sys_source depmod -a -b / $kernel_rel
 
 	echo "Copying kernel modules to initrd skeleton..."
-	copy_module loop overlay ext2 ext3 ext4 lvm xfs squashfs vfat rfkill drm cdrom isofs ahci 
+	copy_module loop overlay ext2 ext3 ext4 lvm xfs squashfs vfat rfkill drm cdrom isofs ahci udf
 	copy_module mii p4-clockmod usb-storage atl2 i2c-algo-bit i2c-core
-	copy_modules_dir kernel/drivers/scsi kernel/drivers/ata kernel/drivers/cpufreq kernel/drivers/cdrom kernel/drivers/net/ethernet/atheros/ kernel/drivers/i2c
+	copy_modules_dir kernel/drivers/scsi kernel/drivers/ata kernel/drivers/cpufreq kernel/drivers/net/ethernet/atheros/ kernel/drivers/i2c
         copy_modules_dir kernel/drivers/gpu/drm kernel/fs/isofs
 
 	[ -d $sys_source/lib/modules/$kernel_rel/kernel/fs/aufs ] && echo "found aufs module" && aufs_module_found=1 && copy_module aufs
 	echo "Copying firmware files to initrd skeleton..."
-	findAndCopyFirmwareFiles || exit 1
+	#findAndCopyFirmwareFiles || exit 1
 
 	# gunzip modules, we will compress whole initrd image
-	find $tmp_initrd/lib/modules/$kernel_rel -type f -name \*.gz -exec gunzip \{\} \;
+#	find $tmp_initrd/lib/modules/$kernel_rel -type f -name \*.xz -exec xz -d \{\} \;
 	depmod -a -b $tmp_initrd $kernel_rel
 
 	# Set Plymouth Theme ** We need a new option for this, hard coding no good **
@@ -164,60 +238,55 @@ function create_initrd
 #        chroot $sys_source /usr/libexec/plymouth/plymouth-generate-initrd
 
 	echo "Adding binaries..."
-	cp -d $sys_source/sbin/kmod $tmp_initrd/bin/ || return 1
-	cp -d $sys_source/sbin/udevadm $tmp_initrd/bin/ || return 1
-	cp -d $sys_source/sbin/udevd $tmp_initrd/bin/ || return 1
-	cp -d $sys_source/bin/mount $tmp_initrd/bin/ || return 1
-	cp -d $sys_source/bin/umount $tmp_initrd/bin/ || return 1
-	cp -d $sys_source/usr/bin/killall $tmp_initrd/bin/ || return 1
-	cp -d $sys_source/usr/sbin/mke2fs $tmp_initrd/bin/ || return 1
+	find_copy_bin kmod $tmp_initrd/bin/
+	find_copy_bin udevadm $tmp_initrd/bin/
+	#do not fail on these 2 not all systems have them
+	find_copy_bin udevd $tmp_initrd/bin/
+	#cp -d $sys_source/lib/systemd/systemd-udevd $tmp_initrd/bin/
+	find_copy_bin mount $tmp_initrd/bin/ || return 1
+	find_copy_bin umount $tmp_initrd/bin/ || return 1
+	find_copy_bin killall $tmp_initrd/bin/
+	find_copy_bin mke2fs $tmp_initrd/bin/ || return 1
 #        cp -d $sys_source/bin/plymouth $tmp_initrd/bin/ || return 1
 #        cp -d $sys_source/sbin/plymouthd $tmp_initrd/bin/ || return 1
-        cp $sys_source/bin/busybox $tmp_initrd/bin/ || return 1
-	ln -s kmod $tmp_initrd/bin/depmod
-	ln -s busybox $tmp_initrd/bin/losetup || return 1
-	ln -s busybox $tmp_initrd/bin/sh || return 1
-        ln -s busybox $tmp_initrd/bin/ls || return 1
-	ln -s busybox $tmp_initrd/bin/ln || return 1
-        ln -s busybox $tmp_initrd/bin/cp || return 1
-        ln -s busybox $tmp_initrd/bin/cat || return 1
-        ln -s busybox $tmp_initrd/bin/find || return 1
-        ln -s busybox $tmp_initrd/bin/modprobe || return 1
-	ln -s busybox $tmp_initrd/bin/dmesg || return 1
-	ln -s busybox $tmp_initrd/bin/grep || return 1
-	ln -s busybox $tmp_initrd/bin/sed || return 1
-	ln -s busybox $tmp_initrd/bin/uname || return 1
-	ln -s busybox $tmp_initrd/bin/rmmod || return 1
-	ln -s busybox $tmp_initrd/bin/lsmod || return 1
-	ln -s busybox $tmp_initrd/bin/mknod || return 1
-	ln -s busybox $tmp_initrd/bin/sort || return 1
-	ln -s busybox $tmp_initrd/bin/cut || return 1
-	ln -s busybox $tmp_initrd/bin/mkdir || return 1
-	ln -s busybox $tmp_initrd/bin/mdev || return 1
-	ln -s busybox $tmp_initrd/bin/sleep || return 1
-	ln -s busybox $tmp_initrd/bin/tail || return 1
-	ln -s busybox $tmp_initrd/bin/head || return 1
-	ln -s busybox $tmp_initrd/bin/awk || return 1
-	ln -s busybox $tmp_initrd/bin/switch_root || return 1
-        ln -s busybox $tmp_initrd/bin/pidof || return 1
-        ln -s busybox $tmp_initrd/bin/dd || return 1
+        find_copy_busybox $tmp_initrd/bin/ || return 1
+	ln -sf kmod $tmp_initrd/bin/depmod
+#	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/mount || return 1
+#	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/umount || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/awk || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/cut || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/dmesg || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/grep || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/head || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/ln || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/losetup || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/lsmod || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/mdev || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/mkdir || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/mknod || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/rmmod || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/sed || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/sh || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/sleep || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/sort || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/switch_root || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/tail || return 1
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/uname || return 1
+        ln -sf `find_copy_busybox 1` $tmp_initrd/bin/cat || return 1
+        ln -sf `find_copy_busybox 1` $tmp_initrd/bin/cp || return 1
+        ln -sf `find_copy_busybox 1` $tmp_initrd/bin/dd || return 1
+        ln -sf `find_copy_busybox 1` $tmp_initrd/bin/find || return 1
+        ln -sf `find_copy_busybox 1` $tmp_initrd/bin/ls || return 1
+        ln -sf `find_copy_busybox 1` $tmp_initrd/bin/modprobe || return 1
+        ln -sf `find_copy_busybox 1` $tmp_initrd/bin/pidof || return 1
 
 	#Purely for Troubleshooting and Awesomeness
-	ln -s busybox $tmp_initrd/bin/vi || return 1 	
+	ln -sf `find_copy_busybox 1` $tmp_initrd/bin/vi || return 1 	
 
 	echo "Adding libraries..."
-        copy_libs $sys_source /sbin/kmod
-	copy_libs $sys_source /sbin/udevadm
-	copy_libs $sys_source /bin/mount
-	copy_libs $sys_source /lib/udev/udevd
-	copy_libs $sys_source /usr/bin/killall
-	copy_libs $sys_source /usr/sbin/mke2fs
-#        copy_libs $sys_source /bin/plymouth
-#        copy_libs $sys_source /sbin/plymouthd
-        copy_libs $sys_source /bin/busybox
  	cp $sys_source/etc/ld.so.conf $tmp_initrd/etc
-#        cp -r $sys_source/etc/plymouth $tmp_initrd/etc/
-#        cp -r $sys_source/usr/share/plymouth $tmp_initrd/usr/share/
+#       cp -r $sys_source/etc/plymouth $tmp_initrd/etc/
+#       cp -r $sys_source/usr/share/plymouth $tmp_initrd/usr/share/
 
         if [ $arch = 'x86_64' ]; then
            mkdir -p $tmp_initrd/usr/lib64
@@ -240,10 +309,10 @@ function create_initrd
 	make_cleanup $tmp_initrd
 
 	# bootsplash
-	if [ $bootsplash_arg -eq 1 ]; then
-		echo "Creating bootsplash"
-		/bin/splash.bin -s -f $bootsplash > $tmp_initrd/bootsplash
-	fi
+#	if [ $bootsplash_arg -eq 1 ]; then
+#		echo "Creating bootsplash"
+#		/bin/splash.bin -s -f $bootsplash > $tmp_initrd/bootsplash
+#	fi
 	echo "Creating initramfs image: $1"
 	cd $tmp_initrd
 #	find . | cpio -H newc -o | $compr > $1
@@ -283,12 +352,13 @@ function make_cleanup
         echo "Running cleanup of $1..."
         find $1 -name \*~ -exec rm \{\} \;
         find $1 -name .svn -type d -exec rm -rf \{\} \; 2> /dev/null
+        rm -rf $1/initrd
 }
 
 
 ##### MAIN #####
 templatesDir=templates
-bootsplash_arg=0
+bootsplash_arg=1
 for arg in $@
 do
         case $arg in
@@ -332,7 +402,7 @@ rm -rf /tmp/$0_tmp_*
 # Try and Guess arch
 [ -d $sys_source/lib64 ] && arch=x86_64 || arch=i686
 # If VOLID is not defined grep version from release rpm
-[ -z "$VOLID" ] && VOLID=`chroot $sys_source rpm -qf /etc/synergy-release | cut -d '.' -f1`-$arch # default VOLID
+[ -z "$VOLID" ] && VOLID=`chroot $sys_source cat /etc/redhat-release | awk -F" " '{print $1"-"$2"_"$4}'`-$arch # default VOLID
 tmp_iso_root=$(mktemp -d /tmp/$(basename $0)_tmp_iso__XXXXXX)
 tmp_initrd=$(mktemp -d /tmp/$(basename $0)_tmp_initrd__XXXXXX)
 volid_file=$tmp_initrd/DEV_LABEL
@@ -370,14 +440,14 @@ fi
 echo "Copying kernel and basic tools..."
 #cp -r $mkroot/$templatesDir/isolinux $tmp_iso_root
 mkdir -p $tmp_iso_root/isolinux
-cp /usr/share/syslinux/ldlinux.c32 $tmp_iso_root/isolinux/
-cp /usr/share/syslinux/libcom32.c32 $tmp_iso_root/isolinux/
-cp /usr/share/syslinux/libutil.c32 $tmp_iso_root/isolinux/
-cp /usr/share/syslinux/chain.c32 $tmp_iso_root/isolinux/
-cp /usr/share/syslinux/hdt.c32 $tmp_iso_root/isolinux/
-cp /usr/share/syslinux/isolinux.bin $tmp_iso_root/isolinux/
-cp /usr/share/syslinux/reboot.c32 $tmp_iso_root/isolinux/
-cp /usr/share/syslinux/vesamenu.c32 $tmp_iso_root/isolinux/
+cp /usr/*/syslinux/ldlinux.c32 $tmp_iso_root/isolinux/
+cp /usr/*/syslinux/libcom32.c32 $tmp_iso_root/isolinux/
+cp /usr/*/syslinux/libutil.c32 $tmp_iso_root/isolinux/
+cp /usr/*/syslinux/chain.c32 $tmp_iso_root/isolinux/
+cp /usr/*/syslinux/hdt.c32 $tmp_iso_root/isolinux/
+cp /usr/*/syslinux/isolinux.bin $tmp_iso_root/isolinux/
+cp /usr/*/syslinux/reboot.c32 $tmp_iso_root/isolinux/
+cp /usr/*/syslinux/vesamenu.c32 $tmp_iso_root/isolinux/
 cp /usr/share/makelive/isolinux.cfg $tmp_iso_root/isolinux/
 cp /usr/share/makelive/splash.jpg $tmp_iso_root/isolinux/
 cp /usr/share/makelive/help.msg $tmp_iso_root/isolinux/
@@ -393,19 +463,19 @@ fi
 make_cleanup $tmp_iso_root
 # create image
 create_initrd $tmp_iso_root/isolinux/initrd.img || die "Creating initrd image failed."
-
-# ceate live
+cp $tmp_iso_root/isolinux/initrd.img /tmp/
+# create live
 echo "Creating squashfs filesystem: $tmp_iso_root/$live_rootfs_archive..."
 mkdir -p $tmp_iso_root/LiveOS/
 
 # Test cli installer, so copy over
-cp -f $mkroot/$templatesDir/synergy-install-cli $sys_source/usr/sbin/
-cp -f $mkroot/$templatesDir/synergy-install-gui $sys_source/usr/sbin/
-cp -f $mkroot/$templatesDir/auto-part $sys_source/usr/sbin/
+#cp -f $mkroot/$templatesDir/synergy-install-cli $sys_source/usr/sbin/
+#cp -f $mkroot/$templatesDir/synergy-install-gui $sys_source/usr/sbin/
+#cp -f $mkroot/$templatesDir/auto-part $sys_source/usr/sbin/
 
 mksquashfs  $sys_source $tmp_iso_root/LiveOS/$live_rootfs_archive -comp $squashfscompr -e /tmp -e /root/rpms -e /root/rpmbuild -e /root/packages -e /root/building -e /proc/ -e /sys/ -e /dev/ -e /run/ > /dev/null || die "Creating live rootfs failed"
 echo "Creating ISO image: $dst_iso ($VOLID)..."
-mkisofs -o $dst_iso --publisher "Synergy Linux" -b isolinux/isolinux.bin -c isolinux/boot.cat \
+mkisofs -o $dst_iso --publisher "Unity Linux" -b isolinux/isolinux.bin -c isolinux/boot.cat \
 	-no-emul-boot -boot-load-size 4 -boot-info-table -l -R \
 	-A "$APPLICATION" -V "$VOLID" -p "$PREPARER" \
        	-r $tmp_iso_root \
@@ -413,5 +483,3 @@ mkisofs -o $dst_iso --publisher "Synergy Linux" -b isolinux/isolinux.bin -c isol
 rm -rf $tmp_iso_root
 rm -rf $tmp_initrd
 echo "Image $dst_iso seems to be ready"
-
-

@@ -10,6 +10,8 @@ License:	LGPLv2+
 URL:		http://www.gtk.org/
 Source0:	http://fossies.org/linux/misc/glib-%{version}.tar.gz
 
+Patch0:		0001-Revert-Move-quark-initialization-to-a-constructor.patch
+
 BuildRequires:	perl, gettext-devel, zlib-devel, libtool
 BuildRequires:	bzip2-devel, libffi-devel	
 
@@ -29,6 +31,7 @@ Requires: pkgconfig
 
 %prep
 %setup -q
+%patch0 -p1
 
 
 %build

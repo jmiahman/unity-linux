@@ -1,3 +1,8 @@
+%global _arch %(uname -m)
+%define _target_platform %{_arch}-unity-linux-musl
+%define _libdir /usr/lib64
+%define _lib /lib64
+
 %define move_yum_conf_back 1
 %define yum_updatesd 0
 %define disable_check 0
@@ -12,15 +17,15 @@
 
 # disable broken /usr/lib/rpm/brp-python-bytecompile
 %define __os_install_post %{nil}
-#%define compdir %(pkg-config --variable=completionsdir bash-completion)
+%define compdir %(pkg-config --variable=completionsdir bash-completion)
 %if "%{compdir}" == ""
-#%define compdir "/etc/bash_completion.d"
+%define compdir "/etc/bash_completion.d"
 %endif
 
 Summary: RPM package installer/updater/manager
 Name: yum
 Version: 3.4.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Base
 Source0: http://yum.baseurl.org/download/3.4/%{name}-%{version}.tar.gz
@@ -30,12 +35,12 @@ Patch1: yum_ok_newline.patch
 
 URL: http://yum.baseurl.org/
 BuildArchitectures: noarch
-BuildRequires: python
+BuildRequires: python2
 BuildRequires: gettext
 #BuildRequires: intltool
 # This is really CheckRequires ...
 BuildRequires: python-nose
-BuildRequires: python >= 2.4
+BuildRequires: python2 >= 2.4
 BuildRequires: rpm-python, rpm >= 4.4.2
 BuildRequires: python-iniparse
 BuildRequires: python-sqlite
@@ -43,7 +48,7 @@ BuildRequires: python-urlgrabber >= 3.9.0-8
 BuildRequires: yum-metadata-parser >= 1.1.0
 BuildRequires: pygpgme
 # End of CheckRequires
-Requires: python >= 2.4
+Requires: python2 >= 2.4
 Requires: rpm-python, rpm 
 Requires: python-iniparse
 Requires: python-sqlite
@@ -66,13 +71,13 @@ automatically, prompting the user for permission as necessary.
 Summary: Update notification daemon
 Group: Applications/System
 Requires: yum = %{version}-%{release}
-Requires: dbus-python
+Requires: python-dbus
 Requires: pygobject2
-Requires(preun): /sbin/chkconfig
-Requires(post): /sbin/chkconfig
+Requires(preun): /sbin/rc-update
+Requires(post): /sbin/rc-update
 Requires(preun): /sbin/service
 Requires(post): /sbin/service
-Requires(postun): /sbin/chkconfig
+Requires(postun): /sbin/rc-update
 Requires(postun): /sbin/service
 
 
@@ -85,9 +90,9 @@ Summary: RPM package installer/updater/manager cron service
 Group: System Environment/Base
 Requires: yum >= 3.4.3-84 cronie crontabs findutils
 Requires: yum-cron-BE = %{version}-%{release}
-Requires(post): /sbin/chkconfig
+Requires(post): /sbin/rc-update
 Requires(post): /sbin/service
-Requires(preun): /sbin/chkconfig
+Requires(preun): /sbin/rc-update
 Requires(preun): /sbin/service
 Requires(postun): /sbin/service
 
@@ -187,13 +192,13 @@ rm -f $RPM_BUILD_ROOT/%{_unitdir}/yum-cron.service
 
 
 #%post updatesd
-#/sbin/chkconfig --add yum-updatesd
+#/sbin/rc-update add yum-updatesd
 #/sbin/service yum-updatesd condrestart >/dev/null 2>&1
 #exit 0
 
 #%preun updatesd
 #if [ $1 = 0 ]; then
-# /sbin/chkconfig --del yum-updatesd
+# /sbin/rc-update del yum-updatesd
 # /sbin/service yum-updatesd stop >/dev/null 2>&1
 #fi
 #exit 0
@@ -202,7 +207,7 @@ rm -f $RPM_BUILD_ROOT/%{_unitdir}/yum-cron.service
 
 # SYSV init post cron
 # Make sure chkconfig knows about the service
-/sbin/chkconfig --add yum-cron
+/sbin/rc-update add yum-cron
 # if an upgrade:
 if [ "$1" -ge "1" ]; then
 # if there's a /etc/rc.d/init.d/yum file left, assume that there was an
@@ -210,16 +215,16 @@ if [ "$1" -ge "1" ]; then
 # it up, do a conditional restart
  if [ -f /etc/init.d/yum ]; then 
 # was it on?
-  /sbin/chkconfig yum
+  /sbin/rc-update yum
   RETVAL=$?
   if [ $RETVAL = 0 ]; then
 # if it was, stop it, then turn on new yum-cron
    /sbin/service yum stop 1> /dev/null 2>&1
    /sbin/service yum-cron start 1> /dev/null 2>&1
-   /sbin/chkconfig yum-cron on
+   /sbin/rc-update yum-cron on
   fi
 # remove it from the service list
-  /sbin/chkconfig --del yum
+  /sbin/rc-update del yum
  fi
 fi 
 exit 0
@@ -229,7 +234,7 @@ exit 0
 # if this will be a complete removeal of yum-cron rather than an upgrade,
 # remove the service from chkconfig control
 if [ $1 = 0 ]; then
- /sbin/chkconfig --del yum-cron
+ /sbin/rc-update del yum-cron
  /sbin/service yum-cron stop 1> /dev/null 2>&1
 fi
 exit 0
@@ -252,13 +257,13 @@ exit 0
 %{_bindir}/*
 %config(noreplace) %{_sysconfdir}/yum.conf
 #%dir %{_sysconfdir}/yum.repos.d
-#%config(noreplace) %{_sysconfdir}/yum/version-groups.conf
+%config(noreplace) %{_sysconfdir}/yum/version-groups.conf
 %dir %{_sysconfdir}/yum
 #%dir %{_sysconfdir}/yum/protected.d
 #%dir %{_sysconfdir}/yum/fssnap.d
 #%dir %{_sysconfdir}/yum/vars
-#%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
-%(dirname %{compdir})
+%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
+/etc/bash_completion.d/yum.bash
 %dir %{_datadir}/yum-cli
 %{_datadir}/yum-cli/*
 #%exclude %{_datadir}/yum-cli/completion-helper.py?
@@ -281,20 +286,24 @@ exit 0
 %dir %{yum_pluginslib}
 %dir %{yum_pluginsshare}
 
-#%files cron
-#%defattr(-,root,root)
-#%{!?_licensedir:%global license %%doc}
-#%license COPYING
+%files cron
+%defattr(-,root,root)
+%{!?_licensedir:%global license %%doc}
+%license COPYING
+%{_sysconfdir}/cron.daily/0yum.cron
 #%{_sysconfdir}/cron.daily/0yum-daily.cron
 #%{_sysconfdir}/cron.hourly/0yum-hourly.cron
 #%config(noreplace) %{_sysconfdir}/yum/yum-cron.conf
 #%config(noreplace) %{_sysconfdir}/yum/yum-cron-hourly.conf
-#%{_sysconfdir}/rc.d/init.d/yum-cron
+%{_sysconfdir}/rc.d/init.d/yum-cron
+/etc/sysconfig/yum-cron
 #%{_sbindir}/yum-cron
 #%{_mandir}/man*/yum-cron.*
 
-#%files cron-daily
-#%defattr(-,root,root)
+%files cron-daily
+%defattr(-,root,root)
+%{_sysconfdir}/yum/yum-daily.yum
+%{_sysconfdir}/yum/yum-weekly.yum
 #%{_sysconfdir}/cron.daily/0yum-daily.cron
 #%config(noreplace) %{_sysconfdir}/yum/yum-cron.conf
 
@@ -318,3 +327,9 @@ exit 0
 %{_mandir}/man*/yum-updatesd*
 
 %changelog
+* Wed Dec 09 2015 JMiahMan <JMiahMan@unity-linux.org> - 3.4.3-2
+- Try to fix some requires and buildrequires
+
+* Mon Nov 20 2015 JMiahMan <JMiahMan@unity-linux.org> - 3.4.3-1
+- Initial Build
+

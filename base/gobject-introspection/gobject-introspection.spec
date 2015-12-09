@@ -1,5 +1,5 @@
 Name:           gobject-introspection
-Version:        1.45.4
+Version:        1.46.0
 Release:        1%{?dist}
 Summary:        Introspection system for GObject-based libraries
 
@@ -7,9 +7,7 @@ Group:          Development/Libraries
 License:        GPLv2+, LGPLv2+, MIT
 URL:            http://live.gnome.org/GObjectIntrospection
 #VCS:           git:git://git.gnome.org/gobject-introspection
-Source0:        http://download.gnome.org/sources/gobject-introspection/1.45/%{name}-%{version}.tar.xz
-
-Obsoletes:      gir-repository
+Source0:        http://download.gnome.org/sources/gobject-introspection/1.46/%{name}-%{version}.tar.xz
 
 BuildRequires:  glib-devel
 BuildRequires:  python-devel

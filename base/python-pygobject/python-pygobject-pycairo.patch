@@ -1,0 +1,24 @@
+--- pygobject-2.28.4/gi/pygi-foreign-cairo.c.orig	2011-04-18 17:36:47.000000000 +0200
++++ pygobject-2.28.4/gi/pygi-foreign-cairo.c	2011-05-22 20:57:19.521360594 +0200
+@@ -30,7 +30,9 @@
+ #include <pycairo/py3cairo.h>
+ #endif
+ 
++#if PY_VERSION_HEX < 0x03000000
+ Pycairo_CAPI_t *Pycairo_CAPI;
++#endif
+ 
+ #include "pygi-foreign.h"
+ 
+@@ -115,7 +117,11 @@
+ static PyMethodDef _gi_cairo_functions[] = {};
+ PYGLIB_MODULE_START(_gi_cairo, "_gi_cairo")
+ {
++#if PY_VERSION_HEX < 0x03000000
+     Pycairo_IMPORT;
++#else
++    import_cairo();
++#endif
+     if (Pycairo_CAPI == NULL)
+         return PYGLIB_MODULE_ERROR_RETURN;
+ 
